@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Feed Melvin: Final Stats Fix</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#3d5a80">
+    <link rel="icon" type="image/png" href="https://pxleight.github.io/feed-melvin-assets/melvin_icon_web_app.png">
+    <link rel="apple-touch-icon" href="https://pxleight.github.io/feed-melvin-assets/melvin_icon_web_app.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Feed Melvin">
+    
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'VT323', monospace !important; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
+        :root { --bg-wall: #aed9e0; --bg-floor: #d4a373; --ui-panel: #3d5a80; --ui-border: #293241; --sparkle-gold: #ffec51; }
+        body, html { margin: 0; padding: 0; height: 100%; width: 100%; image-rendering: pixelated; overflow: hidden; user-select: none; -webkit-user-select: none; background-color: var(--ui-panel); touch-action: none; }
+        #splash-screen, #checkup-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background-color: var(--ui-panel); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 200; }
+        #checkup-screen { display: none; z-index: 210; }
+        #loading-wrap { width: 80%; display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
+        #loading-text { color: white; font-size: 1.8rem; margin-bottom: 8px; }
+        #loading-container { width: 100%; height: 25px; background: #293241; border: 4px solid #fff; padding: 2px; box-sizing: border-box; }
+        #loading-bar { width: 0%; height: 100%; background: var(--sparkle-gold); transition: width 0.1s; }
+        .instruction-box { background: rgba(0, 0, 0, 0.4); border: 3px solid #fff; padding: 15px; color: white; font-size: 1.4rem; max-width: 80%; text-align: center; margin: 20px 0; line-height: 1.2; }
+        
+        #start-btn-container { display: none; gap: 15px; margin-top: 10px; width: 90%; justify-content: center; }
+        .start-btn { flex: 1; max-width: 160px; background: #fff; border: 6px solid var(--ui-border); padding: 15px 10px; font-size: 2.2rem; cursor: pointer; box-shadow: 0 6px 0 #000; text-align: center; }
+        .start-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #000; }
+        .easy-color { color: #4ade80; }
+        .normal-color { color: #3d5a80; }
+
+        .resume-btn { background: #fff; border: 6px solid var(--ui-border); padding: 8px 16px; width: fit-content; min-width: 100px; font-size: 2.5rem; cursor: margin-top: 10px; box-shadow: 0 6px 0 #000; }
+        .share-btn { background: #e1306c; color: white; border: 6px solid var(--ui-border); padding: 8px 16px; width: fit-content; min-width: 100px; font-size: 2.5rem; cursor: pointer; margin-top: 10px; box-shadow: 0 6px 0 #000; }
+        .share-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #000; }
+        .checkup-btn-row { display: flex; justify-content: center; gap: 15px; width: 100%; margin-bottom: 10px; }
+        #game-container { display: none; position: relative; width: 100vw; height: 100dvh; background-color: var(--bg-wall); }
+        .game-bg-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; shape-rendering: crispEdges; }
+        .game-title { position: absolute; top: env(safe-area-inset-top, 5px); width: 100%; text-align: center; font-size: 4rem; color: #293241; text-shadow: 2px 2px 0px #fff; z-index: 150; margin: 0; }
+        #checkup-bar { position: absolute; top: 75px; left: 50%; transform: translateX(-50%); background: rgba(61, 90, 128, 0.7); padding: 8px 15px; z-index: 140; color: white; font-size: 1.6rem; text-align: center; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
+        .top-ui-num { color: var(--sparkle-gold); font-size: 2.2rem; line-height: 1; }
+        .right-stats-panel { position: absolute; top: 160px; right: 15px; background: rgba(61, 90, 128, 0.7); padding: 15px 8px; z-index: 140; display: flex; flex-direction: column; align-items: center; width: 88px; box-sizing: border-box; }
+        .stat-line { color: white; font-size: 1.5rem; text-align: center; width: 100%; white-space: nowrap; }
+        .stat-divider { width: 100%; height: 3px; background-color: rgba(255, 255, 255, 0.25); margin: 8px 0; }
+        #super-panel { position: absolute; top: 340px; right: 15px; width: 88px; display: flex; flex-direction: column; align-items: center; gap: 5px; z-index: 140; }
+        .super-label { color: white; font-size: 1.5rem; font-weight: bold; text-shadow: 2px 2px 0 var(--ui-border); }
+        .super-slots { display: flex; justify-content: center; gap: 16px; width: 100%; opacity: 0.25; }
+        .super-svg { width: 26px; height: 26px; display: block; }
+        #pet-container { position: absolute; top: 65%; left: 50%; transform: translate(-50%, -100%); z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
+        #scale-graphic { width: 240px; height: 80px; z-index: 5; position: relative; transform: scale(1.58); transform-origin: bottom center; top: 38px; }
+        #weight-readout { position: absolute; bottom: 21px; width: 100%; text-align: center; color: white; font-size: 1.8rem; font-weight: bold; text-shadow: 1px 1px 2px #000; pointer-events: none; mix-blend-mode: overlay; }
+        #pet { width: 160px; height: 160px; display: flex; align-items: flex-end; justify-content: center; transition: filter 0.2s, transform 0.1s; transform-origin: bottom center; z-index: 10; overflow: visible; filter: url(#green-tint); }
+        #pet svg { width: 100%; height: 100%; display: block; }
+        #spitup-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 1000; display: none; opacity: 0; }
+        .show-spitup { display: block !important; animation: spitupFadeTransparent 1.2s ease-out forwards; }
+        @keyframes spitupFadeTransparent { 0% { opacity: 0; transform: translateY(-10px); } 15% { opacity: 0.7; transform: translateY(0); } 80% { opacity: 0.7; } 100% { opacity: 0; } }
+        #sparkle-wrap { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 12; display: none; }
+        .sparkle-pixel { position: absolute; width: 8px; height: 8px; animation: sparkleAnim 0.8s infinite; }
+        @keyframes sparkleAnim { 0%, 100% { transform: scale(0); opacity: 0; } 50% { transform: scale(1.2); opacity: 1; } }
+        
+        @keyframes superDrift {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        svg[data-super="true"], svg[data-super-full="true"] {
+            animation: superDrift 3s ease-in-out infinite;
+        }
+
+        .action-btns { position: absolute; bottom: 12%; width: 100%; display: flex; justify-content: center; gap: 15px; padding: 0 15px; box-sizing: border-box; }
+        .btn-wrapper { flex: 1; max-width: 170px; position: relative; }
+        .feed-btn, .burp-btn { width: 100%; height: 70px; margin: 0; padding: 0; border: none; border-radius: 0; cursor: pointer; box-shadow: 0 6px 0 rgba(0, 0, 0, 0.5); outline: none; position: relative; z-index: 120; display: block; }
+        .feed-btn { background: #6cb0ff; }
+        .burp-btn { background: #ff9b54; }
+        .btn-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; pointer-events: none; z-index: 121; }
+        .feed-btn:active, .burp-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0, 0, 0, 0.5); }
+        .feed-btn:active + .btn-icon, .burp-btn:active + .btn-icon { margin-top: 4px; }
+        
+        .left-column { position: absolute; top: 135px; left: 15px; bottom: calc(12% + 75px); display: flex; flex-direction: column; align-items: center; width: 50px; z-index: 110; }
+        #timer-container { width: 22px; flex-grow: 1; background: #293241; border: 3px solid #fff; border-radius: 4px; overflow: hidden; margin-top: 5px; display: flex; flex-direction: column; justify-content: flex-end; }
+        #timer-bar { width: 100%; height: 100%; background: #ff9b54; }
+        
+        .stats-display-area { position: relative; color: white; font-size: 1.6rem; text-align: center; line-height: 1.4; background: rgba(0,0,0,0.3); padding: 15px 35px; border: 3px solid #fff; width: 90%; max-width: 340px; margin-top: 20px; box-sizing: border-box; min-height: 160px; display: flex; flex-direction: column; justify-content: center; }
+        .stat-row { white-space: nowrap; }
+        .toggle-arrow-btn { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center; z-index: 10; }
+        #prev-stats-btn { left: 2px; }
+        #next-stats-btn { right: 2px; }
+        .toggle-arrow-btn svg { width: 30px; height: 30px; fill: white; filter: drop-shadow(1px 1px 0 #000); }
+
+        #pause-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 155; display: none; align-items: center; justify-content: center; pointer-events: auto; }
+        #pause-box { background: rgba(61, 90, 128, 0.7); padding: 18px; width: 60%; max-width: 255px; text-align: center; box-shadow: 0 6px 0 #000; }
+        #pause-toggle-btn { position: absolute; top: 460px; right: 26px; background: rgba(0,0,0,0.25); border: none; cursor: pointer; z-index: 160; outline: none; padding: 6px; display: flex; justify-content: center; align-items: center; width: 52px; height: 52px; }
+        #pause-toggle-btn svg { fill: #eeeeee; filter: drop-shadow(2px 2px 0 #000); }
+        .pause-start-over-btn { background: rgba(0,0,0,0.25); color: rgba(255, 255, 255, 0.7); font-size: 1.8rem; text-align: center; margin-top: 20px; cursor: pointer; padding: 8px; width: fit-content; margin-left: auto; margin-right: auto; }
+        
+        #random-tip-msg { color: #aed9e0; font-size: 1.4rem; text-align: center; max-width: 85%; margin-top: 15px; line-height: 1.2; font-style: italic; }
+
+        #day2-msg-wrapper { position: absolute; top: 130px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 380px; z-index: 250; display: none; padding: 15px 10px; box-sizing: border-box; pointer-events: none; }
+        #frustrating-msg { text-align: center; color: white; font-size: 1.8rem; text-shadow: 2px 2px 0 var(--ui-border); opacity: 0; margin: 0; line-height: 1.2; }
+        
+        .big-arrow { font-size: 3rem; vertical-align: middle; }
+        #frustrating-msg.show-msg { opacity: 1; }
+
+        /* ORIENTATION LOCK OVERLAY */
+        #orientation-lock {
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh;
+            background-color: var(--ui-panel); z-index: 99999;
+            flex-direction: column; align-items: center; justify-content: center;
+            color: white; font-size: 2.5rem; text-align: center; padding: 20px; box-sizing: border-box;
+        }
+        @media screen and (orientation: landscape) {
+            #orientation-lock { display: flex; }
+        }
+        @keyframes phoneTilt {
+            0%, 100% { transform: rotate(-90deg); }
+            50% { transform: rotate(0deg); }
+        }
+    </style>
+</head>
+<body>
+<div id="orientation-lock">
+    <svg width="80" height="80" viewBox="0 0 24 24" fill="white" style="margin-bottom: 20px; animation: phoneTilt 2s infinite ease-in-out;">
+        <path d="M16 1H8C6.9 1 6 1.9 6 3v18c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm0 19H8V4h8v16z"/>
+    </svg>
+    <div>Please rotate your device<br>back to portrait mode<br>to play Feed Melvin.</div>
+</div>
+<svg width="0" height="0" style="position: absolute; pointer-events: none; z-index: -1;">
+    <defs>
+        <filter id="green-tint">
+            <feFlood id="green-flood" flood-color="#00cc00" flood-opacity="0" result="tintColor" />
+            <feComposite in="tintColor" in2="SourceGraphic" operator="in" result="clippedTint" />
+            <feBlend in="clippedTint" in2="SourceGraphic" mode="hue" result="blendResult" />
+            <feComposite in="blendResult" in2="SourceGraphic" operator="in" />
+        </filter>
+    </defs>
+</svg>
+<div id="splash-screen">
+    <h1 style="color: white; font-size: 4rem; text-shadow: 4px 4px #000; text-align: center; margin-bottom: 0;">FEED MELVIN</h1>
+    <div class="instruction-box">
+        Tap the Bottle button to give Melvin 1/2 an ounce.<br><br>
+        Melvin will start to turn green when he's getting full. Keep tapping the Hand button to burp him.<br><br>
+        If you overfeed Melvin he will spit up and you will lose ounces!<br><br>
+        <span style="color: var(--sparkle-gold);">Help Melvin grow to 9lbs and you will make his Pediatrician (and you) proud!</span>
+    </div>
+    <div id="loading-wrap">
+        <div id="loading-text">LOADING ASSETS...</div>
+        <div id="loading-container"><div id="loading-bar"></div></div>
+    </div>
+    <div id="start-btn-container">
+        <button class="start-btn easy-color" onclick="startGame('easy')">EASY</button>
+        <button class="start-btn normal-color" onclick="startGame('normal')">NORMAL</button>
+    </div>
+</div>
+<div id="checkup-screen" style="display: none;">
+    <div id="congrats-wrap" style="display: none; position: relative; text-align: center; width: 100%; margin-bottom: 10px; box-sizing: border-box; padding: 0 10px;">
+        <div id="congrats-sparkles" style="position: absolute; top: -10px; left: 0; width: 100%; height: 120%; pointer-events: none; z-index: 1;"></div>
+        <h1 style="color: var(--sparkle-gold); font-size: 3.8rem; text-shadow: 4px 4px #000; margin: 0; position: relative; z-index: 2;">CONGRATULATIONS!</h1>
+    </div>
+    <h1 id="checkup-title" style="color: white; font-size: 3rem; text-shadow: 3px 3px #000; margin-bottom: 10px; margin-top: 0;">WEEKLY REPORT</h1>
+    <div class="checkup-btn-row">
+        <button class="resume-btn" onclick="resumeGame()">RESUME</button>
+        </div>
+    <div id="stats-area-container" class="stats-display-area">
+        <div id="dr-swadlzworth-msg" style="color: white; font-size: 1.4rem; text-align: center; margin-bottom: 15px; border-bottom: 2px dashed #fff; padding-bottom: 10px;"></div>
+        <button id="prev-stats-btn" class="toggle-arrow-btn" onclick="toggleStatsView()" style="display: none;">
+            <svg viewBox="0 0 24 24"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>
+        </button>
+        <div id="stats-area"></div>
+        <button id="next-stats-btn" class="toggle-arrow-btn" onclick="toggleStatsView()" style="display: none;">
+            <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+        </button>
+    </div>
+    <div id="random-tip-msg"></div>
+</div>
+<div id="game-container" style="display: none;">
+    <svg class="game-bg-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" preserveAspectRatio="none">
+        <image href="https://pxleight.github.io/feed-melvin-assets/Nursery_background_rev002.svg" width="1080" height="1920" preserveAspectRatio="none" />
+    </svg>
+    <div id="pause-overlay">
+        <div id="pause-box">
+            <h2 style="color: rgba(255, 255, 255, 0.7); font-size: 2.5rem; text-shadow: none; margin-top: 0; margin-bottom: 10px;">PAUSED</h2>
+            <div id="pause-tip" style="color: #aed9e0; font-size: 1.6rem; line-height: 1.3;"></div>
+            <div class="pause-start-over-btn" onclick="location.reload()">START OVER</div>
+        </div>
+    </div>
+    <div id="spitup-overlay"></div>
+    <h1 class="game-title">Feed Melvin</h1>
+    <div id="checkup-bar">
+        OZ/DAY <span id="top-avg-val" class="top-ui-num">0.0</span> <div style="width: 3px; height: 22px; background-color: rgba(255, 255, 255, 0.25);"></div> Checkup in <span id="days-until-val" class="top-ui-num">6</span> days
+    </div>
+    
+    <div id="day2-msg-wrapper">
+        <div id="frustrating-msg"><span class="big-arrow">↑</span> this might feel frustrating especially if your watching the daily average.</div>
+    </div>
+
+    <div class="left-column">
+        <div style="font-size: 1.5rem; font-weight: bold; color: #293241;">time</div>
+        <div id="timer-container"><div id="timer-bar"></div></div>
+    </div>
+    <div class="right-stats-panel">
+        <div class="stat-line">WEEK: <span id="week-val-sidebar">1</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat-line">DAY: <span id="day-val">1</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat-line">LVL: <span id="lvl-val">1</span></div>
+    </div>
+    <div id="super-panel">
+        <div class="super-label">SUPER</div>
+        <div class="super-slots">
+            <svg id="super-slot-1" class="super-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" shape-rendering="crispEdges">
+                <defs>
+                    <g id="counter-graphic">
+                        <rect x="0" y="0" width="26" height="26" fill="#293241"/>
+                        <rect x="3" y="3" width="20" height="20" fill="#9eb3c2"/>
+                        <rect x="26" y="0" width="26" height="26" fill="#293241"/>
+                        <rect x="29" y="3" width="20" height="20" fill="#ff4d4d"/>
+                        <rect x="52" y="0" width="26" height="26" fill="#293241"/>
+                        <rect x="55" y="3" width="20" height="20" fill="#4ade80"/>
+                    </g>
+                </defs>
+                <use href="#counter-graphic" />
+            </svg>
+            <svg id="super-slot-2" class="super-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" shape-rendering="crispEdges">
+                <use href="#counter-graphic" />
+            </svg>
+        </div>
+        <div class="super-slots">
+            <svg id="super-slot-3" class="super-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" shape-rendering="crispEdges">
+                <use href="#counter-graphic" />
+            </svg>
+            <svg id="super-slot-4" class="super-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" shape-rendering="crispEdges">
+                <use href="#counter-graphic" />
+            </svg>
+        </div>
+    </div>
+    <button id="pause-toggle-btn" onclick="togglePause()">
+        <svg id="icon-pause" width="38" height="38" viewBox="0 0 24 24">
+            <rect x="6" y="4" width="4" height="16" />
+            <rect x="14" y="4" width="4" height="16" />
+        </svg>
+        <svg id="icon-play" width="38" height="38" viewBox="0 0 24 24" style="display: none;">
+            <polygon points="5,3 19,12 5,21" />
+        </svg>
+    </button>
+    <div id="pet-container">
+        <div id="sparkle-wrap"></div>
+        <div id="pet"></div>
+        <div id="scale-graphic">
+            <img src="https://pxleight.github.io/feed-melvin-assets/levi_scale_sprite_web.svg" style="width: 100%; height: 100%; display: block;" />
+            <div id="weight-readout">6lb 8oz</div>
+        </div>
+    </div>
+    <div style="position: absolute; bottom: 25%; width: 100%; text-align: center; font-size: 2.2rem; color: var(--sparkle-gold); text-shadow: 2px 2px 0 #000; font-weight: bold;">
+        <span id="food-val">0.0</span> ounces
+    </div>
+    
+    <div class="action-btns">
+        <div class="btn-wrapper">
+            <button class="feed-btn" onclick="feed()"></button>
+            <svg class="btn-icon" viewBox="0 0 48 48" shape-rendering="crispEdges">
+                <image href="https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.svg" width="48" height="48" />
+            </svg>
+        </div>
+        <div class="btn-wrapper">
+            <button class="burp-btn" onclick="burp()"></button>
+            <svg class="btn-icon" viewBox="0 0 48 48" shape-rendering="crispEdges">
+                <image href="https://pxleight.github.io/feed-melvin-assets/burp_hand_sprite_web.svg" width="48" height="48" />
+            </svg>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('contextmenu', event => event.preventDefault());
+    document.addEventListener('gesturestart', function(e) { e.preventDefault(); });
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function(event) {
+        let now = (new Date()).getTime();
+        if (now - lastTouchEnd <= 300) { if (!event.target.closest('button')) { event.preventDefault(); } }
+        lastTouchEnd = now;
+    }, { passive: false });
+
+    function PausableTimer(callback, delay) {
+        let timerId, start, remaining = delay;
+        let isTimerPaused = true; 
+        this.pause = function() {
+            if (isTimerPaused) return;
+            window.clearTimeout(timerId);
+            remaining -= Date.now() - start;
+            isTimerPaused = true;
+        };
+        this.resume = function() {
+            if (!isTimerPaused) return;
+            start = Date.now();
+            window.clearTimeout(timerId);
+            timerId = window.setTimeout(callback, remaining);
+            isTimerPaused = false;
+        };
+        this.trigger = function() {
+            window.clearTimeout(timerId);
+            callback();
+        };
+        this.getElapsed = function() {
+            let currentRemaining = isTimerPaused ? remaining : remaining - (Date.now() - start);
+            return delay - currentRemaining;
+        };
+        this.resume();
+    }
+    
+    let activeMsgTimer = null;
+
+    document.getElementById('pause-overlay').addEventListener('click', function() {
+        if (activeMsgTimer && activeMsgTimer.getElapsed() >= 2000) {
+            activeMsgTimer.trigger();
+        }
+    });
+
+    // Listen for landscape orientation to trigger pause
+    window.matchMedia("(orientation: landscape)").addEventListener("change", function(e) {
+        if (e.matches) {
+            if (gameRunning && !isPaused) {
+                togglePause();
+            }
+            if (activeMsgTimer) activeMsgTimer.pause();
+        } else {
+            if (activeMsgTimer) activeMsgTimer.resume();
+        }
+    });
+
+    let totalOunces = 104.0; 
+    const GROWTH_INTERVAL = 12; 
+    let timeLeft = GROWTH_INTERVAL;
+    let foodStored = 0.0, currentSessionOunces = 0.0; 
+    let gameRunning = false, isPaused = false, dayCount = 1, totalGainAccrued = 0;
+    let burpProgress = 0, burpsRequired = 5, ozLimit = 1.5; 
+    let lockedAvg = 0.0;
+    let spitupsAverted = 0;
+    let superMelvinActive = false;
+    let gammaMelvinActive = false;
+    let superCooldownDays = 0; 
+    let frameIndex = 0; 
+    let lockedPowerUpTier = null;
+    let gammaUsedThisWeek = false;
+    
+    let difficultyMode = 'normal';
+
+    let nineLbDay = null;
+    let superCount = 0;
+    let gammaCount = 0;
+    let bestDailyAvg = 0.0;
+    let secondsPlayed = 0;
+    let statsViewState = 'victory';
+    let powerUpMsgShown = false; 
+
+    const gameTips = [
+        "Burping Melvin will make more room in his stomach. There's no harm in burping him before he's completely full!",
+        "Low doses of a certain kind of radiation have been found in formula. Feeding Melvin a large number of ounces per day could produce surprising results!",
+        "When Melvin has gained a good average weight the prior day he will sparkle. If you burp him enough when he's completely full you could unlock something SUPER.",
+        "Melvin will show signs of getting full before he can't take anymore. Sharp eyes and reflexes help when trying to feed him the maximum amount in a day.",
+        "Off to a rough start? Hit START OVER for a fresh start and try again!",
+        "Super Melvin has double stomach capacity and burps more readily. Take advantage of these perks while you can!",
+        "Each week the daily average is reset. If you have a bad week this makes it easier to get back on track!",
+        "Melvin goes up a level every 8 ounces. His stomach capacity grows with every level but he may take longer to burp."
+    ];
+
+    const drRandomMsgs = [
+        "Does he have a head turn preference?",
+        "How many poo diapers and how many pee diapers a day?",
+        "How's tummy time going?",
+        "Make sure he's getting vitamin D supplements.",
+        "How's tummy time going?",
+        "What does his wake window look like?",
+        "Make sure he's sleeping on his back.",
+        "I don't hear any clicking but let's get an ultrasound of his hips.",
+        "is he always this sleepy?",
+        "I don't see any jaundice.",
+        "Keep the bottle level so he doesn't prefer it over breastfeeding.",
+        "It's okay to sleep just 2 hours every night. It's only for 2 months!",
+        "Sleep when the baby sleeps!"
+    ];
+
+    const classicMelvinSVG = '<svg data-classic="true" viewBox="0 0 48 48" shape-rendering="crispEdges" style="display: block;"><image href="https://pxleight.github.io/feed-melvin-assets/classic_levi_sprite_web.svg" width="384" height="48" /></svg>';
+    const superMelvinSVG = '<svg data-super="true" viewBox="0 0 48 48" shape-rendering="crispEdges" style="display: none;"><image href="https://pxleight.github.io/feed-melvin-assets/super_levi_sprite_web.svg" width="384" height="48" /></svg>';
+    const superFullMelvinSVG = '<svg data-super-full="true" viewBox="0 0 48 48" shape-rendering="crispEdges" style="display: none;"><image href="https://pxleight.github.io/feed-melvin-assets/super_levi_FULL_sprite_web.svg" width="384" height="48" /></svg>';
+    const gammaMelvinSVG = '<svg data-gamma="true" viewBox="0 0 48 48" shape-rendering="crispEdges" style="display: none;"><image href="https://pxleight.github.io/feed-melvin-assets/gamma_levi_sprite_web.svg" width="384" height="48" /></svg>';
+
+    const assetUrls = [
+        "https://pxleight.github.io/feed-melvin-assets/classic_levi_sprite_web.svg",
+        "https://pxleight.github.io/feed-melvin-assets/super_levi_sprite_web.svg",
+        "https://pxleight.github.io/feed-melvin-assets/super_levi_FULL_sprite_web.svg",
+        "https://pxleight.github.io/feed-melvin-assets/gamma_levi_sprite_web.svg",
+        "https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.svg",
+        "https://pxleight.github.io/feed-melvin-assets/burp_hand_sprite_web.svg"
+    ];
+
+    function preloadAssets() {
+        let loadedCount = 0;
+        const total = assetUrls.length;
+        const bar = document.getElementById('loading-bar');
+        const startBtnContainer = document.getElementById('start-btn-container');
+        const loadingWrap = document.getElementById('loading-wrap');
+        assetUrls.forEach(url => {
+            const img = new Image();
+            img.src = url;
+            img.onload = img.onerror = () => {
+                loadedCount++;
+                bar.style.width = (loadedCount / total) * 100 + '%';
+                if (loadedCount === total) {
+                    setTimeout(() => {
+                        loadingWrap.style.display = 'none';
+                        startBtnContainer.style.display = 'flex';
+                    }, 600);
+                }
+            };
+        });
+    }
+    window.onload = preloadAssets;
+
+    let totalBottles = 0, totalBurpClicks = 0, totalSuccessfulBurps = 0, totalOuncesSpitUp = 0;
+    const petEl = document.getElementById('pet'), weightReadout = document.getElementById('weight-readout'), dayValDisp = document.getElementById('day-val'), timerBar = document.getElementById('timer-bar'), sparkleWrap = document.getElementById('sparkle-wrap');
+    let audioCtx;
+
+    function togglePause() {
+        if (!gameRunning) return;
+        isPaused = !isPaused;
+        document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
+        document.getElementById('icon-pause').style.display = isPaused ? 'none' : 'block';
+        document.getElementById('icon-play').style.display = isPaused ? 'block' : 'none';
+        if (isPaused) {
+            let randomTip = gameTips[Math.floor(Math.random() * gameTips.length)];
+            document.getElementById('pause-tip').innerText = "TIP: " + randomTip;
+        }
+    }
+
+    function startGame(mode) {
+        difficultyMode = mode;
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        document.getElementById('splash-screen').style.display = 'none';
+        document.getElementById('game-container').style.display = 'block';
+        gameRunning = true; 
+        isPaused = true; 
+        burpProgress = 0; 
+        petEl.innerHTML = classicMelvinSVG + superMelvinSVG + superFullMelvinSVG + gammaMelvinSVG; 
+        createSparklePool(); rollNewLimit(); updateUI();
+        
+        document.getElementById('pause-overlay').style.display = 'flex';
+        document.getElementById('icon-pause').style.display = 'none';
+        document.getElementById('icon-play').style.display = 'block';
+        document.getElementById('pause-tip').innerHTML = "It's normal for a baby to lose weight in the first week after leaving the hospital. Be patient with yourself and with Melvin. It will get better!<br><br>Click the play button to continue...";
+    }
+    
+    function resumeGame() { 
+        document.getElementById('checkup-screen').style.display = 'none'; 
+        // document.getElementById('share-btn').style.display = 'none';
+        
+        // Finalize the day transition that was paused for the report
+        dayCount++; 
+        
+        // If it's the start of a new week, reset the weekly metrics
+        if (dayCount % 7 === 1) {
+            superCooldownDays = 0; 
+            spitupsAverted = 0; 
+            totalGainAccrued = 0; 
+            lockedAvg = 0.0; 
+            lockedPowerUpTier = null; 
+            gammaUsedThisWeek = false;
+        }
+
+        // Reset the day's session tracking
+        timeLeft = GROWTH_INTERVAL; 
+        foodStored = 0; 
+        currentSessionOunces = 0; 
+        burpProgress = 0; 
+        
+        gameRunning = true; 
+        updateUI();
+        timerBar.style.height = '100%';
+    }
+    
+    function createSparklePool() {
+        for(let i=0; i<15; i++) {
+            let s = document.createElement('div'); s.className = 'sparkle-pixel';
+            s.style.left = Math.random() * 100 + '%'; s.style.top = Math.random() * 100 + '%';
+            s.style.animationDelay = (Math.random() * 1.5) + 's'; s.style.backgroundColor = i % 2 === 0 ? 'white' : 'var(--sparkle-gold)';
+            sparkleWrap.appendChild(s);
+        }
+    }
+    
+    function rollNewLimit() {
+        let currentWeek = Math.floor((dayCount - 1) / 7) + 1;
+        let level = currentWeek === 1 ? 0 : Math.max(1, Math.floor((totalOunces - 104) / 8) + 1);
+        
+        if (level === 0) {
+            ozLimit = 0.5 + (Math.random() * 1.0);
+        } else {
+            ozLimit = 1.0 + (Math.random() * level * 1.5);
+        }
+        
+        let burpLevel = level === 0 ? 1 : level;
+        let extraMargin = (burpLevel - 1) * (Math.floor(Math.random() * 3) + 1);
+        let baseBurps = 3 + Math.floor(Math.random() * 4) + extraMargin;
+        if (difficultyMode === 'easy') {
+            burpsRequired = Math.max(1, Math.round(baseBurps * 0.75));
+        } else {
+            burpsRequired = baseBurps;
+        }
+        
+        burpProgress = 0; 
+    }
+    
+    function playSound(f, t, d = 0.1, v = 0.05) {
+        if (!audioCtx) return; if (audioCtx.state === 'suspended') audioCtx.resume();
+        const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+        o.type = t; o.frequency.setValueAtTime(f, audioCtx.currentTime);
+        g.gain.setValueAtTime(v, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination);
+        o.start(); o.stop(audioCtx.currentTime + d);
+    }
+    
+    function triggerSpitup() {
+        const overlay = document.getElementById('spitup-overlay'); overlay.innerHTML = '';
+        const svgNS = "http://www.w3.org/2000/svg", svg = document.createElementNS(svgNS, "svg");
+        svg.setAttribute("viewBox", "0 0 100 100"); svg.setAttribute("preserveAspectRatio", "none"); svg.style.width = "100%"; svg.style.height = "100%";
+        for(let i=0; i<25; i++) {
+            const rect = document.createElementNS(svgNS, "rect");
+            rect.setAttribute("x", Math.random() * 85); rect.setAttribute("y", Math.random() * 85);
+            rect.setAttribute("width", 6 + Math.random() * 18); rect.setAttribute("height", 6 + Math.random() * 18);
+            rect.setAttribute("fill", "white"); svg.appendChild(rect);
+        }
+        overlay.appendChild(svg); overlay.classList.remove('show-spitup'); void overlay.offsetWidth; overlay.classList.add('show-spitup');
+    }
+    
+    function feed() {
+        if (!gameRunning || isPaused) return; 
+        totalBottles++; 
+        
+        let currentWeekForCap = Math.floor((dayCount - 1) / 7) + 1;
+        let capacityMultiplier = (difficultyMode === 'easy' && currentWeekForCap > 1) ? 2.0 : 1.0;
+        const effectiveLimit = (gammaMelvinActive ? Infinity : (superMelvinActive ? (ozLimit * 2) : ozLimit)) * capacityMultiplier;
+        
+        if (currentSessionOunces >= effectiveLimit) {
+            let penaltyRate = (difficultyMode === 'easy') ? 0.25 : 0.5;
+            totalOuncesSpitUp += foodStored * penaltyRate; 
+            foodStored -= foodStored * penaltyRate;
+            
+            currentSessionOunces = 0; 
+            if (spitupsAverted > 0) {
+                spitupsAverted = Math.max(0, spitupsAverted - 1);
+                if (spitupsAverted < 4) lockedPowerUpTier = null;
+            }
+            playSound(150, 'sawtooth', 0.4, 0.1); triggerSpitup(); rollNewLimit();
+        } else {
+            foodStored += 0.5; currentSessionOunces += 0.5; playSound(800, 'square', 0.08, 0.05);
+            petEl.style.transform = 'scale(1.1)'; setTimeout(() => petEl.style.transform = 'scale(1)', 100);
+        }
+        updateUI();
+    }
+    
+    function burp() {
+        if (!gameRunning || isPaused) return; 
+        totalBurpClicks++; burpProgress++; playSound(200, 'triangle', 0.05, 0.04);
+        
+        const currentReq = (superMelvinActive || gammaMelvinActive) ? 2 : burpsRequired;
+        let currentAvg = parseFloat(lockedAvg.toFixed(1));
+
+        if (burpProgress >= currentReq) {
+            totalSuccessfulBurps++; 
+            const isAvailable = (superCooldownDays === 0 && !superMelvinActive && !gammaMelvinActive);
+            
+            let currentWeekForCap = Math.floor((dayCount - 1) / 7) + 1;
+            let capacityMultiplier = (difficultyMode === 'easy' && currentWeekForCap > 1) ? 2.0 : 1.0;
+            const effectiveLimit = (gammaMelvinActive ? Infinity : (superMelvinActive ? (ozLimit * 2) : ozLimit)) * capacityMultiplier;
+
+            if (currentSessionOunces >= effectiveLimit && currentAvg >= 1.0 && isAvailable) {
+                if (spitupsAverted < 4) {
+                    spitupsAverted++;
+                    if (spitupsAverted === 4) {
+                        lockedPowerUpTier = (currentAvg >= 2.0 && !gammaUsedThisWeek) ? 'gamma' : 'super';
+                    }
+                }
+            }
+            burpProgress = 0; currentSessionOunces = 0; rollNewLimit();
+            petEl.style.transform = 'scale(1.3)'; playSound(120, 'sawtooth', 0.5, 0.2);
+            setTimeout(() => petEl.style.transform = 'scale(1)', 200); updateUI();
+        }
+    }
+
+/*
+    async function shareStats() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 1080;
+        canvas.height = 1920;
+        const ctx = canvas.getContext('2d');
+
+        // Background Match
+        ctx.fillStyle = '#3d5a80'; 
+        ctx.fillRect(0, 0, 1080, 1920);
+
+        await document.fonts.ready;
+
+        // Load Melvin Image with CORS permission
+        const melvinImg = new Image();
+        melvinImg.crossOrigin = "anonymous";
+        melvinImg.src = "https://pxleight.github.io/feed-melvin-assets/classic_levi_sprite_web.svg";
+        await new Promise((resolve) => {
+            if (melvinImg.complete) resolve();
+            else { melvinImg.onload = resolve; melvinImg.onerror = resolve; }
+        });
+
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+
+        function drawTextWithShadow(text, x, y, font, color, shadowColor, offsetX, offsetY) {
+            ctx.font = font;
+            ctx.fillStyle = shadowColor;
+            ctx.fillText(text, x + offsetX, y + offsetY);
+            ctx.fillStyle = color;
+            ctx.fillText(text, x, y);
+        }
+
+        let currentWeek = Math.floor((dayCount - 1) / 7) + 1;
+        let startY = 200;
+
+        // Title
+        if (statsViewState === 'victory') {
+            drawTextWithShadow('CONGRATULATIONS!', 540, startY, '140px VT323', '#ffec51', '#000000', 8, 8);
+        } else {
+            drawTextWithShadow('WEEK ' + currentWeek + ' REPORT', 540, startY, '120px VT323', '#ffffff', '#000000', 6, 6);
+        }
+
+        startY += 150;
+
+        // "RESUME" Button Graphic
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(200, startY + 12, 320, 100);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(200, startY, 320, 100);
+        ctx.strokeStyle = '#293241';
+        ctx.lineWidth = 12;
+        ctx.strokeRect(200, startY, 320, 100);
+        ctx.fillStyle = '#000000';
+        ctx.font = '80px VT323';
+        ctx.fillText('RESUME', 360, startY + 15);
+
+        // "SHARE" Button Graphic
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(560, startY + 12, 320, 100);
+        ctx.fillStyle = '#e1306c';
+        ctx.fillRect(560, startY, 320, 100);
+        ctx.strokeStyle = '#293241';
+        ctx.lineWidth = 12;
+        ctx.strokeRect(560, startY, 320, 100);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '80px VT323';
+        ctx.fillText('SHARE', 720, startY + 15);
+
+        startY += 160;
+
+        // Stats Box Panel
+        ctx.fillStyle = 'rgba(0,0,0,0.3)';
+        ctx.fillRect(90, startY, 900, 1200);
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 10;
+        ctx.strokeRect(90, startY, 900, 1200);
+
+        // --- DRAW MELVIN & SCALE ---
+        let scaleY = startY + 330;
+        
+        // Pixelate image scaling
+        ctx.imageSmoothingEnabled = false; 
+        // Melvin Image (Crop frame 1: 0, 0, 48, 48 to draw at 300x300)
+        ctx.drawImage(melvinImg, 0, 0, 48, 48, 540 - 150, scaleY - 300, 300, 300);
+        
+        // Scale Graphic
+        ctx.fillStyle = '#293241'; // Base
+        ctx.fillRect(540 - 200, scaleY, 400, 100);
+        ctx.fillStyle = '#9eb3c2'; // Top Plate
+        ctx.fillRect(540 - 225, scaleY - 20, 450, 20);
+        ctx.fillStyle = 'rgba(255,255,255,0.1)'; // Reflection
+        ctx.fillRect(540 - 50, scaleY + 10, 100, 80);
+
+        let boxInnerY = scaleY + 140;
+
+        // Dr. Swadlzworth Message
+        ctx.font = '50px VT323';
+        ctx.fillStyle = '#ffffff';
+        let msgEl = document.getElementById('dr-swadlzworth-msg').innerText;
+        let words = msgEl.split(' ');
+        let line = '';
+        for(let n = 0; n < words.length; n++) {
+            let testLine = line + words[n] + ' ';
+            let metrics = ctx.measureText(testLine);
+            if (metrics.width > 800 && n > 0) {
+                ctx.fillText(line, 540, boxInnerY);
+                line = words[n] + ' ';
+                boxInnerY += 55;
+            } else {
+                line = testLine;
+            }
+        }
+        ctx.fillText(line, 540, boxInnerY);
+        boxInnerY += 70;
+
+        // Dashed line
+        ctx.beginPath();
+        ctx.setLineDash([15, 15]);
+        ctx.lineWidth = 4;
+        ctx.moveTo(140, boxInnerY);
+        ctx.lineTo(940, boxInnerY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        boxInnerY += 60;
+
+        // Stats Text Data
+        ctx.font = '60px VT323';
+        let lineSpace = 80;
+
+        if (statsViewState === 'victory') {
+            const minsPlayed = Math.floor(secondsPlayed / 60);
+            const finalLb = Math.floor(totalOunces / 16);
+            const finalOz = Math.floor(totalOunces % 16);
+            const gammaText = gammaCount === 0 ? '? ? ? ? Melvins:' : 'Gamma Melvins:';
+
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText('Difficulty Level:', 140, boxInnerY);
+            ctx.fillText('Final weight:', 140, boxInnerY + lineSpace);
+            ctx.fillText('Best Daily Average:', 140, boxInnerY + lineSpace*2);
+            ctx.fillText('Super Melvins:', 140, boxInnerY + lineSpace*3);
+            ctx.fillText(gammaText, 140, boxInnerY + lineSpace*4);
+            ctx.fillText('Minutes Played:', 140, boxInnerY + lineSpace*5);
+
+            ctx.textAlign = 'right';
+            ctx.fillStyle = '#ffec51';
+            ctx.fillText(difficultyMode.toUpperCase(), 940, boxInnerY);
+            ctx.fillText(finalLb + 'lb ' + finalOz + 'oz', 940, boxInnerY + lineSpace);
+            ctx.fillText(bestDailyAvg.toFixed(1) + ' oz', 940, boxInnerY + lineSpace*2);
+            ctx.fillText(superCount.toString(), 940, boxInnerY + lineSpace*3);
+            ctx.fillText(gammaCount.toString(), 940, boxInnerY + lineSpace*4);
+            ctx.fillText(minsPlayed.toString(), 940, boxInnerY + lineSpace*5);
+        } else {
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText('Avg Daily Gain:', 140, boxInnerY);
+            ctx.fillText('Bottles Fed:', 140, boxInnerY + lineSpace);
+            ctx.fillText('Ounces Spit-up:', 140, boxInnerY + lineSpace*2);
+            ctx.fillText('Successful Burps:', 140, boxInnerY + lineSpace*3);
+
+            ctx.textAlign = 'right';
+            ctx.fillStyle = '#ffec51';
+            ctx.fillText(lockedAvg.toFixed(1) + ' oz', 940, boxInnerY);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText(totalBottles.toString(), 940, boxInnerY + lineSpace);
+            ctx.fillText(totalOuncesSpitUp.toFixed(1) + ' oz', 940, boxInnerY + lineSpace*2);
+            ctx.fillText(totalSuccessfulBurps.toString(), 940, boxInnerY + lineSpace*3);
+        }
+
+        // Random Tip Msg
+        if (statsViewState !== 'victory') {
+            ctx.textAlign = 'center';
+            ctx.font = 'italic 50px VT323';
+            ctx.fillStyle = '#aed9e0';
+            let tipEl = document.getElementById('random-tip-msg').innerText;
+            let tipWords = tipEl.split(' ');
+            let tipLine = '';
+            let tipY = startY + 1250; 
+            for(let n = 0; n < tipWords.length; n++) {
+                let testLine = tipLine + tipWords[n] + ' ';
+                let metrics = ctx.measureText(testLine);
+                if (metrics.width > 800 && n > 0) {
+                    ctx.fillText(tipLine, 540, tipY);
+                    tipLine = tipWords[n] + ' ';
+                    tipY += 55;
+                } else {
+                    tipLine = testLine;
+                }
+            }
+            ctx.fillText(tipLine, 540, tipY);
+        }
+
+        // Generate Blob and Share
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+        if (!blob) return;
+        
+        const file = new File([blob], 'feed-melvin-stats.png', { type: 'image/png' });
+        
+        let finalLb = Math.floor(totalOunces / 16);
+        let finalOz = Math.floor(totalOunces % 16);
+        
+        let shareText = (statsViewState === 'victory') 
+            ? 'I beat Feed Melvin! I helped Melvin grow to ' + finalLb + 'lb ' + finalOz + 'oz with a best daily average of ' + bestDailyAvg.toFixed(1) + 'oz! Can you?'
+            : 'I\'m playing Feed Melvin! I\'m on Week ' + currentWeek + ' and Melvin is up to ' + finalLb + 'lb ' + finalOz + 'oz.';
+
+        let shareData = {
+            title: 'Feed Melvin Stats',
+            text: shareText,
+            url: window.location.href,
+        };
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            shareData.files = [file];
+        }
+
+        try {
+            await navigator.share(shareData);
+        } catch (err) {
+            console.log('Share canceled or failed', err);
+        }
+    }
+*/
+
+    function toggleStatsView() {
+        statsViewState = (statsViewState === 'victory') ? 'standard' : 'victory';
+        renderStats(); updateArrows();
+    }
+
+    function updateArrows() {
+        const prevBtn = document.getElementById('prev-stats-btn');
+        const nextBtn = document.getElementById('next-stats-btn');
+        if (totalOunces >= 144) {
+            if (statsViewState === 'victory') { prevBtn.style.display = 'none'; nextBtn.style.display = 'flex'; }
+            else { prevBtn.style.display = 'flex'; nextBtn.style.display = 'none'; }
+        } else {
+            prevBtn.style.display = 'none'; nextBtn.style.display = 'none';
+        }
+    }
+
+    function renderStats() {
+        const statsArea = document.getElementById('stats-area');
+        if (statsViewState === 'victory') {
+            const minsPlayed = Math.floor(secondsPlayed / 60);
+            const finalLb = Math.floor(totalOunces / 16);
+            const finalOz = Math.floor(totalOunces % 16);
+            const gammaText = gammaCount === 0 ? '? ? ? ? Melvins' : 'Gamma Melvins';
+            
+            statsArea.innerHTML = '<div class="stat-row">Difficulty Level: <span style="color: var(--sparkle-gold);">' + difficultyMode.toUpperCase() + '</span></div>' +
+                '<div class="stat-row">Final weight: <span style="color: var(--sparkle-gold);">' + finalLb + 'lb ' + finalOz + 'oz</span></div>' +
+                '<div class="stat-row">Best Daily Average: <span style="color: var(--sparkle-gold);">' + bestDailyAvg.toFixed(1) + ' oz</span></div>' +
+                '<div class="stat-row">Super Melvins: <span style="color: var(--sparkle-gold);">' + superCount + '</span></div>' +
+                '<div class="stat-row">' + gammaText + ': <span style="color: var(--sparkle-gold);">' + gammaCount + '</span></div>' +
+                '<div class="stat-row">Minutes Played: <span style="color: var(--sparkle-gold);">' + minsPlayed + '</span></div>';
+        } else {
+            statsArea.innerHTML = '<div class="stat-row">Avg Daily Gain: <span style="color: var(--sparkle-gold);">' + lockedAvg.toFixed(1) + '</span> oz</div>' +
+                '<div class="stat-row">Bottles Fed: <span>' + totalBottles + '</span></div>' +
+                '<div class="stat-row">Ounces Spit-up: <span>' + totalOuncesSpitUp.toFixed(1) + '</span> oz</div>' +
+                '<div class="stat-row">Successful Burps: <span>' + totalSuccessfulBurps + '</span></div>';
+        }
+    }
+    
+    function updateUI() {
+        document.getElementById('food-val').innerText = foodStored.toFixed(1);
+        weightReadout.innerText = Math.floor(totalOunces / 16) + 'lb ' + Math.floor(totalOunces % 16) + 'oz';
+        let currentWeek = Math.floor((dayCount - 1) / 7) + 1;
+        document.getElementById('week-val-sidebar').innerText = currentWeek;
+        dayValDisp.innerText = dayCount;
+        document.getElementById('days-until-val').innerText = (7 - (dayCount % 7)) % 7;
+        let roundedAvg = parseFloat(lockedAvg.toFixed(1));
+        document.getElementById('top-avg-val').innerText = roundedAvg.toFixed(1);
+        sparkleWrap.style.display = (roundedAvg >= 1.0 && !superMelvinActive && !gammaMelvinActive) ? 'block' : 'none';
+        
+        let capMult = (difficultyMode === 'easy' && currentWeek > 1) ? 2.0 : 1.0;
+        const effectiveLimit = (gammaMelvinActive ? Infinity : (superMelvinActive ? (ozLimit * 2) : ozLimit)) * capMult;
+        
+        let feedsRemaining = (effectiveLimit - currentSessionOunces) / 0.5;
+        let tintOpacity = 0;
+        
+        if (effectiveLimit !== Infinity && feedsRemaining <= 2) {
+            let progress = (2 - Math.max(0, feedsRemaining)) / 2;
+            tintOpacity = progress * 0.75;
+        }
+        
+        document.getElementById('green-flood').setAttribute('flood-opacity', tintOpacity);
+
+        const isAvailable = (superCooldownDays === 0 && !superMelvinActive && !gammaMelvinActive);
+        const isPanelActive = (roundedAvg >= 1.0 && isAvailable);
+        document.querySelectorAll('.super-slots').forEach(slot => slot.style.opacity = isPanelActive ? '1.0' : '0.25');
+        
+        let isGammaTier = (lockedPowerUpTier === 'gamma') || (lockedPowerUpTier === null && roundedAvg >= 2.0 && !gammaUsedThisWeek);
+        const superLabel = document.querySelector('.super-label');
+        if (gammaMelvinActive) superLabel.innerText = "GAMMA";
+        else if (isGammaTier) superLabel.innerText = "? ? ? ?";
+        else superLabel.innerText = "SUPER";
+        
+        const classicSvg = petEl.querySelector('svg[data-classic]');
+        const superSvg = petEl.querySelector('svg[data-super]');
+        const superFullSvg = petEl.querySelector('svg[data-super-full]');
+        const gammaSvg = petEl.querySelector('svg[data-gamma]');
+        if (classicSvg && superSvg && superFullSvg && gammaSvg) {
+            if (gammaMelvinActive) {
+                classicSvg.style.display = 'none'; superSvg.style.display = 'none'; superFullSvg.style.display = 'none'; gammaSvg.style.display = 'block';
+            } else if (superMelvinActive) {
+                classicSvg.style.display = 'none';
+                const isFull = currentSessionOunces >= (ozLimit * 2 * capMult);
+                superSvg.style.display = isFull ? 'none' : 'block';
+                superFullSvg.style.display = isFull ? 'block' : 'none';
+                gammaSvg.style.display = 'none';
+            } else {
+                classicSvg.style.display = 'block'; superSvg.style.display = 'none'; superFullSvg.style.display = 'none'; gammaSvg.style.display = 'none';
+            }
+        }
+
+        const slot1 = document.getElementById('super-slot-1');
+        const slot2 = document.getElementById('super-slot-2');
+        const slot3 = document.getElementById('super-slot-3');
+        const slot4 = document.getElementById('super-slot-4');
+
+        if (isPanelActive) {
+            let activeFrame = isGammaTier ? '52 0 26 26' : '26 0 26 26';
+            slot1.setAttribute('viewBox', spitupsAverted >= 1 ? activeFrame : '0 0 26 26');
+            slot2.setAttribute('viewBox', spitupsAverted >= 2 ? activeFrame : '0 0 26 26');
+            slot3.setAttribute('viewBox', spitupsAverted >= 3 ? activeFrame : '0 0 26 26');
+            slot4.setAttribute('viewBox', spitupsAverted >= 4 ? activeFrame : '0 0 26 26');
+        } else {
+            slot1.setAttribute('viewBox', '0 0 26 26'); slot2.setAttribute('viewBox', '0 0 26 26'); slot3.setAttribute('viewBox', '0 0 26 26'); slot4.setAttribute('viewBox', '0 0 26 26');
+        }
+
+        let currentWeekForLvl = Math.floor((dayCount - 1) / 7) + 1;
+        document.getElementById('lvl-val').innerText = currentWeekForLvl === 1 ? 0 : Math.max(1, Math.floor((totalOunces - 104) / 8) + 1);
+        
+        let scaleMultiplier = (currentWeekForLvl === 1 && totalOunces < 104) ? 5.4 : 3.6;
+        let visualScale = Math.min(600, 120 + ((totalOunces - 104) * scaleMultiplier));
+        petEl.style.width = visualScale + 'px'; petEl.style.height = visualScale + 'px';
+        document.getElementById('scale-graphic').style.marginTop = '-' + (visualScale * 0.065) + 'px';
+    }
+
+    setInterval(() => {
+        if (!gameRunning || isPaused) return;
+        let currentWeekForCap = Math.floor((dayCount - 1) / 7) + 1;
+        let capMult = (difficultyMode === 'easy' && currentWeekForCap > 1) ? 2.0 : 1.0;
+        const superLimit = ozLimit * 2 * capMult;
+        let activeSvg;
+        if (gammaMelvinActive) activeSvg = petEl.querySelector('svg[data-gamma]');
+        else if (superMelvinActive) {
+            const isSuperFull = currentSessionOunces >= superLimit;
+            activeSvg = isSuperFull ? petEl.querySelector('svg[data-super-full]') : petEl.querySelector('svg[data-super]');
+        } else activeSvg = petEl.querySelector('svg[data-classic]');
+        
+        if (activeSvg) {
+            let offsetX;
+            if (gammaMelvinActive || superMelvinActive) { frameIndex = (frameIndex + 1) % 8; offsetX = frameIndex * 48; }
+            else offsetX = (currentSessionOunces >= ozLimit * capMult) ? 48 : 0;
+            activeSvg.setAttribute('viewBox', offsetX + ' 0 48 48');
+        }
+    }, 1000 / 8);
+
+    setInterval(() => {
+        if (!gameRunning || isPaused) return;
+        secondsPlayed++; timeLeft--;
+        if (totalOunces >= 144 && nineLbDay === null) nineLbDay = dayCount;
+
+        if (timeLeft <= 0) {
+            let currentWeekForLoss = Math.floor((dayCount - 1) / 7) + 1;
+            let dailyLoss = currentWeekForLoss === 1 ? 2.25 : 0.5;
+            let gain = (foodStored * 0.25) - dailyLoss; 
+            
+            totalOunces += gain; totalGainAccrued += gain;
+            let daysElapsedThisWeek = ((dayCount - 1) % 7) + 1;
+            lockedAvg = totalGainAccrued / daysElapsedThisWeek;
+            
+            if (lockedAvg > bestDailyAvg) bestDailyAvg = lockedAvg;
+            
+            if (superMelvinActive || gammaMelvinActive) superCooldownDays = 2; 
+            else if (superCooldownDays > 0) superCooldownDays--; 
+
+            if (superCooldownDays === 0 && spitupsAverted >= 4) { 
+                if (lockedPowerUpTier === 'gamma') { gammaMelvinActive = true; superMelvinActive = false; gammaUsedThisWeek = true; gammaCount++; }
+                else { superMelvinActive = true; gammaMelvinActive = false; superCount++; }
+                spitupsAverted = 0; lockedPowerUpTier = null;
+            } else { superMelvinActive = false; gammaMelvinActive = false; }
+
+            // If the week is over, pause the game for the report
+            if (dayCount % 7 === 0) {
+                gameRunning = false;
+                let congratsWrap = document.getElementById('congrats-wrap');
+                let tipEl = document.getElementById('random-tip-msg');
+                
+                if (totalOunces >= 144) { 
+                    congratsWrap.style.display = 'block'; statsViewState = 'victory'; 
+                    tipEl.style.display = 'none'; // Hide tip on victory screen
+                    let cSparkles = document.getElementById('congrats-sparkles');
+                    if (cSparkles.innerHTML === '') {
+                        for(let i=0; i<20; i++) {
+                            let s = document.createElement('div'); s.className = 'sparkle-pixel';
+                            s.style.left = Math.random() * 100 + '%'; s.style.top = Math.random() * 100 + '%';
+                            s.style.animationDelay = (Math.random() * 1.5) + 's'; s.style.backgroundColor = i % 2 === 0 ? 'white' : 'var(--sparkle-gold)';
+                            cSparkles.appendChild(s);
+                        }
+                    }
+                } else { 
+                    congratsWrap.style.display = 'none'; statsViewState = 'standard'; 
+                    let randomTip = gameTips[Math.floor(Math.random() * gameTips.length)];
+                    tipEl.innerText = "TIP: " + randomTip;
+                    tipEl.style.display = 'block'; // Show tip on standard checkup
+                }
+
+                let currentWeek = Math.floor((dayCount - 1) / 7) + 1;
+                document.getElementById('checkup-title').innerHTML = 'WEEK <span style="color: var(--sparkle-gold);">' + currentWeek + '</span> REPORT';
+                renderStats(); updateArrows();
+                
+                let msgEl = document.getElementById('dr-swadlzworth-msg');
+                let extraDrMsg = " " + drRandomMsgs[Math.floor(Math.random() * drRandomMsgs.length)];
+                if (totalOunces >= 144) msgEl.innerText = 'Dr. Swadlzworth says "At 9 lbs you can start letting him sleep through the night. You don\'t need to schedule another appointment for 2 months. Get some rest!"';
+                else if (currentWeek === 1 && lockedAvg < 1.0) msgEl.innerText = 'Dr. Swadlzworth says "Don\'t worry, it\'s normal for Melvin to lose weight at this stage.' + extraDrMsg + '"';
+                else msgEl.innerText = ((lockedAvg >= 1.0) ? 'Dr Swadlzworth says "Great work keep it up!' : 'Dr Swadlzworth is disappointed "Pick up the pace!') + extraDrMsg + '"';
+                
+                /*
+                if (navigator.share) {
+                    document.getElementById('share-btn').style.display = 'block';
+                }
+                */
+
+                if (dayCount === 7) {
+                    document.getElementById('pause-toggle-btn').style.display = 'none';
+                    document.getElementById('icon-pause').style.display = 'none';
+                    document.getElementById('icon-play').style.display = 'block';
+                    
+                    let pauseOverlay = document.getElementById('pause-overlay');
+                    document.getElementById('pause-box').style.display = 'none';
+                    pauseOverlay.style.display = 'flex';
+
+                    let wrapper = document.getElementById('day2-msg-wrapper');
+                    wrapper.style.top = '190px';
+                    wrapper.style.left = '10px';
+                    wrapper.style.right = '105px';
+                    wrapper.style.width = 'auto';
+                    wrapper.style.transform = 'none';
+                    
+                    let textMsgEl = document.getElementById('frustrating-msg');
+                    textMsgEl.style.textAlign = 'left';
+                    
+                    textMsgEl.innerHTML = '<span style="font-size: 1.4rem; white-space: nowrap;">As Melvin goes up levels he can<br>eat more without getting full&nbsp;<span class="big-arrow">→</span><br>but he will take longer to burp!</span>';
+
+                    wrapper.style.display = 'block';
+                    textMsgEl.classList.add('show-msg');
+                    
+                    activeMsgTimer = new PausableTimer(() => {
+                        document.getElementById('pause-toggle-btn').style.display = 'flex';
+                        document.getElementById('icon-pause').style.display = 'block';
+                        document.getElementById('icon-play').style.display = 'none';
+                        
+                        document.getElementById('pause-box').style.display = 'block';
+                        pauseOverlay.style.display = 'none';
+
+                        textMsgEl.classList.remove('show-msg');
+                        wrapper.style.display = 'none';
+
+                        document.getElementById('checkup-screen').style.display = 'flex';
+                        activeMsgTimer = null;
+                    }, 5000);
+                } else {
+                    document.getElementById('checkup-screen').style.display = 'flex';
+                }
+
+                return; // STOP HERE so stats aren't wiped until "RESUME" is clicked
+            }
+            
+            // Standard daily reset
+            dayCount++; 
+            
+            let msgQueue = [];
+
+            if (dayCount === 2) {
+                msgQueue.push({ html: '<span class="big-arrow">↑</span> Keep an eye on the daily weight gain.<br>Melvin is losing weight this week...', center: false });
+            } else if (dayCount === 4) {
+                msgQueue.push({ html: 'Just 3 more days <span class="big-arrow">↑</span><br>It gets easier after this week!', center: false });
+            } else if (dayCount === 6) {
+                msgQueue.push({ html: '<span style="white-space: nowrap;">Keep an eye on Melvin\'s weight<br>and how much you are feeding him.<br><span class="big-arrow">↓</span></span>', center: true });
+            }
+
+            let rAvg = parseFloat(lockedAvg.toFixed(1));
+            if (rAvg >= 1.0 && superCooldownDays === 0 && !superMelvinActive && !gammaMelvinActive && !powerUpMsgShown) {
+                msgQueue.push({ 
+                    html: '<span style="font-size: 1.4rem; white-space: nowrap;">If Melvin reaches 1oz per day,<br>burping him when he\'s FULL<br>will unlock a counter&nbsp;<span class="big-arrow">→</span><br>Collect 4 counters<br>to POWER-UP!</span>', 
+                    alignPowerUp: true 
+                });
+                powerUpMsgShown = true;
+            }
+
+            if (msgQueue.length > 0) {
+                isPaused = true;
+                document.getElementById('pause-toggle-btn').style.display = 'none';
+                document.getElementById('icon-pause').style.display = 'none';
+                document.getElementById('icon-play').style.display = 'block';
+                
+                let pauseOverlay = document.getElementById('pause-overlay');
+                document.getElementById('pause-box').style.display = 'none';
+                pauseOverlay.style.display = 'flex';
+
+                let wrapper = document.getElementById('day2-msg-wrapper');
+                let msgEl = document.getElementById('frustrating-msg');
+
+                function showNextMsg() {
+                    if (msgQueue.length === 0) {
+                        isPaused = false;
+                        document.getElementById('pause-toggle-btn').style.display = 'flex';
+                        document.getElementById('icon-pause').style.display = 'block';
+                        document.getElementById('icon-play').style.display = 'none';
+                        
+                        document.getElementById('pause-box').style.display = 'block';
+                        pauseOverlay.style.display = 'none';
+                        return;
+                    }
+
+                    let msg = msgQueue.shift();
+                    msgEl.innerHTML = msg.html;
+                    msgEl.style.textAlign = ''; // Resets alignment so standard msgs stay centered
+                    wrapper.style.width = '90%';
+                    
+                    if (msg.alignPowerUp) {
+                        wrapper.style.top = '300px';
+                        wrapper.style.left = '10px';
+                        wrapper.style.right = '105px';
+                        wrapper.style.width = 'auto';
+                        wrapper.style.transform = 'none';
+                        msgEl.style.textAlign = 'right';
+                    } else if (msg.center) {
+                        wrapper.style.top = 'calc(55% - 60px)';
+                        wrapper.style.left = '50%';
+                        wrapper.style.right = 'auto';
+                        wrapper.style.transform = 'translate(-50%, -50%)';
+                    } else {
+                        wrapper.style.top = '130px';
+                        wrapper.style.left = '50%';
+                        wrapper.style.right = 'auto';
+                        wrapper.style.transform = 'translateX(-50%)';
+                    }
+
+                    wrapper.style.display = 'block';
+                    msgEl.classList.add('show-msg');
+
+                    activeMsgTimer = new PausableTimer(() => {
+                        msgEl.classList.remove('show-msg');
+                        wrapper.style.display = 'none';
+                        
+                        if (msgQueue.length > 0) {
+                            activeMsgTimer = new PausableTimer(showNextMsg, 300);
+                        } else {
+                            activeMsgTimer = null;
+                            showNextMsg();
+                        }
+                    }, 5000);
+                }
+
+                showNextMsg();
+            }
+
+            timeLeft = GROWTH_INTERVAL; foodStored = 0; currentSessionOunces = 0; burpProgress = 0; updateUI(); 
+        }
+        timerBar.style.height = (timeLeft / GROWTH_INTERVAL) * 100 + '%';
+    }, 1000);
+    
+    // Service Worker Registration
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js').then(reg => {
+                console.log('ServiceWorker registration successful');
+            }).catch(err => {
+                console.log('ServiceWorker registration failed: ', err);
+            });
+        });
+    }
+</script>
+</body>
+</html>

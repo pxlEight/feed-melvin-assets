@@ -1,0 +1,22 @@
+{
+  "name": "Feed Melvin",
+  "short_name": "Feed Melvin",
+  "description": "Help Melvin grow to 9lbs!",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#3d5a80",
+  "theme_color": "#3d5a80",
+  "icons": [
+    {
+      "src": "https://pxleight.github.io/feed-melvin-assets/melvin_icon_web_app.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://pxleight.github.io/feed-melvin-assets/melvin_icon_web_app.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
