@@ -74,8 +74,10 @@
         .feed-btn { background: #6cb0ff; }
         .burp-btn { background: #ff9b54; }
         .btn-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; pointer-events: none; z-index: 121; }
-        .feed-btn:active, .burp-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0, 0, 0, 0.5); }
-        .feed-btn:active + .btn-icon, .burp-btn:active + .btn-icon { margin-top: 4px; }
+        
+        /* ADDED: .key-pressed logic to mirror the :active states for keyboard play */
+        .feed-btn:active, .burp-btn:active, .feed-btn.key-pressed, .burp-btn.key-pressed { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0, 0, 0, 0.5); }
+        .feed-btn:active + .btn-icon, .burp-btn:active + .btn-icon, .feed-btn.key-pressed + .btn-icon, .burp-btn.key-pressed + .btn-icon { margin-top: 4px; }
         
         .left-column { position: absolute; top: calc(env(safe-area-inset-top, 5px) + 130px); left: 15px; bottom: calc(12% + 75px); display: flex; flex-direction: column; align-items: center; width: 50px; z-index: 110; }
         #timer-container { width: 22px; flex-grow: 1; background: #293241; border: 3px solid #fff; border-radius: 4px; overflow: hidden; margin-top: 5px; display: flex; flex-direction: column; justify-content: flex-end; }
@@ -90,8 +92,9 @@
 
         #pause-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 155; display: none; align-items: center; justify-content: center; pointer-events: auto; }
         #pause-box { background: rgba(61, 90, 128, 0.7); padding: 18px; width: 60%; max-width: 255px; text-align: center; box-shadow: 0 6px 0 #000; }
-        #pause-toggle-btn { position: absolute; top: calc(env(safe-area-inset-top, 5px) + 455px); right: 26px; background: rgba(0,0,0,0.25); border: none; cursor: pointer; z-index: 160; outline: none; padding: 6px; display: flex; justify-content: center; align-items: center; width: 52px; height: 52px; }
+        #pause-toggle-btn { position: absolute; top: calc(env(safe-area-inset-top, 5px) + 455px); right: 26px; background: rgba(0,0,0,0.25); border: none; cursor: pointer; z-index: 160; outline: none; padding: 6px; display: flex; justify-content: center; align-items: center; width: 52px; height: 52px; transition: transform 0.1s; }
         #pause-toggle-btn svg { fill: #eeeeee; filter: drop-shadow(2px 2px 0 #000); }
+        #pause-toggle-btn:active, #pause-toggle-btn.key-pressed { transform: translateY(2px); } /* Added for pause key feedback */
         .pause-start-over-btn { background: rgba(0,0,0,0.25); color: rgba(255, 255, 255, 0.7); font-size: 1.8rem; text-align: center; margin-top: 20px; cursor: pointer; padding: 8px; width: fit-content; margin-left: auto; margin-right: auto; }
         
         #random-tip-msg { color: #aed9e0; font-size: 1.4rem; text-align: center; max-width: 85%; margin-top: 15px; line-height: 1.2; font-style: italic; }
@@ -137,7 +140,7 @@
 </svg>
 <div id="splash-screen">
     <h1 style="color: white; font-size: 4rem; text-shadow: 4px 4px #000; text-align: center; margin-bottom: 0;">FEED MELVIN</h1>
-    <div class="instruction-box">
+    <div class="instruction-box" id="instruction-box">
         Tap the Bottle button to give Melvin 1/2 an ounce.<br><br>
         Melvin will start to turn green when he's getting full. Keep tapping the Hand button to burp him.<br><br>
         If you overfeed Melvin he will spit up and you will lose ounces!<br><br>
@@ -1160,6 +1163,48 @@
             });
         });
     }
+
+    // --- KEYBOARD CONTROLS & DESKTOP INSTRUCTIONS ---
+    // Update instruction text dynamically if NOT on a touchscreen device
+    if (!window.matchMedia("(pointer: coarse)").matches) {
+        document.getElementById('instruction-box').innerHTML = 
+            "Press the <strong>F</strong> key (or click the Bottle button) to give Melvin 1/2 an ounce.<br><br>" +
+            "Melvin will start to turn green when he's getting full. Keep pressing the <strong>B</strong> key (or click the Hand button) to burp him.<br><br>" +
+            "Press the <strong>P</strong> key to Pause/Resume.<br><br>" +
+            "If you overfeed Melvin he will spit up and you will lose ounces!<br><br>" +
+            "<span style=\"color: var(--sparkle-gold);\">Help Melvin grow to 9lbs and you will make his Pediatrician (and you) proud!</span>";
+    }
+
+    // Listen for key presses to trigger actions and animations
+    document.addEventListener('keydown', function(event) {
+        if (event.repeat) return; // Prevent spamming by holding down the key
+        const key = event.key.toLowerCase();
+        
+        if (key === 'f') {
+            document.querySelector('.feed-btn').classList.add('key-pressed');
+            feed();
+        } else if (key === 'b') {
+            document.querySelector('.burp-btn').classList.add('key-pressed');
+            burp();
+        } else if (key === 'p') {
+            document.getElementById('pause-toggle-btn').classList.add('key-pressed');
+            togglePause();
+        }
+    });
+
+    // Remove the CSS animation class when the key is released
+    document.addEventListener('keyup', function(event) {
+        const key = event.key.toLowerCase();
+        
+        if (key === 'f') {
+            document.querySelector('.feed-btn').classList.remove('key-pressed');
+        } else if (key === 'b') {
+            document.querySelector('.burp-btn').classList.remove('key-pressed');
+        } else if (key === 'p') {
+            document.getElementById('pause-toggle-btn').classList.remove('key-pressed');
+        }
+    });
+
 </script>
 </body>
 </html>
