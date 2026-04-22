@@ -18,7 +18,7 @@
         * { font-family: 'VT323', monospace !important; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
         :root { --bg-wall: #aed9e0; --bg-floor: #d4a373; --ui-panel: #3d5a80; --ui-border: #293241; --sparkle-gold: #ffec51; }
         body, html { margin: 0; padding: 0; height: 100%; width: 100%; image-rendering: pixelated; overflow: hidden; user-select: none; -webkit-user-select: none; background-color: var(--ui-panel); touch-action: none; }
-        #splash-screen, #checkup-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100dvh; background-color: var(--ui-panel); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 200; }
+        #splash-screen, #checkup-screen { position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 56.25dvh; height: 100dvh; background-color: var(--ui-panel); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 200; }
         #checkup-screen { display: none; z-index: 210; }
         #loading-wrap { width: 80%; display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
         #loading-text { color: white; font-size: 1.8rem; margin-bottom: 8px; }
@@ -36,7 +36,7 @@
         .share-btn { background: #e1306c; color: white; border: 6px solid var(--ui-border); padding: 8px 16px; width: fit-content; min-width: 100px; font-size: 2.5rem; cursor: pointer; margin-top: 10px; box-shadow: 0 6px 0 #000; }
         .share-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #000; }
         .checkup-btn-row { display: flex; justify-content: center; gap: 15px; width: 100%; margin-bottom: 10px; }
-        #game-container { display: none; position: relative; width: 100vw; height: 100dvh; background-color: var(--bg-wall); }
+        #game-container { display: none; position: relative; width: 100%; max-width: 56.25dvh; height: 100dvh; background-color: var(--bg-wall); margin: 0 auto; overflow: hidden; }
         .game-bg-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; shape-rendering: crispEdges; }
         .game-title { position: absolute; top: env(safe-area-inset-top, 5px); width: 100%; text-align: center; font-size: 4rem; color: #293241; text-shadow: 2px 2px 0px #fff; z-index: 150; margin: 0; }
         #checkup-bar { position: absolute; top: calc(env(safe-area-inset-top, 5px) + 70px); left: 50%; transform: translateX(-50%); background: rgba(61, 90, 128, 0.7); padding: 8px 15px; z-index: 140; color: white; font-size: 1.6rem; text-align: center; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
@@ -53,7 +53,7 @@
         #weight-readout { position: absolute; bottom: 21px; width: 100%; text-align: center; color: white; font-size: 1.8rem; font-weight: bold; text-shadow: 1px 1px 2px #000; pointer-events: none; mix-blend-mode: overlay; }
         #pet { width: 160px; height: 160px; display: flex; align-items: flex-end; justify-content: center; transition: filter 0.2s, transform 0.1s; transform-origin: bottom center; z-index: 10; overflow: visible; filter: url(#green-tint); }
         #pet svg { width: 100%; height: 100%; display: block; }
-        #spitup-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 1000; display: none; opacity: 0; }
+        #spitup-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000; display: none; opacity: 0; }
         .show-spitup { display: block !important; animation: spitupFadeTransparent 1.2s ease-out forwards; }
         @keyframes spitupFadeTransparent { 0% { opacity: 0; transform: translateY(-10px); } 15% { opacity: 0.7; transform: translateY(0); } 80% { opacity: 0.7; } 100% { opacity: 0; } }
         #sparkle-wrap { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 12; display: none; }
@@ -104,7 +104,7 @@
 
         /* ORIENTATION LOCK OVERLAY */
         #orientation-lock {
-            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100dvh;
             background-color: var(--ui-panel); z-index: 99999;
             flex-direction: column; align-items: center; justify-content: center;
             color: white; font-size: 2.5rem; text-align: center; padding: 20px; box-sizing: border-box;
