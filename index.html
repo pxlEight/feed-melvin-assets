@@ -119,6 +119,21 @@
             0%, 100% { transform: rotate(-90deg); }
             50% { transform: rotate(0deg); }
         }
+
+        /* ADDED: Landing Screen Styles */
+        #landing-screen { 
+            position: fixed; top: 0; left: 50%; transform: translateX(-50%); 
+            width: 100%; max-width: 56.25dvh; height: 100dvh; 
+            background-color: #fdf1e6; /* Slightly orange / cream */
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            z-index: 300; 
+        }
+        .play-btn { 
+            background: #fff; border: 6px solid var(--ui-border); padding: 15px 40px; 
+            font-size: 3rem; cursor: pointer; box-shadow: 0 6px 0 #000; 
+            color: #ff9b54; margin-top: 40px; 
+        }
+        .play-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #000; }
     </style>
 </head>
 <body>
@@ -138,7 +153,13 @@
         </filter>
     </defs>
 </svg>
-<div id="splash-screen">
+
+<div id="landing-screen">
+    <h1 style="color: white; font-size: 4rem; text-shadow: 4px 4px #000; text-align: center; margin-bottom: 0;">FEED MELVIN</h1>
+    <button id="play-btn" class="play-btn">PLAY</button>
+</div>
+
+<div id="splash-screen" style="display: none;">
     <h1 style="color: white; font-size: 4rem; text-shadow: 4px 4px #000; text-align: center; margin-bottom: 0;">FEED MELVIN</h1>
     <div class="instruction-box" id="instruction-box">
         Tap the Bottle button to give Melvin 1/2 an ounce.<br><br>
@@ -283,6 +304,12 @@
         if (now - lastTouchEnd <= 300) { if (!event.target.closest('button')) { event.preventDefault(); } }
         lastTouchEnd = now;
     }, { passive: false });
+
+    // Landing Page Transition
+    document.getElementById('play-btn').addEventListener('click', () => {
+        document.getElementById('landing-screen').style.display = 'none';
+        document.getElementById('splash-screen').style.display = 'flex';
+    });
 
     function PausableTimer(callback, delay) {
         let timerId, start, remaining = delay;
