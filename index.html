@@ -18,7 +18,7 @@
         * { font-family: 'VT323', monospace !important; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
         :root { --bg-wall: #aed9e0; --bg-floor: #d4a373; --ui-panel: #3d5a80; --ui-border: #293241; --sparkle-gold: #ffec51; }
         body, html { margin: 0; padding: 0; height: 100%; width: 100%; image-rendering: pixelated; overflow: hidden; user-select: none; -webkit-user-select: none; background-color: var(--ui-panel); touch-action: none; }
-        #splash-screen, #checkup-screen { position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 56.25dvh; height: 100dvh; background-color: var(--ui-panel); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 200; }
+        #splash-screen, #checkup-screen { position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 56.25dvh; height: 100dvh; background-color: #fcb38b; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 200; }
         #checkup-screen { display: none; z-index: 210; }
         #loading-wrap { width: 80%; display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
         #loading-text { color: white; font-size: 1.8rem; margin-bottom: 8px; }
@@ -75,7 +75,6 @@
         .burp-btn { background: #ff9b54; }
         .btn-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; pointer-events: none; z-index: 121; }
         
-        /* ADDED: .key-pressed logic to mirror the :active states for keyboard play */
         .feed-btn:active, .burp-btn:active, .feed-btn.key-pressed, .burp-btn.key-pressed { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0, 0, 0, 0.5); }
         .feed-btn:active + .btn-icon, .burp-btn:active + .btn-icon, .feed-btn.key-pressed + .btn-icon, .burp-btn.key-pressed + .btn-icon { margin-top: 4px; }
         
@@ -94,10 +93,10 @@
         #pause-box { background: rgba(61, 90, 128, 0.7); padding: 18px; width: 60%; max-width: 255px; text-align: center; box-shadow: 0 6px 0 #000; }
         #pause-toggle-btn { position: absolute; top: calc(env(safe-area-inset-top, 5px) + 455px); right: 26px; background: rgba(0,0,0,0.25); border: none; cursor: pointer; z-index: 160; outline: none; padding: 6px; display: flex; justify-content: center; align-items: center; width: 52px; height: 52px; transition: transform 0.1s; }
         #pause-toggle-btn svg { fill: #eeeeee; filter: drop-shadow(2px 2px 0 #000); }
-        #pause-toggle-btn:active, #pause-toggle-btn.key-pressed { transform: translateY(2px); } /* Added for pause key feedback */
+        #pause-toggle-btn:active, #pause-toggle-btn.key-pressed { transform: translateY(2px); }
         .pause-start-over-btn { background: rgba(0,0,0,0.25); color: rgba(255, 255, 255, 0.7); font-size: 1.8rem; text-align: center; margin-top: 20px; cursor: pointer; padding: 8px; width: fit-content; margin-left: auto; margin-right: auto; }
         
-        #random-tip-msg { color: #aed9e0; font-size: 1.4rem; text-align: center; max-width: 85%; margin-top: 15px; line-height: 1.2; font-style: italic; }
+        #random-tip-msg { color: white; font-size: 1.4rem; text-align: center; max-width: 85%; margin-top: 15px; line-height: 1.2; font-style: italic; }
 
         #day2-msg-wrapper { position: absolute; top: calc(env(safe-area-inset-top, 5px) + 125px); left: 50%; transform: translateX(-50%); width: 90%; max-width: 380px; z-index: 250; display: none; padding: 15px 10px; box-sizing: border-box; pointer-events: none; }
         #frustrating-msg { text-align: center; color: white; font-size: 1.8rem; text-shadow: 2px 2px 0 var(--ui-border); opacity: 0; margin: 0; line-height: 1.2; }
@@ -120,11 +119,11 @@
             50% { transform: rotate(0deg); }
         }
 
-        /* ADDED: Landing Screen Styles */
+        /* Landing Screen Styles */
         #landing-screen { 
             position: fixed; top: 0; left: 50%; transform: translateX(-50%); 
             width: 100%; max-width: 56.25dvh; height: 100dvh; 
-            background-color: #fdf1e6; /* Slightly orange / cream */
+            background-color: #fcb38b;
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
             z-index: 300; 
         }
@@ -134,6 +133,28 @@
             color: #ff9b54; margin-top: 40px; 
         }
         .play-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #000; }
+
+        /* Install App Additions */
+        #ios-install-instructions {
+            display: none; position: fixed; bottom: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); z-index: 999999; align-items: flex-end; justify-content: center;
+        }
+        .ios-instruction-box {
+            background: var(--ui-panel); color: white; border: 4px solid #fff; padding: 20px; 
+            width: 90%; max-width: 400px; text-align: center; font-size: 1.6rem; margin-bottom: 20px; box-shadow: 0 6px 0 #000;
+        }
+        .bounce-arrow {
+            font-size: 3rem; color: var(--sparkle-gold); animation: bounceDown 1s infinite ease-in-out; margin-top: 10px;
+        }
+        @keyframes bounceDown {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(15px); }
+        }
+        #install-btn {
+            display: none; position: absolute; top: 15px; left: 15px; background: #fff; border: 4px solid var(--ui-border); 
+            padding: 8px 12px; font-size: 1.5rem; cursor: pointer; box-shadow: 0 4px 0 #000; z-index: 310; color: #3d5a80;
+        }
+        #install-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #000; }
     </style>
 </head>
 <body>
@@ -143,6 +164,16 @@
     </svg>
     <div>Please rotate your device<br>back to portrait mode<br>to play Feed Melvin.</div>
 </div>
+
+<div id="ios-install-instructions" onclick="this.style.display='none'">
+    <div class="ios-instruction-box">
+        <p>To install Feed Melvin on your iPhone:</p>
+        <p>1. Tap the <strong>Share</strong> icon at the bottom of the screen.</p>
+        <p>2. Scroll down and tap <strong>Add to Home Screen</strong>.</p>
+        <div class="bounce-arrow">↓</div>
+    </div>
+</div>
+
 <svg width="0" height="0" style="position: absolute; pointer-events: none; z-index: -1;">
     <defs>
         <filter id="green-tint">
@@ -155,14 +186,22 @@
 </svg>
 
 <div id="landing-screen">
+    <button id="install-btn">INSTALL APP</button>
     <h1 style="color: white; font-size: 4rem; text-shadow: 4px 4px #000; text-align: center; margin-bottom: 0;">FEED MELVIN</h1>
     <button id="play-btn" class="play-btn">PLAY</button>
+    
+    <div style="position: absolute; bottom: 26px; left: 18px;">
+        <a href="https://www.buymeacoffee.com/pixelmover/membership" target="_blank" rel="noopener noreferrer">
+            <img src="https://img.buymeacoffee.com/button-api/?text=Monthly Baby Formula&emoji=🍼&slug=pixelmover&button_colour=FB9052&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" alt="Monthly Baby Formula" />
+        </a>
+    </div>
+    <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="pixelmover" data-description="Support me on Buy me a coffee!" data-message="Thanks for playing! Care to buy me some baby formula?" data-color="#FB9052" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
 </div>
 
 <div id="splash-screen" style="display: none;">
     <h1 style="color: white; font-size: 4rem; text-shadow: 4px 4px #000; text-align: center; margin-bottom: 0;">FEED MELVIN</h1>
     <div class="instruction-box" id="instruction-box">
-        Tap the Bottle button to give Melvin 1/2 an ounce.<br><br>
+        Tap FEED to give Melvin 1/2 an ounce.<br><br>
         Melvin will start to turn green when he's getting full. Keep tapping the Hand button to burp him.<br><br>
         If you overfeed Melvin he will spit up and you will lose ounces!<br><br>
         <span style="color: var(--sparkle-gold);">Help Melvin grow to 9lbs and you will make his Pediatrician (and you) proud!</span>
@@ -301,7 +340,7 @@
     let lastTouchEnd = 0;
     document.addEventListener('touchend', function(event) {
         let now = (new Date()).getTime();
-        if (now - lastTouchEnd <= 300) { if (!event.target.closest('button')) { event.preventDefault(); } }
+        if (now - lastTouchEnd <= 300) { if (!event.target.closest('button') && !event.target.closest('a')) { event.preventDefault(); } }
         lastTouchEnd = now;
     }, { passive: false });
 
@@ -402,7 +441,7 @@
         "How's tummy time going?",
         "What does his wake window look like?",
         "Make sure he's sleeping on his back.",
-        "I don't hear any clicking but let's get an ultrasound of his hips.",
+        "I don't hear hear any clicking but let's get an ultrasound of his hips.",
         "is he always this sleepy?",
         "I don't see any jaundice.",
         "Keep the bottle level so he doesn't prefer it over breastfeeding.",
@@ -588,8 +627,8 @@
     
     function burp() {
         if (!gameRunning || isPaused) return; 
-        totalBurpClicks++; burpProgress++; playSound(200, 'triangle', 0.05, 0.04);
-        
+        totalBurpClicks++; burpProgress++; 
+
         const currentReq = (superMelvinActive || gammaMelvinActive) ? 2 : burpsRequired;
         let currentAvg = parseFloat(lockedAvg.toFixed(1));
 
@@ -610,8 +649,12 @@
                 }
             }
             burpProgress = 0; currentSessionOunces = 0; rollNewLimit();
-            petEl.style.transform = 'scale(1.3)'; playSound(120, 'sawtooth', 0.5, 0.2);
+            petEl.style.transform = 'translateY(-5px) scale(1.3)'; playSound(120, 'sawtooth', 0.5, 0.2);
             setTimeout(() => petEl.style.transform = 'scale(1)', 200); updateUI();
+        } else {
+            playSound(300, 'triangle', 0.08, 0.1); // Increased frequency, volume, and changed wave type for audibility
+            petEl.style.transform = 'translateY(-5px)';
+            setTimeout(() => petEl.style.transform = 'scale(1)', 100);
         }
     }
 
@@ -757,7 +800,7 @@
             ctx.fillText('Difficulty Level:', 140, boxInnerY);
             ctx.fillText('Final weight:', 140, boxInnerY + lineSpace);
             ctx.fillText('Best Daily Average:', 140, boxInnerY + lineSpace*2);
-            ctx.fillText('Super Melvins:', 140, boxInnerY + lineSpace*3);
+            ctx.fillText('Super Levis:', 140, boxInnerY + lineSpace*3);
             ctx.fillText(gammaText, 140, boxInnerY + lineSpace*4);
             ctx.fillText('Minutes Played:', 140, boxInnerY + lineSpace*5);
 
@@ -772,25 +815,22 @@
         } else {
             ctx.textAlign = 'left';
             ctx.fillStyle = '#ffffff';
-            ctx.fillText('Avg Daily Gain:', 140, boxInnerY);
-            ctx.fillText('Bottles Fed:', 140, boxInnerY + lineSpace);
-            ctx.fillText('Ounces Spit-up:', 140, boxInnerY + lineSpace*2);
-            ctx.fillText('Successful Burps:', 140, boxInnerY + lineSpace*3);
+            ctx.fillText('Bottles Fed:', 140, boxInnerY);
+            ctx.fillText('Ounces Spit-up:', 140, boxInnerY + lineSpace);
+            ctx.fillText('Successful Burps:', 140, boxInnerY + lineSpace*2);
 
             ctx.textAlign = 'right';
-            ctx.fillStyle = '#ffec51';
-            ctx.fillText(lockedAvg.toFixed(1) + ' oz', 940, boxInnerY);
             ctx.fillStyle = '#ffffff';
-            ctx.fillText(totalBottles.toString(), 940, boxInnerY + lineSpace);
-            ctx.fillText(totalOuncesSpitUp.toFixed(1) + ' oz', 940, boxInnerY + lineSpace*2);
-            ctx.fillText(totalSuccessfulBurps.toString(), 940, boxInnerY + lineSpace*3);
+            ctx.fillText(totalBottles.toString(), 940, boxInnerY);
+            ctx.fillText(totalOuncesSpitUp.toFixed(1) + ' oz', 940, boxInnerY + lineSpace);
+            ctx.fillText(totalSuccessfulBurps.toString(), 940, boxInnerY + lineSpace*2);
         }
 
         // Random Tip Msg
         if (statsViewState !== 'victory') {
             ctx.textAlign = 'center';
             ctx.font = 'italic 50px VT323';
-            ctx.fillStyle = '#aed9e0';
+            ctx.fillStyle = '#ffffff';
             let tipEl = document.getElementById('random-tip-msg').innerText;
             let tipWords = tipEl.split(' ');
             let tipLine = '';
@@ -867,12 +907,11 @@
             statsArea.innerHTML = '<div class="stat-row">Difficulty Level: <span style="color: var(--sparkle-gold);">' + difficultyMode.toUpperCase() + '</span></div>' +
                 '<div class="stat-row">Final weight: <span style="color: var(--sparkle-gold);">' + finalLb + 'lb ' + finalOz + 'oz</span></div>' +
                 '<div class="stat-row">Best Daily Average: <span style="color: var(--sparkle-gold);">' + bestDailyAvg.toFixed(1) + ' oz</span></div>' +
-                '<div class="stat-row">Super Melvins: <span style="color: var(--sparkle-gold);">' + superCount + '</span></div>' +
+                '<div class="stat-row">Super Levis: <span style="color: var(--sparkle-gold);">' + superCount + '</span></div>' +
                 '<div class="stat-row">' + gammaText + ': <span style="color: var(--sparkle-gold);">' + gammaCount + '</span></div>' +
                 '<div class="stat-row">Minutes Played: <span style="color: var(--sparkle-gold);">' + minsPlayed + '</span></div>';
         } else {
-            statsArea.innerHTML = '<div class="stat-row">Avg Daily Gain: <span style="color: var(--sparkle-gold);">' + lockedAvg.toFixed(1) + '</span> oz</div>' +
-                '<div class="stat-row">Bottles Fed: <span>' + totalBottles + '</span></div>' +
+            statsArea.innerHTML = '<div class="stat-row">Bottles Fed: <span>' + totalBottles + '</span></div>' +
                 '<div class="stat-row">Ounces Spit-up: <span>' + totalOuncesSpitUp.toFixed(1) + '</span> oz</div>' +
                 '<div class="stat-row">Successful Burps: <span>' + totalSuccessfulBurps + '</span></div>';
         }
@@ -1195,7 +1234,7 @@
     // Update instruction text dynamically if NOT on a touchscreen device
     if (!window.matchMedia("(pointer: coarse)").matches) {
         document.getElementById('instruction-box').innerHTML = 
-            "Press the <strong>F</strong> key (or click the Bottle button) to give Melvin 1/2 an ounce.<br><br>" +
+            "Press the <strong>F</strong> key (or Tap FEED) to give Melvin 1/2 an ounce.<br><br>" +
             "Melvin will start to turn green when he's getting full. Keep pressing the <strong>B</strong> key (or click the Hand button) to burp him.<br><br>" +
             "Press the <strong>P</strong> key to Pause/Resume.<br><br>" +
             "If you overfeed Melvin he will spit up and you will lose ounces!<br><br>" +
@@ -1232,6 +1271,39 @@
         }
     });
 
+    // --- PWA INSTALLATION LOGIC ---
+    let deferredPrompt;
+    const installBtn = document.getElementById('install-btn');
+    const iosInstructions = document.getElementById('ios-install-instructions');
+
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+    if (!isStandalone) {
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+        if (isIOS) {
+            installBtn.style.display = 'block';
+        } else {
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                installBtn.style.display = 'block';
+            });
+        }
+
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    installBtn.style.display = 'none';
+                }
+                deferredPrompt = null;
+            } else if (isIOS) {
+                iosInstructions.style.display = 'flex';
+            }
+        });
+    }
 </script>
 </body>
 </html>
