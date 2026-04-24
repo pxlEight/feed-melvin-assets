@@ -465,6 +465,18 @@
         }
     });
 
+    // Listen for tab visibility changes (e.g., opening a new tab for BMC) to trigger pause
+    document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+            if (gameRunning && !isPaused) {
+                togglePause();
+            }
+            if (activeMsgTimer) activeMsgTimer.pause();
+        } else {
+            if (activeMsgTimer) activeMsgTimer.resume();
+        }
+    });
+
     let totalOunces = 104.0; 
     const GROWTH_INTERVAL = 12; 
     let timeLeft = GROWTH_INTERVAL;
