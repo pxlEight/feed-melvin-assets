@@ -17,7 +17,7 @@
     <style>
         * { font-family: 'VT323', monospace !important; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
         :root { --bg-wall: #aed9e0; --bg-floor: #d4a373; --ui-panel: #3d5a80; --ui-border: #293241; --sparkle-gold: #ffec51; }
-        body, html { margin: 0; padding: 0; height: 100%; width: 100%; image-rendering: pixelated; overflow: hidden; user-select: none; -webkit-user-select: none; background-color: var(--ui-panel); touch-action: none; }
+        body, html { margin: 0; padding: 0; height: 100%; width: 100%; image-rendering: pixelated; overflow: hidden; user-select: none; -webkit-user-select: none; background-color: #fcb38b; touch-action: none; }
         #splash-screen, #checkup-screen { position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 56.25dvh; height: 100dvh; background-color: #fcb38b; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 200; }
         #checkup-screen { display: none; z-index: 210; }
         #loading-wrap { width: 80%; display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
@@ -140,11 +140,11 @@
             background: rgba(0, 0, 0, 0.8); z-index: 999999; align-items: flex-end; justify-content: center;
         }
         .ios-instruction-box {
-            background: var(--ui-panel); color: white; border: 4px solid #fff; padding: 20px; 
+            background: #FB9052; color: white; border: 4px solid #fff; padding: 20px; 
             width: 90%; max-width: 400px; text-align: center; font-size: 1.6rem; margin-bottom: 20px; box-shadow: 0 6px 0 #000;
         }
         .bounce-arrow {
-            font-size: 3rem; color: var(--sparkle-gold); animation: bounceDown 1s infinite ease-in-out; margin-top: 10px;
+            font-size: 3rem; color: #ffffff; animation: bounceDown 1s infinite ease-in-out; margin-top: 10px;
         }
         @keyframes bounceDown {
             0%, 100% { transform: translateY(0); }
@@ -155,9 +155,77 @@
             padding: 8px 12px; font-size: 1.5rem; cursor: pointer; box-shadow: 0 4px 0 #000; z-index: 310; color: #3d5a80;
         }
         #install-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #000; }
+
+        /* Global UI Constraint Layer */
+        #global-ui-layer {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 56.25dvh;
+            height: 100dvh;
+            pointer-events: none;
+            z-index: 9999999;
+        }
+
+        /* Custom Buy Me a Coffee Button */
+        #custom-bmc-btn {
+            position: absolute;
+            bottom: 26px;
+            right: 18px;
+            width: 50px;
+            height: 50px;
+            background-color: #FB9052;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            text-decoration: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            pointer-events: auto;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        #custom-bmc-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 3px rgba(0,0,0,0.3);
+        }
+
+        /* BMC Tooltip Animation */
+        #bmc-tooltip {
+            position: absolute;
+            bottom: 22px; 
+            right: 75px; 
+            background: #fff;
+            color: #3d5a80;
+            padding: 8px 12px;
+            border: 4px solid var(--ui-border);
+            box-shadow: 0 4px 0 #000;
+            font-size: 1.4rem;
+            line-height: 1.2;
+            width: 170px;
+            text-align: center;
+            pointer-events: none;
+            transform-origin: right center;
+            transform: scale(0);
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+        }
+        #bmc-tooltip.show {
+            transform: scale(1);
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
+
+<div id="global-ui-layer">
+    <div id="bmc-tooltip">Thanks for playing! Care to buy us some baby formula?</div>
+    <a id="custom-bmc-btn" href="https://www.buymeacoffee.com/pixelmover" target="_blank" rel="noopener noreferrer" title="Buy me a coffee!">🍼</a>
+</div>
+
 <div id="orientation-lock">
     <svg width="80" height="80" viewBox="0 0 24 24" fill="white" style="margin-bottom: 20px; animation: phoneTilt 2s infinite ease-in-out;">
         <path d="M16 1H8C6.9 1 6 1.9 6 3v18c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm0 19H8V4h8v16z"/>
@@ -168,8 +236,9 @@
 <div id="ios-install-instructions" onclick="this.style.display='none'">
     <div class="ios-instruction-box">
         <p>To install Feed Melvin on your iPhone:</p>
-        <p>1. Tap the <strong>Share</strong> icon at the bottom of the screen.</p>
-        <p>2. Scroll down and tap <strong>Add to Home Screen</strong>.</p>
+        <p>1. If three dots are present on the right click them (If not skip to step 2).</p>
+        <p>2. Tap the share icon [↑] .</p>
+        <p>3. Scroll down and tap '[+] Add to Home Screen' (you may need to click the down arrow (v) that says 'View More')</p>
         <div class="bounce-arrow">↓</div>
     </div>
 </div>
@@ -189,13 +258,12 @@
     <button id="install-btn">INSTALL APP</button>
     <h1 style="color: white; font-size: 4rem; text-shadow: 4px 4px #000; text-align: center; margin-bottom: 0;">FEED MELVIN</h1>
     <button id="play-btn" class="play-btn">PLAY</button>
-    
+
     <div style="position: absolute; bottom: 26px; left: 18px;">
         <a href="https://www.buymeacoffee.com/pixelmover/membership" target="_blank" rel="noopener noreferrer">
-            <img src="https://img.buymeacoffee.com/button-api/?text=Monthly Baby Formula&emoji=🍼&slug=pixelmover&button_colour=FB9052&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" alt="Monthly Baby Formula" />
+            <img src="https://img.buymeacoffee.com/button-api/?text=Monthly%20Baby%20Formula&emoji=%F0%9F%8D%BC&slug=pixelmover&button_colour=FB9052&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" alt="Monthly Baby Formula" />
         </a>
     </div>
-    <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="pixelmover" data-description="Support me on Buy me a coffee!" data-message="Thanks for playing! Care to buy me some baby formula?" data-color="#FB9052" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
 </div>
 
 <div id="splash-screen" style="display: none;">
@@ -1270,6 +1338,17 @@
             document.getElementById('pause-toggle-btn').classList.remove('key-pressed');
         }
     });
+
+    // Add BMC tooltip animation trigger
+    setTimeout(() => {
+        const tooltip = document.getElementById('bmc-tooltip');
+        if (tooltip) {
+            tooltip.classList.add('show');
+            setTimeout(() => {
+                tooltip.classList.remove('show');
+            }, 3000);
+        }
+    }, 2000);
 
     // --- PWA INSTALLATION LOGIC ---
     let deferredPrompt;
