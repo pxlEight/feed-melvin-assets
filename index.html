@@ -6,7 +6,7 @@
     <title>Feed Melvin: Final Stats Fix</title>
     
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#3d5a80">
+    <meta name="theme-color" content="#fcb38b">
     <link rel="icon" type="image/png" href="https://pxleight.github.io/feed-melvin-assets/melvin_icon_web_app.png">
     <link rel="apple-touch-icon" href="https://pxleight.github.io/feed-melvin-assets/melvin_icon_web_app.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -18,7 +18,7 @@
         * { font-family: 'VT323', monospace !important; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
         :root { --bg-wall: #aed9e0; --bg-floor: #d4a373; --ui-panel: #3d5a80; --ui-border: #293241; --sparkle-gold: #ffec51; }
         body, html { margin: 0; padding: 0; height: 100%; width: 100%; image-rendering: pixelated; overflow: hidden; user-select: none; -webkit-user-select: none; background-color: #fcb38b; touch-action: none; }
-        #splash-screen, #checkup-screen { position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 56.25dvh; height: 100dvh; background-color: #fcb38b; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 200; }
+        #splash-screen, #checkup-screen { position: fixed; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 56.25dvh; background-color: #fcb38b; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 200; }
         #checkup-screen { display: none; z-index: 210; }
         #loading-wrap { width: 80%; display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
         #loading-text { color: white; font-size: 1.8rem; margin-bottom: 8px; }
@@ -32,11 +32,11 @@
         .easy-color { color: #4ade80; }
         .normal-color { color: #3d5a80; }
 
-        .resume-btn { background: #fff; border: 6px solid var(--ui-border); padding: 8px 16px; width: fit-content; min-width: 100px; font-size: 2.5rem; cursor: margin-top: 10px; box-shadow: 0 6px 0 #000; }
+        .resume-btn { background: #fff; border: 6px solid var(--ui-border); padding: 8px 16px; width: fit-content; min-width: 100px; font-size: 2.5rem; cursor: pointer; margin-top: 10px; box-shadow: 0 6px 0 #000; }
         .share-btn { background: #e1306c; color: white; border: 6px solid var(--ui-border); padding: 8px 16px; width: fit-content; min-width: 100px; font-size: 2.5rem; cursor: pointer; margin-top: 10px; box-shadow: 0 6px 0 #000; }
         .share-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #000; }
         .checkup-btn-row { display: flex; justify-content: center; gap: 15px; width: 100%; margin-bottom: 10px; }
-        #game-container { display: none; position: relative; width: 100%; max-width: 56.25dvh; height: 100dvh; background-color: var(--bg-wall); margin: 0 auto; overflow: hidden; }
+        #game-container { display: none; position: relative; width: 100%; max-width: 56.25dvh; height: 100%; background-color: var(--bg-wall); margin: 0 auto; overflow: hidden; }
         .game-bg-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; shape-rendering: crispEdges; }
         .game-title { position: absolute; top: env(safe-area-inset-top, 5px); width: 100%; text-align: center; font-size: 4rem; color: #293241; text-shadow: 2px 2px 0px #fff; z-index: 150; margin: 0; }
         #checkup-bar { position: absolute; top: calc(env(safe-area-inset-top, 5px) + 70px); left: 50%; transform: translateX(-50%); background: rgba(61, 90, 128, 0.7); padding: 8px 15px; z-index: 140; color: white; font-size: 1.6rem; text-align: center; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
@@ -106,7 +106,7 @@
 
         /* ORIENTATION LOCK OVERLAY */
         #orientation-lock {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100dvh;
+            display: none; position: fixed; top: 0; bottom: 0; left: 0; width: 100%;
             background-color: var(--ui-panel); z-index: 99999;
             flex-direction: column; align-items: center; justify-content: center;
             color: white; font-size: 2.5rem; text-align: center; padding: 20px; box-sizing: border-box;
@@ -121,8 +121,8 @@
 
         /* Landing Screen Styles */
         #landing-screen { 
-            position: fixed; top: 0; left: 50%; transform: translateX(-50%); 
-            width: 100%; max-width: 56.25dvh; height: 100dvh; 
+            position: fixed; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); 
+            width: 100%; max-width: 56.25dvh;
             background-color: #fcb38b;
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
             z-index: 300; 
@@ -136,7 +136,7 @@
 
         /* Install App Additions */
         #ios-install-instructions {
-            display: none; position: fixed; bottom: 0; left: 0; width: 100%; height: 100%;
+            display: none; position: fixed; top: 0; bottom: 0; left: 0; width: 100%;
             background: rgba(0, 0, 0, 0.8); z-index: 999999; align-items: flex-end; justify-content: center;
         }
         .ios-instruction-box {
@@ -160,11 +160,11 @@
         #global-ui-layer {
             position: fixed;
             top: 0;
+            bottom: 0;
             left: 50%;
             transform: translateX(-50%);
             width: 100%;
             max-width: 56.25dvh;
-            height: 100dvh;
             pointer-events: none;
             z-index: 9999999;
         }
@@ -172,7 +172,7 @@
         /* Custom Buy Me a Coffee Button */
         #custom-bmc-btn {
             position: absolute;
-            bottom: 26px;
+            bottom: calc(env(safe-area-inset-bottom, 0px) + 26px);
             right: 18px;
             width: 50px;
             height: 50px;
@@ -196,7 +196,7 @@
         /* BMC Tooltip Animation */
         #bmc-tooltip {
             position: absolute;
-            bottom: 22px; 
+            bottom: calc(env(safe-area-inset-bottom, 0px) + 22px); 
             right: 75px; 
             background: #fff;
             color: #3d5a80;
@@ -255,14 +255,16 @@
 </svg>
 
 <div id="landing-screen">
+    <div style="position: absolute; top: 30px; text-align: center; color: white; font-size: 1.4rem; line-height: 1.1; width: 100%;">
+        Made By:<br>
+        <a href="https://www.pixel-mover.com" target="_blank" rel="noopener noreferrer" style="color: white; text-decoration: none; pointer-events: auto; font-size: 1.8rem;">pixel-mover.com</a>
+    </div>
     <button id="install-btn">INSTALL APP</button>
     <h1 style="color: white; font-size: 4rem; text-shadow: 4px 4px #000; text-align: center; margin-bottom: 0;">FEED MELVIN</h1>
     <button id="play-btn" class="play-btn">PLAY</button>
 
-    <div style="position: absolute; bottom: 26px; left: 18px;">
-        <a href="https://www.buymeacoffee.com/pixelmover/membership" target="_blank" rel="noopener noreferrer">
-            <img src="https://img.buymeacoffee.com/button-api/?text=Monthly%20Baby%20Formula&emoji=%F0%9F%8D%BC&slug=pixelmover&button_colour=FB9052&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" alt="Monthly Baby Formula" />
-        </a>
+    <div style="position: absolute; bottom: calc(env(safe-area-inset-bottom, 0px) + 26px); left: 18px;">
+        <a href="https://www.buymeacoffee.com/pixelmover/membership" target="_blank" rel="noopener noreferrer"><img src="https://img.buymeacoffee.com/button-api/?text=Monthly%20Baby%20Formula&emoji=🍼&slug=pixelmover&button_colour=FB9052&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" /></a>
     </div>
 </div>
 
@@ -275,6 +277,7 @@
         <span style="color: var(--sparkle-gold);">Help Melvin grow to 9lbs and you will make his Pediatrician (and you) proud!</span>
     </div>
     <div id="loading-wrap">
+        <div id="loading-text">LOADING ASSETS...</div>
         <div id="loading-text">LOADING ASSETS...</div>
         <div id="loading-container"><div id="loading-bar"></div></div>
     </div>
@@ -529,13 +532,15 @@
         "Sleep when the baby sleeps!"
     ];
 
-    const classicMelvinSVG = '<svg data-classic="true" viewBox="0 0 48 48" shape-rendering="crispEdges" style="display: block;"><image href="https://pxleight.github.io/feed-melvin-assets/classic_levi_sprite_web.svg" width="384" height="48" /></svg>';
+    const classicMelvinSVG = '<svg data-classic="true" viewBox="0 0 48 48" shape-rendering="crispEdges" style="display: block;"><image href="https://www.feedmelvin.com/classic_melvin_sprite_web.svg" width="384" height="48" /></svg>';
+    const classicFullMelvinSVG = '<svg data-classic-full="true" viewBox="0 0 48 48" shape-rendering="crispEdges" style="display: none;"><image href="https://www.feedmelvin.com/classic_melvin_FULL_sprite_web.svg" width="384" height="48" /></svg>';
     const superMelvinSVG = '<svg data-super="true" viewBox="0 0 48 48" shape-rendering="crispEdges" style="display: none;"><image href="https://pxleight.github.io/feed-melvin-assets/super_levi_sprite_web.svg" width="384" height="48" /></svg>';
     const superFullMelvinSVG = '<svg data-super-full="true" viewBox="0 0 48 48" shape-rendering="crispEdges" style="display: none;"><image href="https://pxleight.github.io/feed-melvin-assets/super_levi_FULL_sprite_web.svg" width="384" height="48" /></svg>';
     const gammaMelvinSVG = '<svg data-gamma="true" viewBox="0 0 48 48" shape-rendering="crispEdges" style="display: none;"><image href="https://pxleight.github.io/feed-melvin-assets/gamma_levi_sprite_web.svg" width="384" height="48" /></svg>';
 
     const assetUrls = [
-        "https://pxleight.github.io/feed-melvin-assets/classic_levi_sprite_web.svg",
+        "https://www.feedmelvin.com/classic_melvin_sprite_web.svg",
+        "https://www.feedmelvin.com/classic_melvin_FULL_sprite_web.svg",
         "https://pxleight.github.io/feed-melvin-assets/super_levi_sprite_web.svg",
         "https://pxleight.github.io/feed-melvin-assets/super_levi_FULL_sprite_web.svg",
         "https://pxleight.github.io/feed-melvin-assets/gamma_levi_sprite_web.svg",
@@ -590,7 +595,7 @@
         gameRunning = true; 
         isPaused = true; 
         burpProgress = 0; 
-        petEl.innerHTML = classicMelvinSVG + superMelvinSVG + superFullMelvinSVG + gammaMelvinSVG; 
+        petEl.innerHTML = classicMelvinSVG + classicFullMelvinSVG + superMelvinSVG + superFullMelvinSVG + gammaMelvinSVG; 
         createSparklePool(); rollNewLimit(); updateUI();
         
         document.getElementById('pause-overlay').style.display = 'flex';
@@ -732,233 +737,11 @@
             petEl.style.transform = 'translateY(-5px) scale(1.3)'; playSound(120, 'sawtooth', 0.5, 0.2);
             setTimeout(() => petEl.style.transform = 'scale(1)', 200); updateUI();
         } else {
-            playSound(300, 'triangle', 0.08, 0.1); // Increased frequency, volume, and changed wave type for audibility
+            playSound(300, 'triangle', 0.08, 0.1); 
             petEl.style.transform = 'translateY(-5px)';
             setTimeout(() => petEl.style.transform = 'scale(1)', 100);
         }
     }
-
-/*
-    async function shareStats() {
-        const canvas = document.createElement('canvas');
-        canvas.width = 1080;
-        canvas.height = 1920;
-        const ctx = canvas.getContext('2d');
-
-        // Background Match
-        ctx.fillStyle = '#3d5a80'; 
-        ctx.fillRect(0, 0, 1080, 1920);
-
-        await document.fonts.ready;
-
-        // Load Melvin Image with CORS permission
-        const melvinImg = new Image();
-        melvinImg.crossOrigin = "anonymous";
-        melvinImg.src = "https://pxleight.github.io/feed-melvin-assets/classic_levi_sprite_web.svg";
-        await new Promise((resolve) => {
-            if (melvinImg.complete) resolve();
-            else { melvinImg.onload = resolve; melvinImg.onerror = resolve; }
-        });
-
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'top';
-
-        function drawTextWithShadow(text, x, y, font, color, shadowColor, offsetX, offsetY) {
-            ctx.font = font;
-            ctx.fillStyle = shadowColor;
-            ctx.fillText(text, x + offsetX, y + offsetY);
-            ctx.fillStyle = color;
-            ctx.fillText(text, x, y);
-        }
-
-        let currentWeek = Math.floor((dayCount - 1) / 7) + 1;
-        let startY = 200;
-
-        // Title
-        if (statsViewState === 'victory') {
-            drawTextWithShadow('CONGRATULATIONS!', 540, startY, '140px VT323', '#ffec51', '#000000', 8, 8);
-        } else {
-            drawTextWithShadow('WEEK ' + currentWeek + ' REPORT', 540, startY, '120px VT323', '#ffffff', '#000000', 6, 6);
-        }
-
-        startY += 150;
-
-        // "RESUME" Button Graphic
-        ctx.fillStyle = '#000000';
-        ctx.fillRect(200, startY + 12, 320, 100);
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(200, startY, 320, 100);
-        ctx.strokeStyle = '#293241';
-        ctx.lineWidth = 12;
-        ctx.strokeRect(200, startY, 320, 100);
-        ctx.fillStyle = '#000000';
-        ctx.font = '80px VT323';
-        ctx.fillText('RESUME', 360, startY + 15);
-
-        // "SHARE" Button Graphic
-        ctx.fillStyle = '#000000';
-        ctx.fillRect(560, startY + 12, 320, 100);
-        ctx.fillStyle = '#e1306c';
-        ctx.fillRect(560, startY, 320, 100);
-        ctx.strokeStyle = '#293241';
-        ctx.lineWidth = 12;
-        ctx.strokeRect(560, startY, 320, 100);
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '80px VT323';
-        ctx.fillText('SHARE', 720, startY + 15);
-
-        startY += 160;
-
-        // Stats Box Panel
-        ctx.fillStyle = 'rgba(0,0,0,0.3)';
-        ctx.fillRect(90, startY, 900, 1200);
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 10;
-        ctx.strokeRect(90, startY, 900, 1200);
-
-        // --- DRAW MELVIN & SCALE ---
-        let scaleY = startY + 330;
-        
-        // Pixelate image scaling
-        ctx.imageSmoothingEnabled = false; 
-        // Melvin Image (Crop frame 1: 0, 0, 48, 48 to draw at 300x300)
-        ctx.drawImage(melvinImg, 0, 0, 48, 48, 540 - 150, scaleY - 300, 300, 300);
-        
-        // Scale Graphic
-        ctx.fillStyle = '#293241'; // Base
-        ctx.fillRect(540 - 200, scaleY, 400, 100);
-        ctx.fillStyle = '#9eb3c2'; // Top Plate
-        ctx.fillRect(540 - 225, scaleY - 20, 450, 20);
-        ctx.fillStyle = 'rgba(255,255,255,0.1)'; // Reflection
-        ctx.fillRect(540 - 50, scaleY + 10, 100, 80);
-
-        let boxInnerY = scaleY + 140;
-
-        // Dr. Swadlzworth Message
-        ctx.font = '50px VT323';
-        ctx.fillStyle = '#ffffff';
-        let msgEl = document.getElementById('dr-swadlzworth-msg').innerText;
-        let words = msgEl.split(' ');
-        let line = '';
-        for(let n = 0; n < words.length; n++) {
-            let testLine = line + words[n] + ' ';
-            let metrics = ctx.measureText(testLine);
-            if (metrics.width > 800 && n > 0) {
-                ctx.fillText(line, 540, boxInnerY);
-                line = words[n] + ' ';
-                boxInnerY += 55;
-            } else {
-                line = testLine;
-            }
-        }
-        ctx.fillText(line, 540, boxInnerY);
-        boxInnerY += 70;
-
-        // Dashed line
-        ctx.beginPath();
-        ctx.setLineDash([15, 15]);
-        ctx.lineWidth = 4;
-        ctx.moveTo(140, boxInnerY);
-        ctx.lineTo(940, boxInnerY);
-        ctx.stroke();
-        ctx.setLineDash([]);
-
-        boxInnerY += 60;
-
-        // Stats Text Data
-        ctx.font = '60px VT323';
-        let lineSpace = 80;
-
-        if (statsViewState === 'victory') {
-            const minsPlayed = Math.floor(secondsPlayed / 60);
-            const finalLb = Math.floor(totalOunces / 16);
-            const finalOz = Math.floor(totalOunces % 16);
-            const gammaText = gammaCount === 0 ? '? ? ? ? Melvins:' : 'Gamma Melvins:';
-
-            ctx.textAlign = 'left';
-            ctx.fillStyle = '#ffffff';
-            ctx.fillText('Difficulty Level:', 140, boxInnerY);
-            ctx.fillText('Final weight:', 140, boxInnerY + lineSpace);
-            ctx.fillText('Best Daily Average:', 140, boxInnerY + lineSpace*2);
-            ctx.fillText('Super Levis:', 140, boxInnerY + lineSpace*3);
-            ctx.fillText(gammaText, 140, boxInnerY + lineSpace*4);
-            ctx.fillText('Minutes Played:', 140, boxInnerY + lineSpace*5);
-
-            ctx.textAlign = 'right';
-            ctx.fillStyle = '#ffec51';
-            ctx.fillText(difficultyMode.toUpperCase(), 940, boxInnerY);
-            ctx.fillText(finalLb + 'lb ' + finalOz + 'oz', 940, boxInnerY + lineSpace);
-            ctx.fillText(bestDailyAvg.toFixed(1) + ' oz', 940, boxInnerY + lineSpace*2);
-            ctx.fillText(superCount.toString(), 940, boxInnerY + lineSpace*3);
-            ctx.fillText(gammaCount.toString(), 940, boxInnerY + lineSpace*4);
-            ctx.fillText(minsPlayed.toString(), 940, boxInnerY + lineSpace*5);
-        } else {
-            ctx.textAlign = 'left';
-            ctx.fillStyle = '#ffffff';
-            ctx.fillText('Bottles Fed:', 140, boxInnerY);
-            ctx.fillText('Ounces Spit-up:', 140, boxInnerY + lineSpace);
-            ctx.fillText('Successful Burps:', 140, boxInnerY + lineSpace*2);
-
-            ctx.textAlign = 'right';
-            ctx.fillStyle = '#ffffff';
-            ctx.fillText(totalBottles.toString(), 940, boxInnerY);
-            ctx.fillText(totalOuncesSpitUp.toFixed(1) + ' oz', 940, boxInnerY + lineSpace);
-            ctx.fillText(totalSuccessfulBurps.toString(), 940, boxInnerY + lineSpace*2);
-        }
-
-        // Random Tip Msg
-        if (statsViewState !== 'victory') {
-            ctx.textAlign = 'center';
-            ctx.font = 'italic 50px VT323';
-            ctx.fillStyle = '#ffffff';
-            let tipEl = document.getElementById('random-tip-msg').innerText;
-            let tipWords = tipEl.split(' ');
-            let tipLine = '';
-            let tipY = startY + 1250; 
-            for(let n = 0; n < tipWords.length; n++) {
-                let testLine = tipLine + tipWords[n] + ' ';
-                let metrics = ctx.measureText(testLine);
-                if (metrics.width > 800 && n > 0) {
-                    ctx.fillText(tipLine, 540, tipY);
-                    tipLine = tipWords[n] + ' ';
-                    tipY += 55;
-                } else {
-                    tipLine = testLine;
-                }
-            }
-            ctx.fillText(tipLine, 540, tipY);
-        }
-
-        // Generate Blob and Share
-        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-        if (!blob) return;
-        
-        const file = new File([blob], 'feed-melvin-stats.png', { type: 'image/png' });
-        
-        let finalLb = Math.floor(totalOunces / 16);
-        let finalOz = Math.floor(totalOunces % 16);
-        
-        let shareText = (statsViewState === 'victory') 
-            ? 'I beat Feed Melvin! I helped Melvin grow to ' + finalLb + 'lb ' + finalOz + 'oz with a best daily average of ' + bestDailyAvg.toFixed(1) + 'oz! Can you?'
-            : 'I\'m playing Feed Melvin! I\'m on Week ' + currentWeek + ' and Melvin is up to ' + finalLb + 'lb ' + finalOz + 'oz.';
-
-        let shareData = {
-            title: 'Feed Melvin Stats',
-            text: shareText,
-            url: window.location.href,
-        };
-
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            shareData.files = [file];
-        }
-
-        try {
-            await navigator.share(shareData);
-        } catch (err) {
-            console.log('Share canceled or failed', err);
-        }
-    }
-*/
 
     function toggleStatsView() {
         statsViewState = (statsViewState === 'victory') ? 'standard' : 'victory';
@@ -1032,20 +815,24 @@
         else superLabel.innerText = "SUPER";
         
         const classicSvg = petEl.querySelector('svg[data-classic]');
+        const classicFullSvg = petEl.querySelector('svg[data-classic-full]');
         const superSvg = petEl.querySelector('svg[data-super]');
         const superFullSvg = petEl.querySelector('svg[data-super-full]');
         const gammaSvg = petEl.querySelector('svg[data-gamma]');
-        if (classicSvg && superSvg && superFullSvg && gammaSvg) {
+        if (classicSvg && classicFullSvg && superSvg && superFullSvg && gammaSvg) {
             if (gammaMelvinActive) {
-                classicSvg.style.display = 'none'; superSvg.style.display = 'none'; superFullSvg.style.display = 'none'; gammaSvg.style.display = 'block';
+                classicSvg.style.display = 'none'; classicFullSvg.style.display = 'none'; superSvg.style.display = 'none'; superFullSvg.style.display = 'none'; gammaSvg.style.display = 'block';
             } else if (superMelvinActive) {
-                classicSvg.style.display = 'none';
+                classicSvg.style.display = 'none'; classicFullSvg.style.display = 'none';
                 const isFull = currentSessionOunces >= (ozLimit * 2 * capMult);
                 superSvg.style.display = isFull ? 'none' : 'block';
                 superFullSvg.style.display = isFull ? 'block' : 'none';
                 gammaSvg.style.display = 'none';
             } else {
-                classicSvg.style.display = 'block'; superSvg.style.display = 'none'; superFullSvg.style.display = 'none'; gammaSvg.style.display = 'none';
+                const isClassicFull = currentSessionOunces >= (ozLimit * capMult);
+                classicSvg.style.display = isClassicFull ? 'none' : 'block';
+                classicFullSvg.style.display = isClassicFull ? 'block' : 'none';
+                superSvg.style.display = 'none'; superFullSvg.style.display = 'none'; gammaSvg.style.display = 'none';
             }
         }
 
@@ -1079,16 +866,19 @@
         let capMult = (difficultyMode === 'easy' && currentWeekForCap > 1) ? 2.0 : 1.0;
         const superLimit = ozLimit * 2 * capMult;
         let activeSvg;
-        if (gammaMelvinActive) activeSvg = petEl.querySelector('svg[data-gamma]');
-        else if (superMelvinActive) {
+        if (gammaMelvinActive) {
+            activeSvg = petEl.querySelector('svg[data-gamma]');
+        } else if (superMelvinActive) {
             const isSuperFull = currentSessionOunces >= superLimit;
             activeSvg = isSuperFull ? petEl.querySelector('svg[data-super-full]') : petEl.querySelector('svg[data-super]');
-        } else activeSvg = petEl.querySelector('svg[data-classic]');
+        } else {
+            const isClassicFull = currentSessionOunces >= (ozLimit * capMult);
+            activeSvg = isClassicFull ? petEl.querySelector('svg[data-classic-full]') : petEl.querySelector('svg[data-classic]');
+        }
         
         if (activeSvg) {
-            let offsetX;
-            if (gammaMelvinActive || superMelvinActive) { frameIndex = (frameIndex + 1) % 8; offsetX = frameIndex * 48; }
-            else offsetX = (currentSessionOunces >= ozLimit * capMult) ? 48 : 0;
+            frameIndex = (frameIndex + 1) % 8;
+            let offsetX = frameIndex * 48;
             activeSvg.setAttribute('viewBox', offsetX + ' 0 48 48');
         }
     }, 1000 / 8);
@@ -1152,12 +942,6 @@
                 if (totalOunces >= 144) msgEl.innerText = 'Dr. Swadlzworth says "At 9 lbs you can start letting him sleep through the night. You don\'t need to schedule another appointment for 2 months. Get some rest!"';
                 else if (currentWeek === 1 && lockedAvg < 1.0) msgEl.innerText = 'Dr. Swadlzworth says "Don\'t worry, it\'s normal for Melvin to lose weight at this stage.' + extraDrMsg + '"';
                 else msgEl.innerText = ((lockedAvg >= 1.0) ? 'Dr Swadlzworth says "Great work keep it up!' : 'Dr Swadlzworth is disappointed "Pick up the pace!') + extraDrMsg + '"';
-                
-                /*
-                if (navigator.share) {
-                    document.getElementById('share-btn').style.display = 'block';
-                }
-                */
 
                 if (dayCount === 7) {
                     document.getElementById('pause-toggle-btn').style.display = 'none';
@@ -1201,10 +985,9 @@
                     document.getElementById('checkup-screen').style.display = 'flex';
                 }
 
-                return; // STOP HERE so stats aren't wiped until "RESUME" is clicked
+                return; 
             }
             
-            // Standard daily reset
             dayCount++; 
             
             let msgQueue = [];
@@ -1253,7 +1036,7 @@
 
                     let msg = msgQueue.shift();
                     msgEl.innerHTML = msg.html;
-                    msgEl.style.textAlign = ''; // Resets alignment so standard msgs stay centered
+                    msgEl.style.textAlign = ''; 
                     wrapper.style.width = '90%';
                     
                     if (msg.alignPowerUp) {
@@ -1299,7 +1082,6 @@
         timerBar.style.height = (timeLeft / GROWTH_INTERVAL) * 100 + '%';
     }, 1000);
     
-    // Service Worker Registration
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('sw.js').then(reg => {
@@ -1310,8 +1092,6 @@
         });
     }
 
-    // --- KEYBOARD CONTROLS & DESKTOP INSTRUCTIONS ---
-    // Update instruction text dynamically if NOT on a touchscreen device
     if (!window.matchMedia("(pointer: coarse)").matches) {
         document.getElementById('instruction-box').innerHTML = 
             "Press the <strong>F</strong> key (or Tap FEED) to give Melvin 1/2 an ounce.<br><br>" +
@@ -1321,9 +1101,8 @@
             "<span style=\"color: var(--sparkle-gold);\">Help Melvin grow to 9lbs and you will make his Pediatrician (and you) proud!</span>";
     }
 
-    // Listen for key presses to trigger actions and animations
     document.addEventListener('keydown', function(event) {
-        if (event.repeat) return; // Prevent spamming by holding down the key
+        if (event.repeat) return; 
         const key = event.key.toLowerCase();
         
         if (key === 'f') {
@@ -1338,7 +1117,6 @@
         }
     });
 
-    // Remove the CSS animation class when the key is released
     document.addEventListener('keyup', function(event) {
         const key = event.key.toLowerCase();
         
@@ -1351,7 +1129,6 @@
         }
     });
 
-    // Add BMC tooltip animation trigger
     setTimeout(() => {
         const tooltip = document.getElementById('bmc-tooltip');
         if (tooltip) {
@@ -1362,7 +1139,6 @@
         }
     }, 2000);
 
-    // --- PWA INSTALLATION LOGIC ---
     let deferredPrompt;
     const installBtn = document.getElementById('install-btn');
     const iosInstructions = document.getElementById('ios-install-instructions');
