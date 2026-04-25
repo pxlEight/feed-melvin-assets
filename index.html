@@ -211,11 +211,14 @@
             transform-origin: right center;
             transform: scale(0);
             opacity: 0;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+            visibility: hidden;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease, visibility 0.4s;
         }
         #bmc-tooltip.show {
             transform: scale(1);
             opacity: 1;
+            visibility: visible;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease, visibility 0s;
         }
     </style>
 </head>
