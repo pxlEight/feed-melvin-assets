@@ -123,10 +123,16 @@
         #landing-screen { 
             position: fixed; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); 
             width: 100%; max-width: 56.25dvh;
-            background-color: #fcb38b;
+            background-color: transparent; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
             z-index: 300; 
+            pointer-events: none;
         }
+        #landing-screen > * {
+            pointer-events: auto;
+        }
+        #landing-screen h1 { text-shadow: 4px 4px 0 #000, 0 0 15px rgba(0,0,0,0.8); }
+
         .play-btn { 
             background: #fff; border: 6px solid var(--ui-border); padding: 15px 40px; 
             font-size: 3rem; cursor: pointer; box-shadow: 0 6px 0 #000; 
@@ -418,8 +424,29 @@
         lastTouchEnd = now;
     }, { passive: false });
 
+    let demoActive = true; // Added for Demo Mode
+
     // Landing Page Transition
     document.getElementById('play-btn').addEventListener('click', () => {
+        demoActive = false; // Kills the demo loop
+        
+        // Reset the environment to a clean state for the real player
+        gameRunning = false;
+        totalOunces = 104.0;
+        dayCount = 1;
+        lockedAvg = 0.0;
+        spitupsAverted = 0;
+        foodStored = 0;
+        currentSessionOunces = 0;
+        superMelvinActive = false;
+        gammaMelvinActive = false;
+        powerUpMsgShown = false;
+        
+        // Restore manual UI control
+        document.getElementById('pause-toggle-btn').style.display = 'flex';
+        document.getElementById('game-container').style.display = 'none';
+        document.getElementById('game-container').style.pointerEvents = 'auto'; 
+
         document.getElementById('landing-screen').style.display = 'none';
         document.getElementById('splash-screen').style.display = 'flex';
     });
@@ -858,7 +885,7 @@
         document.getElementById('lvl-val').innerText = currentWeekForLvl === 1 ? 0 : Math.max(1, Math.floor((totalOunces - 104) / 8) + 1);
         
         let scaleMultiplier = (currentWeekForLvl === 1 && totalOunces < 104) ? 5.4 : 3.6;
-        let visualScale = Math.min(600, 120 + ((totalOunces - 104) * scaleMultiplier));
+        let visualScale = Math.round(Math.min(600, 120 + ((totalOunces - 104) * scaleMultiplier)));
         petEl.style.width = visualScale + 'px'; petEl.style.height = visualScale + 'px';
         document.getElementById('scale-graphic').style.marginTop = '-' + (visualScale * 0.065) + 'px';
     }
@@ -1174,6 +1201,117 @@
             }
         });
     }
+
+    // --- DEMO MODE DIRECTOR ---
+    async function runDemoSequence() {
+        const sleep = ms => new Promise(r => setTimeout(r, ms));
+        
+        // Initialize Demo Visuals
+        document.getElementById('game-container').style.display = 'block';
+        document.getElementById('game-container').style.pointerEvents = 'none'; // Prevents player interference
+        document.getElementById('pause-toggle-btn').style.display = 'none';
+
+        // Wait for all image assets to load
+        while(document.getElementById('loading-wrap').style.display !== 'none') {
+            await sleep(100);
+        }
+
+        // Helper functions to simulate player input
+        const ensureFeed = async (targetOz) => {
+            while(currentSessionOunces < targetOz && demoActive) { feed(); await sleep(250); }
+        };
+        const forceSpitUp = async (targetOz) => {
+            while(currentSessionOunces <= targetOz && demoActive) { feed(); await sleep(250); }
+        };
+        const completeBurp = async () => {
+            while(currentSessionOunces > 0 && demoActive) { burp(); await sleep(250); }
+        };
+
+        // Main Playback Loop
+        while(demoActive) {
+            // Setup Week 2, Day 1 Start State (6lbs 8oz)
+            gameRunning = true;
+            isPaused = false;
+            dayCount = 8; 
+            totalOunces = 104.0;
+            lockedAvg = 1.5; // High enough to enable super counters
+            spitupsAverted = 0;
+            superCooldownDays = 0;
+            gammaUsedThisWeek = false;
+            lockedPowerUpTier = null;
+            timeLeft = 12;
+            foodStored = 0;
+            currentSessionOunces = 0;
+            burpProgress = 0;
+            superMelvinActive = false;
+            gammaMelvinActive = false;
+            powerUpMsgShown = true; // Silences the power-up tutorial popup
+            difficultyMode = 'normal';
+            
+            petEl.innerHTML = classicMelvinSVG + classicFullMelvinSVG + superMelvinSVG + superFullMelvinSVG + gammaMelvinSVG;
+            rollNewLimit();
+            updateUI();
+
+            // Freeze the day timer while we execute actions
+            let freeze = setInterval(() => { if(demoActive) timeLeft = 12; }, 100);
+            await sleep(500);
+            if(!demoActive) { clearInterval(freeze); break; }
+
+            let capMult = 1.0; 
+            let currentLim = ozLimit * capMult;
+            
+            // Action 1: Feed to full, burp to unlock 1 counter
+            await ensureFeed(currentLim); await completeBurp(); await sleep(500);
+            
+            // Action 2: Feed until spit up
+            await forceSpitUp(currentLim); await sleep(1200);
+            
+            // Action 3: Feed and burp until 4 counters unlocked (Requires 4 clean cycles since spit up reset it)
+            for(let i=0; i<4; i++) {
+                if(!demoActive) break;
+                await ensureFeed(currentLim); await completeBurp(); await sleep(400);
+            }
+            
+            // Action 4: Continue feeding without spitting up
+            await ensureFeed(0.5); await completeBurp(); await sleep(500);
+
+            // Release the timer to let the day end
+            clearInterval(freeze);
+            timeLeft = 1; 
+            
+            // Wait for Day 2 (Day 9) to officially begin
+            while(dayCount === 8 && demoActive) await sleep(100);
+            if(!demoActive) break;
+
+            // Re-freeze timer for Day 2 logic
+            freeze = setInterval(() => { if(demoActive) timeLeft = 12; }, 100);
+            await sleep(500);
+
+            // Action 5: Day 2 (Super Melvin active) - Feed to full, burp to reset
+            currentLim = ozLimit * 2 * capMult; // Super capacity
+            await ensureFeed(currentLim); await completeBurp(); await sleep(500);
+            
+            // Action 6: Feed Super Melvin until spit up
+            await forceSpitUp(currentLim); await sleep(1200);
+            
+            // Action 7: Feed and burp for rest of day
+            await ensureFeed(1.0); await completeBurp(); await sleep(1000);
+
+            // End of Day 2
+            clearInterval(freeze);
+            timeLeft = 1;
+            while(dayCount === 9 && demoActive) await sleep(100);
+            
+            // Loop back to Day 1 automatically
+        }
+    }
+
+    // Trigger demo slightly after boot
+    setTimeout(() => {
+        if(document.getElementById('landing-screen').style.display !== 'none') {
+            runDemoSequence();
+        }
+    }, 600);
 </script>
 </body>
 </html>
