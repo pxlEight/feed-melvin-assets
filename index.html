@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Feed Melvin: Final Stats Fix</title>
+    <title>Feed Melvin: Adventures In Triple Feeding</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#fcb38b">
@@ -18,24 +18,27 @@
         * { font-family: 'VT323', monospace !important; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
         :root { --bg-wall: #aed9e0; --bg-floor: #d4a373; --ui-panel: #3d5a80; --ui-border: #293241; --sparkle-gold: #ffec51; }
         body, html { margin: 0; padding: 0; height: 100%; width: 100%; image-rendering: pixelated; overflow: hidden; user-select: none; -webkit-user-select: none; background-color: #fcb38b; touch-action: none; }
-        #splash-screen, #checkup-screen { position: fixed; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 56.25dvh; background-color: #fcb38b; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 200; }
+        #splash-screen, #checkup-screen { position: fixed; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 56.25dvh; background-color: #fcb38b; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; z-index: 200; padding-top: 40px; box-sizing: border-box; }
         #checkup-screen { display: none; z-index: 210; }
-        #loading-wrap { width: 80%; display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
-        #loading-text { color: white; font-size: 1.8rem; margin-bottom: 8px; }
-        #loading-container { width: 100%; height: 25px; background: #293241; border: 4px solid #fff; padding: 2px; box-sizing: border-box; }
-        #loading-bar { width: 0%; height: 100%; background: var(--sparkle-gold); transition: width 0.1s; }
         .instruction-box { background: rgba(0, 0, 0, 0.4); border: 3px solid #fff; padding: 15px; color: white; font-size: 1.4rem; max-width: 80%; text-align: center; margin: 20px 0; line-height: 1.2; }
         
-        #start-btn-container { display: none; gap: 15px; margin-top: 10px; width: 90%; justify-content: center; }
-        .start-btn { flex: 1; max-width: 160px; background: #fff; border: 6px solid var(--ui-border); padding: 15px 10px; font-size: 2.2rem; cursor: pointer; box-shadow: 0 6px 0 #000; text-align: center; }
-        .start-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #000; }
-        .easy-color { color: #4ade80; }
-        .normal-color { color: #3d5a80; }
+        #instructions-logo { position: absolute; top: 4.80%; left: 1.49%; width: 97.03%; height: 9.92%; z-index: 2; object-fit: contain; pointer-events: none; filter: drop-shadow(-8px 8px 0px #e59a72); }
+        #instructions-white-box { position: absolute; top: 20.26%; left: 8.47%; width: 83.05%; height: 54.98%; background-color: #ffffff; border: 4px solid #5ea1fd; box-shadow: -12px 12px 0 #fee5d4; box-sizing: border-box; z-index: 1; color: #5ea1fd; overflow-y: auto; }
+        #instructions-dr-swadlzworth { position: absolute; top: calc(75.24% - 18.19%); left: 77.84%; width: 21.56%; height: 18.19%; z-index: 2; object-fit: contain; pointer-events: none; filter: drop-shadow(-8px 0px 0px #fcb38b); }
+        
+        #instructions-box-left { position: absolute; top: 79.35%; left: 12.58%; width: 31.31%; height: 7.43%; background-color: #5ea1fd; z-index: 2; border: 4px solid #326efc; box-shadow: -5px 5px 0 #326efc; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.6rem; font-style: italic; cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; }
+        #instructions-box-right { position: absolute; top: 79.35%; left: 56.11%; width: 31.31%; height: 7.43%; background-color: #5ea1fd; z-index: 2; border: 4px solid #326efc; box-shadow: -5px 5px 0 #326efc; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.6rem; font-style: italic; cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; }
+        #instructions-box-left:active, #instructions-box-right:active, #instructions-box-left.pressed, #instructions-box-right.pressed { transform: translate(-5px, 5px); box-shadow: 0px 0px 0 #326efc; }
+        
+        #instructions-box-super { position: absolute; top: 88%; left: 34.34%; width: 31.31%; height: 7.43%; background-color: #5ea1fd; z-index: 2; border: 4px solid #326efc; box-shadow: -5px 5px 0 #326efc; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.6rem; font-style: italic; cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; }
+        #instructions-box-super:active, #instructions-box-super.pressed { transform: translate(-5px, 5px); box-shadow: 0px 0px 0 #326efc; }
 
-        .resume-btn { background: #fff; border: 6px solid var(--ui-border); padding: 8px 16px; width: fit-content; min-width: 100px; font-size: 2.5rem; cursor: pointer; margin-top: 10px; box-shadow: 0 6px 0 #000; }
+        .instr-row { display: flex; align-items: center; margin: 12px 0; font-size: 1.3rem; line-height: 1.05; padding: 0 10px; }
+        .instr-icon { width: 37.8px; height: 37.8px; flex-shrink: 0; filter: drop-shadow(-2px 2px 0 #fcb38b); }
+
         .share-btn { background: #e1306c; color: white; border: 6px solid var(--ui-border); padding: 8px 16px; width: fit-content; min-width: 100px; font-size: 2.5rem; cursor: pointer; margin-top: 10px; box-shadow: 0 6px 0 #000; }
         .share-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #000; }
-        .checkup-btn-row { display: flex; justify-content: center; gap: 15px; width: 100%; margin-bottom: 10px; }
+        
         #game-container { display: none; position: relative; width: 100%; max-width: 56.25dvh; height: 100%; background-color: var(--bg-wall); margin: 0 auto; overflow: hidden; }
         .game-bg-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
         .game-title { position: absolute; top: env(safe-area-inset-top, 5px); width: 100%; text-align: center; font-size: 4rem; color: #293241; text-shadow: 2px 2px 0px #fff; z-index: 150; margin: 0; }
@@ -51,12 +54,11 @@
         #pet-container { position: absolute; top: 65%; left: 50%; transform: translate(-50%, -100%); z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
         #scale-graphic { width: 240px; height: 80px; z-index: 5; position: relative; transform: scale(1.58); transform-origin: bottom center; top: 38px; }
         #weight-readout { position: absolute; bottom: 21px; width: 100%; text-align: center; color: white; font-size: 1.8rem; font-weight: bold; text-shadow: 1px 1px 2px #000; pointer-events: none; mix-blend-mode: overlay; }
-        #pet { width: 160px; height: 160px; display: flex; align-items: flex-end; justify-content: center; transition: filter 0.2s, transform 0.1s; transform-origin: bottom center; z-index: 10; overflow: visible; filter: url(#green-tint); }
-        #pet svg { width: 100%; height: 100%; display: block; }
-        #spitup-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000; display: none; opacity: 0; }
+        #pet { width: 160px; height: 160px; display: flex; align-items: flex-end; justify-content: center; transition: filter 0.2s, transform 0.1s; transform-origin: bottom center; z-index: 10; overflow: visible; filter: url(#green-tint); position: relative; }
+        #spitup-overlay, #landing-spitup-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000; display: none; opacity: 0; }
         .show-spitup { display: block !important; animation: spitupFadeTransparent 1.2s ease-out forwards; }
         @keyframes spitupFadeTransparent { 0% { opacity: 0; transform: translateY(-10px); } 15% { opacity: 0.7; transform: translateY(0); } 80% { opacity: 0.7; } 100% { opacity: 0; } }
-        #sparkle-wrap { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 12; display: none; }
+        #sparkle-wrap { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 160px; height: 160px; pointer-events: none; z-index: 12; display: none; }
         .sparkle-pixel { position: absolute; width: 8px; height: 8px; animation: sparkleAnim 0.8s infinite; }
         @keyframes sparkleAnim { 0%, 100% { transform: scale(0); opacity: 0; } 50% { transform: scale(1.2); opacity: 1; } }
         
@@ -82,12 +84,8 @@
         #timer-container { width: 22px; flex-grow: 1; background: #293241; border: 3px solid #fff; border-radius: 4px; overflow: hidden; margin-top: 5px; display: flex; flex-direction: column; justify-content: flex-end; }
         #timer-bar { width: 100%; height: 100%; background: #ff9b54; }
         
-        .stats-display-area { position: relative; color: white; font-size: 1.6rem; text-align: center; line-height: 1.4; background: rgba(0,0,0,0.3); padding: 15px 35px; border: 3px solid #fff; width: 90%; max-width: 340px; margin-top: 20px; box-sizing: border-box; min-height: 160px; display: flex; flex-direction: column; justify-content: center; }
-        .stat-row { white-space: nowrap; }
-        .toggle-arrow-btn { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center; z-index: 10; }
-        #prev-stats-btn { left: 2px; }
-        #next-stats-btn { right: 2px; }
-        .toggle-arrow-btn svg { width: 30px; height: 30px; fill: white; filter: drop-shadow(1px 1px 0 #000); }
+        .stat-row { white-space: nowrap; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .stat-bullet { width: 30px; height: 30px; object-fit: contain; object-position: left center; filter: drop-shadow(2px 0 0 #fcb383) drop-shadow(-2px 0 0 #fcb383) drop-shadow(0 2px 0 #fcb383) drop-shadow(0 -2px 0 #fcb383); }
 
         #pause-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 155; display: none; align-items: center; justify-content: center; pointer-events: auto; }
         #pause-box { background: rgba(61, 90, 128, 0.7); padding: 18px; width: 60%; max-width: 255px; text-align: center; box-shadow: 0 6px 0 #000; }
@@ -96,130 +94,90 @@
         #pause-toggle-btn:active, #pause-toggle-btn.key-pressed { transform: translateY(2px); }
         .pause-start-over-btn { background: rgba(0,0,0,0.25); color: rgba(255, 255, 255, 0.7); font-size: 1.8rem; text-align: center; margin-top: 20px; cursor: pointer; padding: 8px; width: fit-content; margin-left: auto; margin-right: auto; }
         
-        #random-tip-msg { color: white; font-size: 1.4rem; text-align: center; max-width: 85%; margin-top: 15px; line-height: 1.2; font-style: italic; }
+        #random-tip-msg-container { position: absolute; top: 77.5%; left: 8.3%; width: 83.4%; height: auto; display: flex; align-items: center; justify-content: flex-start; padding-top: 4px; padding-bottom: 4px; border: 4px solid #326efc; background: #5ea1fd; box-sizing: border-box; box-shadow: 8px 8px 0 #326efc; z-index: 2; }
+        #random-tip-msg { color: white; font-size: 1.25rem; text-align: center; max-width: 95%; line-height: 1.2; font-style: italic; margin: 0; padding: 5px; }
 
         #day2-msg-wrapper { position: absolute; top: calc(env(safe-area-inset-top, 5px) + 125px); left: 50%; transform: translateX(-50%); width: 90%; max-width: 380px; z-index: 250; display: none; padding: 15px 10px; box-sizing: border-box; pointer-events: none; }
         #frustrating-msg { text-align: center; color: white; font-size: 1.8rem; text-shadow: 2px 2px 0 var(--ui-border); opacity: 0; margin: 0; line-height: 1.2; }
-        
         .big-arrow { font-size: 3rem; vertical-align: middle; }
         #frustrating-msg.show-msg { opacity: 1; }
 
-        /* ORIENTATION LOCK OVERLAY */
-        #orientation-lock {
-            display: none; position: fixed; top: 0; bottom: 0; left: 0; width: 100%;
-            background-color: var(--ui-panel); z-index: 99999;
-            flex-direction: column; align-items: center; justify-content: center;
-            color: white; font-size: 2.5rem; text-align: center; padding: 20px; box-sizing: border-box;
-        }
-        @media screen and (orientation: landscape) and (pointer: coarse) {
-            #orientation-lock { display: flex; }
-        }
-        @keyframes phoneTilt {
-            0%, 100% { transform: rotate(-90deg); }
-            50% { transform: rotate(0deg); }
-        }
+        #orientation-lock { display: none; position: fixed; top: 0; bottom: 0; left: 0; width: 100%; background-color: var(--ui-panel); z-index: 99999; flex-direction: column; align-items: center; justify-content: center; color: white; font-size: 2.5rem; text-align: center; padding: 20px; box-sizing: border-box; }
+        @media screen and (orientation: landscape) and (pointer: coarse) { #orientation-lock { display: flex; } }
+        @keyframes phoneTilt { 0%, 100% { transform: rotate(-90deg); } 50% { transform: rotate(0deg); } }
 
-        /* Landing Screen Styles */
-        #landing-screen { 
-            position: fixed; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); 
-            width: 100%; max-width: 56.25dvh;
-            background-color: #fcb38b;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            z-index: 300; 
-        }
-        .play-btn { 
-            background: #fff; border: 6px solid var(--ui-border); padding: 15px 40px; 
-            font-size: 3rem; cursor: pointer; box-shadow: 0 6px 0 #000; 
-            color: #ff9b54; margin-top: 40px; 
-        }
-        .play-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #000; }
+        #landing-screen { position: fixed; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 56.25dvh; background-color: #fcb38b; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; justify-content: center; z-index: 300; }
+        .play-btn { background: #5ea1fd; border: 6px solid #326efc; padding: 0px 20px; font-size: 5rem; cursor: pointer; box-shadow: -8px 8px 0 #326efc; color: var(--sparkle-gold); margin-top: 40px; text-shadow: 4px 4px 0 #234de2; transform: scale(0.90); transition: transform 0.1s, box-shadow 0.1s; }
+        .play-btn:active, .play-btn.pressed { transform: translate(-8px, 8px) scale(0.90); box-shadow: 0px 0px 0 #326efc; }
 
-        /* Install App Additions */
-        #ios-install-instructions {
-            display: none; position: fixed; top: 0; bottom: 0; left: 0; width: 100%;
-            background: rgba(0, 0, 0, 0.8); z-index: 999999; align-items: flex-end; justify-content: center;
-        }
-        .ios-instruction-box {
-            background: #FB9052; color: white; border: 4px solid #fff; padding: 20px; 
-            width: 90%; max-width: 400px; text-align: center; font-size: 1.6rem; margin-bottom: 20px; box-shadow: 0 6px 0 #000;
-        }
-        .bounce-arrow {
-            font-size: 3rem; color: #ffffff; animation: bounceDown 1s infinite ease-in-out; margin-top: 10px;
-        }
-        @keyframes bounceDown {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(15px); }
-        }
-        #install-btn {
-            display: none; position: absolute; top: 15px; left: 15px; background: #fff; border: 4px solid var(--ui-border); 
-            padding: 8px 12px; font-size: 1.5rem; cursor: pointer; box-shadow: 0 4px 0 #000; z-index: 310; color: #3d5a80;
-        }
+        #ios-install-instructions { display: none; position: fixed; top: 0; bottom: 0; left: 0; width: 100%; background: rgba(0, 0, 0, 0.8); z-index: 999999; align-items: flex-end; justify-content: center; }
+        .ios-instruction-box { background: #FB9052; color: white; border: 4px solid #fff; padding: 20px; width: 90%; max-width: 400px; text-align: center; font-size: 1.6rem; margin-bottom: 20px; box-shadow: 0 6px 0 #000; }
+        .bounce-arrow { font-size: 3rem; color: #ffffff; animation: bounceDown 1s infinite ease-in-out; margin-top: 10px; }
+        @keyframes bounceDown { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(15px); } }
+        #install-btn { display: none; position: absolute; top: 15px; left: 15px; background: #fff; border: 4px solid var(--ui-border); padding: 8px 12px; font-size: 1.5rem; cursor: pointer; box-shadow: 0 4px 0 #000; z-index: 310; color: #3d5a80; }
         #install-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #000; }
 
-        /* Global UI Constraint Layer */
-        #global-ui-layer {
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 56.25dvh;
-            pointer-events: none;
-            z-index: 9999999;
-        }
+        #global-ui-layer { position: fixed; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 56.25dvh; pointer-events: none; z-index: 9999999; }
+        
+        #custom-bmc-btn { position: absolute; bottom: calc(env(safe-area-inset-bottom, 0px) + 26px); right: 18px; width: 50px; height: 50px; background-color: #FB9052; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.3); pointer-events: auto; cursor: pointer; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease, box-shadow 0.1s; transform: translateX(200%); opacity: 0; }
+        #custom-bmc-btn.in-place { transform: translateX(0); opacity: 1; }
+        #custom-bmc-btn.in-place:active { transform: translateY(2px); box-shadow: 0 2px 3px rgba(0,0,0,0.3); transition: transform 0.1s, box-shadow 0.1s; }
 
-        /* Custom Buy Me a Coffee Button */
-        #custom-bmc-btn {
-            position: absolute;
-            bottom: calc(env(safe-area-inset-bottom, 0px) + 26px);
-            right: 18px;
-            width: 50px;
-            height: 50px;
-            background-color: #FB9052;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            text-decoration: none;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            pointer-events: auto;
-            cursor: pointer;
-            transition: transform 0.1s, box-shadow 0.1s;
-        }
-        #custom-bmc-btn:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 3px rgba(0,0,0,0.3);
-        }
+        #bmc-tooltip { position: absolute; bottom: calc(env(safe-area-bottom, 0px) + 22px); right: 75px; background: #fff; color: #3d5a80; padding: 4px 8px; border: none; box-shadow: none; font-size: 1.4rem; line-height: 1.0; width: 170px; text-align: center; pointer-events: none; transform-origin: right center; transform: scale(0); opacity: 0; visibility: hidden; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease, visibility 0.4s; }
+        #bmc-tooltip.show { transform: scale(1); opacity: 1; visibility: visible; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease, visibility 0s; }
 
-        /* BMC Tooltip Animation */
-        #bmc-tooltip {
-            position: absolute;
-            bottom: calc(env(safe-area-inset-bottom, 0px) + 22px); 
-            right: 75px; 
-            background: #fff;
-            color: #3d5a80;
-            padding: 8px 12px;
-            border: 4px solid var(--ui-border);
-            box-shadow: 0 4px 0 #000;
-            font-size: 1.4rem;
-            line-height: 1.2;
-            width: 170px;
-            text-align: center;
-            pointer-events: none;
-            transform-origin: right center;
-            transform: scale(0);
-            opacity: 0;
-            visibility: hidden;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease, visibility 0.4s;
+        /* Integrated Checkup UI CSS - Base Styles for Standard Weekly Report */
+        #checkup-title-container { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #326efc; border: 8.5px solid #5ea1fd; padding: 5px 30px; margin-bottom: 20px; box-shadow: 12px 12px 0 #fee5d4; width: fit-content; text-align: center; overflow: hidden; }
+        #checkup-title { margin: 0; transform: translateY(250%); }
+        #congrats-text-wrap { position: relative; margin: 0; display: none; transform: scale(0); }
+        #congrats-title { color: var(--sparkle-gold); font-size: 4.0rem; font-weight: normal; font-style: italic; text-shadow: 6px 6px 0 #234de2; margin: 0; line-height: 0.9; position: relative; z-index: 2; }
+        #checkup-title { color: white; font-size: 3.5rem; font-weight: normal; text-shadow: 6px 6px 0 #234de2; line-height: 1; margin-top: 0; }
+        #congrats-sparkles { position: absolute; top: -10%; left: -5%; width: 110%; height: 120%; pointer-events: none; z-index: 1; }
+
+        #svg-reference-box { position: absolute; top: 30.03%; left: 12.06%; width: 75.86%; height: 44.41%; background-color: #fee5d4; border: 4px solid #ffffff; box-sizing: border-box; z-index: 0; display: flex; flex-direction: column; justify-content: flex-start; padding: calc(8px + 3%) 12px 8px 12px; color: #326efc; font-size: 1.6rem; line-height: 1.1; }
+        #stats-area { text-align: left; width: 100%; }
+        #stats-area span { color: #5ea1fd; } 
+
+        #svg-reference-box-red { position: absolute; top: 53.5%; left: 29.49%; width: 53.53%; height: auto; background-color: #ffffff; border: 4px solid #5ea1fd; box-shadow: 9px 9px 0 #fcb383; box-sizing: border-box; z-index: 1; display: flex; align-items: center; justify-content: center; padding: 6px 4px; opacity: 0; transform: scale(0); transition: opacity 0.3s, transform 0.3s; }
+        #dr-swadlzworth-msg { color: #5ea1fd; font-size: 1.2rem; text-align: center; line-height: 1; width: 100%; }
+        
+        #dr-swadlzworth-img { position: absolute; top: 52.51%; left: -30%; height: 25.06%; z-index: 10; pointer-events: none; filter: drop-shadow(7.6px 0 0 #fcb38b); transition: left 0.2s ease-out; display: flex; overflow: hidden; }
+        #dr-swadlzworth-inner { height: 100%; width: auto; max-width: none; flex-shrink: 0; }
+        
+        .checkup-btn-row { position: relative; display: flex; justify-content: center; gap: 15px; width: 100%; margin-bottom: 10px; z-index: 2; }
+        .resume-btn { position: relative; z-index: 2; background: #fff; border: 8.5px solid #5ea1fd; color: #326efc; padding: 7.5px 15px; width: fit-content; min-width: 96px; font-size: 2.64rem; cursor: pointer; box-shadow: 6px 6px 0 #fee5d4; transition: transform 0.1s, box-shadow 0.1s; }
+        .resume-btn:active { transform: translate(6px, 6px); box-shadow: 0px 0px 0 #fee5d4; }
+
+        /* Victory Mode Overrides (Applied when game is won) */
+        #checkup-screen.victory-layout #checkup-title-container { padding: 10px 30px; margin-bottom: 10px; }
+        #checkup-screen.victory-layout #checkup-title { font-size: 2.8rem; line-height: 0.9; margin-top: 4px; }
+        #checkup-screen.victory-layout #svg-reference-box { top: 39%; height: 56%; }
+        #checkup-screen.victory-layout #svg-reference-box-red { top: 73%; }
+        #checkup-screen.victory-layout #dr-swadlzworth-img { top: 72%; }
+        #checkup-screen.victory-layout .checkup-btn-row { position: absolute; top: 26%; margin-bottom: 0; }
+
+        @keyframes superFlash {
+            0%, 49.99% { color: #fff; text-shadow: none; }
+            50%, 100% { color: var(--sparkle-gold); text-shadow: none; }
         }
-        #bmc-tooltip.show {
-            transform: scale(1);
-            opacity: 1;
-            visibility: visible;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease, visibility 0s;
-        }
+        .resume-btn.super-mode { background: #5ea1fd; border: 8.5px solid #326efc; color: #fff; box-shadow: 6px 6px 0 #326efc; animation: superFlash 0.5s infinite; }
+        .resume-btn.super-mode:active { transform: translate(6px, 6px); box-shadow: 0px 0px 0 #326efc; }
+
+        .toggle-arrow-btn { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center; z-index: 10; transition: transform 0.1s; }
+        .toggle-arrow-btn:active { transform: translateY(-50%) scale(0.9); }
+        #prev-stats-btn { left: -55px; display: none; }
+        #next-stats-btn { right: -55px; display: none; } 
+        .toggle-arrow-btn svg { width: 45px; height: 45px; fill: white; filter: drop-shadow(1px 1px 0 #000); }
+
+        #landing-dr-swadlzworth { position: absolute; width: 36%; max-width: 216px; z-index: 999; pointer-events: none; filter: drop-shadow(-4px 4px 0px #e59a72); top: -50%; left: -50%; display: flex; overflow: hidden; }
+        #landing-dr-swadlzworth-inner { width: 300%; height: auto; flex-shrink: 0; }
+
+        @keyframes iconFadeIn { 0% { opacity: 0; transform: scale(0.5); } 100% { opacity: 1; transform: scale(1); } }
+        .fade-in { animation: iconFadeIn 0.2s ease forwards; }
+        @keyframes landHardAnim { 0% { transform: scale(4); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+        .land-hard-anim { display: inline-block; animation: landHardAnim 0.15s ease-in forwards; transform-origin: center; opacity: 1; }
+        @keyframes titleSlideUp { 0% { transform: translateY(250%); } 100% { transform: translateY(0); } }
+        @keyframes titleScaleUp { 0% { transform: scale(0); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
@@ -231,7 +189,7 @@
 
 <div id="orientation-lock">
     <svg width="80" height="80" viewBox="0 0 24 24" fill="white" style="margin-bottom: 20px; animation: phoneTilt 2s infinite ease-in-out;">
-        <path d="M16 1H8C6.9 1 6 1.9 6 3v18c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm0 19H8V4h8v16z"/>
+        <path d="M16 1H8C6.9 1 6 1.9 6 3v18c0 1.1.9 2 2 2h8c1.1 0 2-2-2zm0 19H8V4h8v16z"/>
     </svg>
     <div>Please rotate your device<br>back to portrait mode<br>to play Feed Melvin.</div>
 </div>
@@ -258,62 +216,144 @@
 </svg>
 
 <div id="landing-screen">
-    <div style="position: absolute; top: 30px; text-align: center; color: white; font-size: 1.4rem; line-height: 1.1; width: 100%;">
-        Made By:<br>
-        <a href="https://www.pixel-mover.com" target="_blank" rel="noopener noreferrer" style="color: white; text-decoration: none; pointer-events: auto; font-size: 1.8rem;">pixel-mover.com</a>
+    <div id="landing-spitup-overlay"></div>
+    
+    <div id="landing-dr-swadlzworth">
+        <img id="landing-dr-swadlzworth-inner" src="https://www.feedmelvin.com/dr_swadlzworth_HAPPY_sprite_web.svg" alt="Dr Swadlzworth">
     </div>
-    <button id="install-btn">INSTALL APP</button>
-    <h1 style="color: white; font-size: 4rem; text-shadow: 4px 4px #000; text-align: center; margin-bottom: 0;">FEED MELVIN</h1>
-    <button id="play-btn" class="play-btn">PLAY</button>
 
-    <div style="position: absolute; bottom: calc(env(safe-area-inset-bottom, 0px) + 26px); left: 18px;">
+    <button id="install-btn">INSTALL APP</button>
+    
+    <div id="landing-logo-container" style="position: absolute; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; width: 100%; z-index: 10; transition: top 0.5s cubic-bezier(0.25, 1, 0.5, 1), transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);">
+        <img src="https://www.feedmelvin.com/feed_melvin_logo_stacked_web.svg" alt="Feed Melvin" style="width: 76.5%; max-width: 360px; margin-bottom: 10px; filter: drop-shadow(-8px 8px 0px #e59a72); pointer-events: none;">
+        
+        <div style="text-align: center; width: 100%;">
+            <a href="https://www.pixel-mover.com" target="_blank" rel="noopener noreferrer" style="color: white; font-size: 1.8rem; line-height: 1.1; text-decoration: none; pointer-events: auto; display: inline-block;">Made By: pixel-mover.com</a>
+        </div>
+    </div>
+    
+    <div id="tap-anywhere" style="position: absolute; top: 85%; width: 100%; text-align: center; color: white; font-size: 2.5rem; text-shadow: 2px 2px 0 #000; display: block; transform: scale(0); z-index: 20; pointer-events: none; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">TAP ANYWHERE</div>
+        
+    <div id="landing-visual-area" style="position: absolute; top: 43%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 278px; width: 100%; z-index: 15; pointer-events: none;">
+
+        <div id="landing-pet-scale-wrap" style="display: none; flex-direction: column; align-items: center; justify-content: flex-end; width: 100%; position: relative; transform: scale(0.83); transform-origin: bottom center; top: 100dvh; transition: top 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+            <div id="landing-sparkle-wrap" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 160px; height: 160px; pointer-events: none; z-index: 12; display: none;"></div>
+            
+            <div id="landing-shadow-wrap" style="display: flex; flex-direction: column; align-items: center; filter: drop-shadow(-8px 8px 0px #e59a72);">
+                <div id="landing-pet" style="width: 160px; height: 160px; display: block; transform-origin: bottom center; overflow: visible; filter: url(#green-tint); transition: filter 0.2s, transform 0.1s; position: relative; z-index: 10;">
+                    <svg id="landing-melvin" viewBox="0 0 48 48" style="width: 100%; height: 100%; position: absolute; top: 12px; left: 0; opacity: 1;">
+                        <image href="https://www.feedmelvin.com/classic_melvin_sprite_web.svg" width="384" height="48" />
+                    </svg>
+                    <svg id="landing-melvin-full" viewBox="0 0 48 48" style="width: 100%; height: 100%; position: absolute; top: 12px; left: 0; opacity: 0;">
+                        <image href="https://www.feedmelvin.com/classic_melvin_FULL_sprite_web.svg" width="384" height="48" />
+                    </svg>
+                    <svg id="landing-super-melvin" data-super="true" viewBox="0 0 48 48" style="width: 100%; height: 100%; position: absolute; top: 12px; left: 0; opacity: 0; pointer-events: none;">
+                        <image href="https://pxleight.github.io/feed-melvin-assets/super_levi_sprite_web.svg" width="384" height="48" />
+                    </svg>
+                    <svg id="landing-super-melvin-full" data-super-full="true" viewBox="0 0 48 48" style="width: 100%; height: 100%; position: absolute; top: 12px; left: 0; opacity: 0; pointer-events: none;">
+                        <image href="https://pxleight.github.io/feed-melvin-assets/super_levi_FULL_sprite_web.svg" width="384" height="48" />
+                    </svg>
+                </div>
+                
+                <div id="landing-scale" style="width: 240px; height: 80px; z-index: 5; position: relative; transform: scale(1.58); transform-origin: bottom center; top: 38px;">
+                    <img src="https://pxleight.github.io/feed-melvin-assets/levi_scale_sprite_web.svg" style="width: 100%; height: 100%; display: block;" />
+                    <div style="position: absolute; bottom: 21px; width: 100%; text-align: center; color: white; font-size: 1.8rem; font-weight: bold; text-shadow: 1px 1px 2px #000; pointer-events: none; mix-blend-mode: overlay;">6lb 8oz</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button id="play-btn" class="play-btn" style="position: absolute; bottom: calc(18dvh + 2px); margin: 0; display: none; transform: scale(0); z-index: 20; pointer-events: auto;">PLAY!</button>
+
+    <div id="landing-bmc-left" style="position: absolute; bottom: calc(env(safe-area-inset-bottom, 0px) + 26px); left: 18px; pointer-events: auto; transform: translateX(-200%); opacity: 0; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease;">
         <a href="https://www.buymeacoffee.com/pixelmover/membership" target="_blank" rel="noopener noreferrer"><img src="https://img.buymeacoffee.com/button-api/?text=Monthly%20Baby%20Formula&emoji=🍼&slug=pixelmover&button_colour=FB9052&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" /></a>
     </div>
 </div>
 
 <div id="splash-screen" style="display: none;">
-    <h1 style="color: white; font-size: 4rem; text-shadow: 4px 4px #000; text-align: center; margin-bottom: 0;">FEED MELVIN</h1>
-    <div class="instruction-box" id="instruction-box">
-        Tap FEED to give Melvin 1/2 an ounce.<br><br>
-        Melvin will start to turn green when he's getting full. Keep tapping the Hand button to burp him.<br><br>
-        If you overfeed Melvin he will spit up and you will lose ounces!<br><br>
-        <span style="color: var(--sparkle-gold);">Help Melvin grow to 9lbs and you will make his Pediatrician (and you) proud!</span>
-    </div>
-    <div id="loading-wrap">
-        <div id="loading-text">LOADING ASSETS...</div>
-        <div id="loading-text">LOADING ASSETS...</div>
-        <div id="loading-container"><div id="loading-bar"></div></div>
-    </div>
-    <div id="start-btn-container">
-        <button class="start-btn easy-color" onclick="startGame('easy')">EASY</button>
-        <button class="start-btn normal-color" onclick="startGame('normal')">NORMAL</button>
-    </div>
-</div>
-<div id="checkup-screen" style="display: none;">
-    <div id="congrats-wrap" style="display: none; position: relative; text-align: center; width: 100%; margin-bottom: 10px; box-sizing: border-box; padding: 0 10px;">
-        <div id="congrats-sparkles" style="position: absolute; top: -10px; left: 0; width: 100%; height: 120%; pointer-events: none; z-index: 1;"></div>
-        <h1 style="color: var(--sparkle-gold); font-size: 3.8rem; text-shadow: 4px 4px #000; margin: 0; position: relative; z-index: 2;">CONGRATULATIONS!</h1>
-    </div>
-    <h1 id="checkup-title" style="color: white; font-size: 3rem; text-shadow: 3px 3px #000; margin-bottom: 10px; margin-top: 0;">WEEKLY REPORT</h1>
-    <div class="checkup-btn-row">
-        <button class="resume-btn" onclick="resumeGame()">RESUME</button>
+    <img id="instructions-logo" src="https://www.feedmelvin.com/feed_melvin_logo_web.svg" alt="Feed Melvin">
+    
+    <div id="instructions-white-box">
+        <div style="font-size: 2.2rem; text-align: center; width: 100%; margin-top: 15px;">D<span style="margin-right: -0.05em;">r</span>.<span style="margin-right: -0.1em;"> </span>Swadlzworth<span style="margin-right: -0.1em;"> </span>Says:</div>
+        <div style="width: 85%; height: 4px; background-color: #5ea1fd; margin: 10px auto;"></div>
+        <div style="font-size: 1.35rem; text-align: left; padding: 0 15px; line-height: 1.0;">
+            <div class="instr-row">
+                <img src="https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.svg" class="instr-icon" style="margin-right: 10px;">
+                <span>Tap the BOTTLE to give<br>Melvin a 1/2 <span style="font-size: 1.2rem;">a</span> ounce of Formula.</span>
+            </div>
+            <div class="instr-row">
+                <img src="https://www.feedmelvin.com/full_icon_web.svg" class="instr-icon" style="margin-right: 10px; width: 37.8px; height: 37.8px;">
+                <span>Melvin will start to turn<br>GREEN when he's getting full.</span>
+            </div>
+            <div class="instr-row">
+                <img src="https://pxleight.github.io/feed-melvin-assets/burp_hand_sprite_web.svg" class="instr-icon" style="margin-right: 10px;">
+                <span>Keep tapping the hand<br>until Melvin BURPS.</span>
+            </div>
+            <div class="instr-row">
+                <img src="https://www.feedmelvin.com/spit_up_icon_web.svg" class="instr-icon" style="margin-right: 10px; width: 37.8px; height: 37.8px;">
+                <span>If you overfeed Melvin<br>he will spit up and you<br>will <span style="font-size: 1.2rem;">lose</span> ounces!</span>
+            </div>
+            <div id="instr-powerup-wrap" style="position: relative; text-align: center; width: 100%; margin-top: 15px; box-sizing: border-box; z-index: 2;">
+                <div id="instr-powerup-sparkles" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3;"></div>
+                <div style="position: relative; color: #326efc; font-size: 1.5rem; line-height: 1.1; margin-bottom: 10px; z-index: 2;">
+                    Help Melvin grow to 9lbs to<br>make Dr Swadlzworth proud!
+                </div>
+            </div>
         </div>
-    <div id="stats-area-container" class="stats-display-area">
-        <div id="dr-swadlzworth-msg" style="color: white; font-size: 1.4rem; text-align: center; margin-bottom: 15px; border-bottom: 2px dashed #fff; padding-bottom: 10px;"></div>
-        <button id="prev-stats-btn" class="toggle-arrow-btn" onclick="toggleStatsView()" style="display: none;">
+    </div>
+
+    <img id="instructions-dr-swadlzworth" src="https://www.feedmelvin.com/dr_swadlzworth_sprite_web.svg" alt="Dr Swadlzworth">
+    
+    <div id="instructions-box-left" onclick="startGame('easy', this)">EASY</div>
+    <div id="instructions-box-right" onclick="startGame('normal', this)">NORMAL</div>
+    <div id="instructions-box-super" onclick="startGame('normal', this, true)">SUPER</div>
+</div>
+
+<div id="checkup-screen" style="display: none;">
+    
+    <div id="checkup-title-container">
+        <div id="congrats-text-wrap">
+            <div id="congrats-sparkles"></div>
+            <h1 id="congrats-title">GREAT WORK!</h1>
+        </div>
+        <h1 id="checkup-title">WEEKLY REPORT</h1>
+    </div>
+
+    <div id="svg-reference-box">
+        <button id="prev-stats-btn" class="toggle-arrow-btn" onclick="toggleStatsView()">
             <svg viewBox="0 0 24 24"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>
         </button>
         <div id="stats-area"></div>
-        <button id="next-stats-btn" class="toggle-arrow-btn" onclick="toggleStatsView()" style="display: none;">
+        <button id="next-stats-btn" class="toggle-arrow-btn" onclick="toggleStatsView()">
             <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
         </button>
     </div>
-    <div id="random-tip-msg"></div>
+
+    <div id="svg-reference-box-red">
+        <div id="dr-swadlzworth-msg"></div>
+    </div>
+    
+    <div id="dr-swadlzworth-img">
+        <img id="dr-swadlzworth-inner" src="https://www.feedmelvin.com/dr_swadlzworth_HAPPY_sprite_web.svg" alt="Dr Swadlzworth" />
+    </div>
+    
+    <div class="checkup-btn-row">
+        <button class="resume-btn" onclick="resumeGame(this)">RESUME</button>
+    </div>
+        
+    <div id="random-tip-msg-container">
+        <div id="random-tip-msg"></div>
+    </div>
 </div>
 <div id="game-container" style="display: none;">
-    <svg class="game-bg-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" preserveAspectRatio="none">
-        <image href="https://pxleight.github.io/feed-melvin-assets/Nursery_background_rev002.svg" width="1080" height="1920" preserveAspectRatio="none" />
+    <svg class="game-bg-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" preserveAspectRatio="xMidYMid slice">
+        <image href="https://pxleight.github.io/feed-melvin-assets/Nursery_background_rev002.svg" width="1080" height="1920" preserveAspectRatio="xMidYMid slice" />
     </svg>
+    
+    <div id="mobile-anim-container" style="position: absolute; top: 0; left: 0; width: 100%; z-index: 1; pointer-events: auto; overflow: hidden; cursor: pointer;" onclick="triggerMobileAnim()">
+        <img id="mobile-anim-img" src="https://www.feedmelvin.com/mobile_animation_web.svg" style="display: block; width: 1200%; max-width: none; image-rendering: pixelated; transform: translateX(0%); pointer-events: none;" />
+    </div>
+
     <div id="pause-overlay">
         <div id="pause-box">
             <h2 style="color: rgba(255, 255, 255, 0.7); font-size: 2.5rem; text-shadow: none; margin-top: 0; margin-bottom: 10px;">PAUSED</h2>
@@ -322,7 +362,7 @@
         </div>
     </div>
     <div id="spitup-overlay"></div>
-    <h1 class="game-title">Feed Melvin</h1>
+    <h1 class="game-title"><img src="https://www.feedmelvin.com/feed_melvin_logo_web.svg" alt="Feed Melvin" style="width: 75%; max-width: 320px; display: inline-block; pointer-events: none;"></h1>
     <div id="checkup-bar">
         OZ/DAY <span id="top-avg-val" class="top-ui-num">0.0</span> <div style="width: 3px; height: 22px; background-color: rgba(255, 255, 255, 0.25);"></div> Checkup in <span id="days-until-val" class="top-ui-num">6</span> days
     </div>
@@ -414,14 +454,192 @@
     let lastTouchEnd = 0;
     document.addEventListener('touchend', function(event) {
         let now = (new Date()).getTime();
-        if (now - lastTouchEnd <= 300) { if (!event.target.closest('button') && !event.target.closest('a')) { event.preventDefault(); } }
+        if (now - lastTouchEnd <= 300) { if (!event.target.closest('button') && !event.target.closest('a') && !event.target.closest('#instructions-box-left') && !event.target.closest('#instructions-box-right') && !event.target.closest('#instructions-box-super')) { event.preventDefault(); } }
         lastTouchEnd = now;
     }, { passive: false });
 
+    let demoOunces = 104;
+    function updateDemoWeight() {
+        let lbs = Math.floor(demoOunces / 16);
+        let oz = Math.floor(demoOunces % 16);
+        let scaleReadout = document.querySelector('#landing-scale div');
+        if(scaleReadout) scaleReadout.innerText = lbs + 'lb ' + oz + 'oz';
+    }
+
+    let isLandingClassicSpittingUp = false;
+    let landingClassicSpitUpFrame = 0;
+    let isLandingSuperSpittingUp = false;
+    let landingSuperSpitUpFrame = 0;
+
+    // Landing Dr Swadlzworth Timers & State
+    let drLandingTimer;
+    let drActionTimer;
+    let drSlideOutTimer;
+    let landingDrState = 'upset'; // Initial state set to upset so she is happy on the very first slide in
+    let landingDrFrame = 0;
+    let landingDrTicks = 0;
+    let landingDrHoldTicks = Math.floor(Math.random() * 29) + 4; // Random hold 0.5 to 4 seconds
+
+    // Checkup Screen Dr. Swadlzworth Sprite Logic
+    let drReportFrame = 0;
+    let drReportTicks = 0;
+    let drReportHoldTicks = Math.floor(Math.random() * 29) + 4; // Random hold 0.5 to 4 seconds
+
+    function setDrSprite(state) {
+        let url;
+        if (state === 'happy') url = "https://www.feedmelvin.com/dr_swadlzworth_HAPPY_sprite_web.svg";
+        else if (state === 'upset') url = "https://www.feedmelvin.com/dr_swadlzworth_UPSET_sprite_web.svg";
+        else if (state === 'elated') url = "https://www.feedmelvin.com/dr_swadlzworth_ELATED_sprite_web.svg";
+        else url = "https://www.feedmelvin.com/dr_swadlzworth_HAPPY_sprite_web.svg";
+
+        const innerImg = document.getElementById('dr-swadlzworth-inner');
+        if (innerImg) {
+            innerImg.onload = function() {
+                if (this.naturalHeight > 0) {
+                    let frameAspect = (this.naturalWidth / 3) / this.naturalHeight;
+                    document.getElementById('dr-swadlzworth-img').style.aspectRatio = frameAspect;
+                }
+            };
+            
+            if (innerImg.getAttribute('src') !== url) {
+                innerImg.src = url;
+            } else if (innerImg.complete && innerImg.naturalHeight > 0) {
+                let frameAspect = (innerImg.naturalWidth / 3) / innerImg.naturalHeight;
+                document.getElementById('dr-swadlzworth-img').style.aspectRatio = frameAspect;
+            }
+            
+            drReportFrame = 0;
+            drReportTicks = 0;
+            drReportHoldTicks = Math.floor(Math.random() * 29) + 4;
+            innerImg.style.transform = `translateX(0%)`;
+        }
+    }
+
+    // Function to create sparkle pool
+    function createSparklePool(wrapId) {
+        let wrap = document.getElementById(wrapId);
+        if (!wrap) return;
+        wrap.innerHTML = '';
+        for(let i=0; i<15; i++) {
+            let s = document.createElement('div'); s.className = 'sparkle-pixel';
+            s.style.left = Math.random() * 100 + '%'; s.style.top = Math.random() * 100 + '%';
+            s.style.animationDelay = (Math.random() * 1.5) + 's'; s.style.backgroundColor = i % 2 === 0 ? 'white' : 'var(--sparkle-gold)';
+            wrap.appendChild(s);
+        }
+    }
+
+    function startLandingDrSwadlzworth() {
+        scheduleNextDrSlide();
+    }
+
+    function scheduleNextDrSlide() {
+        if(document.getElementById('landing-screen').style.display === 'none') return;
+        
+        // Alternate Sprite State
+        landingDrState = (landingDrState === 'happy') ? 'upset' : 'happy';
+        let url = (landingDrState === 'happy') 
+            ? 'https://www.feedmelvin.com/dr_swadlzworth_HAPPY_sprite_web.svg' 
+            : 'https://www.feedmelvin.com/dr_swadlzworth_UPSET_sprite_web.svg';
+            
+        let innerImg = document.getElementById('landing-dr-swadlzworth-inner');
+        if (innerImg) {
+            innerImg.src = url;
+            landingDrFrame = 0;
+            landingDrTicks = 0;
+            landingDrHoldTicks = Math.floor(Math.random() * 29) + 4;
+            innerImg.style.transform = `translateX(0%)`;
+        }
+
+        let randomDelay = Math.random() * 4000 + 2000; // Random delay between 2 and 6 seconds
+        drLandingTimer = setTimeout(slideInDr, randomDelay);
+    }
+
+    function slideInDr() {
+        if(document.getElementById('landing-screen').style.display === 'none') return;
+        
+        let drEl = document.getElementById('landing-dr-swadlzworth');
+        let side = Math.floor(Math.random() * 4); // 0: top, 1: right, 2: bottom, 3: left
+        let randomPos = Math.random() * 60 + 20; // keeps the doc somewhat centered on the cross axis
+        
+        // Remove transitions so we can jump to starting pos instantly
+        drEl.style.transition = 'none';
+        
+        let startLeft, startTop, endLeft, endTop, rotation;
+        
+        if (side === 0) { // Top
+            startTop = '-100%'; startLeft = randomPos + '%';
+            endTop = '-5%'; endLeft = randomPos + '%';
+            rotation = 180;
+        } else if (side === 1) { // Right
+            startTop = randomPos + '%'; startLeft = '150%';
+            endTop = randomPos + '%'; endLeft = '75%';
+            rotation = -90; 
+        } else if (side === 2) { // Bottom
+            startTop = '150%'; startLeft = randomPos + '%';
+            endTop = '80%'; endLeft = randomPos + '%';
+            rotation = 0;
+        } else { // Left
+            startTop = randomPos + '%'; startLeft = '-100%';
+            endTop = randomPos + '%'; endLeft = '-5%';
+            rotation = 90;
+        }
+        
+        // Apply instant changes
+        drEl.style.top = startTop;
+        drEl.style.left = startLeft;
+        drEl.style.transform = `rotate(${rotation}deg)`;
+        
+        // Force Reflow
+        void drEl.offsetWidth; 
+        
+        // Add slide transition and animate IN
+        drEl.style.transition = 'top 1.5s ease-in-out, left 1.5s ease-in-out';
+        drEl.style.top = endTop;
+        drEl.style.left = endLeft;
+        
+        // Hang out for a few seconds, then animate OUT
+        drActionTimer = setTimeout(() => {
+            drEl.style.top = startTop;
+            drEl.style.left = startLeft;
+            
+            // Wait for slide out to finish, then queue next loop
+            drSlideOutTimer = setTimeout(scheduleNextDrSlide, 1500);
+        }, 3000); 
+    }
+
     // Landing Page Transition
-    document.getElementById('play-btn').addEventListener('click', () => {
-        document.getElementById('landing-screen').style.display = 'none';
-        document.getElementById('splash-screen').style.display = 'flex';
+    document.getElementById('play-btn').addEventListener('click', function() {
+        this.classList.add('pressed');
+        setTimeout(() => {
+            this.classList.remove('pressed');
+            document.getElementById('landing-screen').style.display = 'none';
+            document.getElementById('splash-screen').style.display = 'flex';
+            
+            // Clear Dr Swadlzworth timers
+            clearTimeout(drLandingTimer);
+            clearTimeout(drActionTimer);
+            clearTimeout(drSlideOutTimer);
+
+            // Reset landing styles to default in case they return
+            document.getElementById('green-flood').setAttribute('flood-opacity', 0);
+            document.getElementById('landing-melvin').style.opacity = '1';
+            document.getElementById('landing-melvin-full').style.opacity = '0';
+            if (document.getElementById('landing-super-melvin')) document.getElementById('landing-super-melvin').style.opacity = '0';
+            if (document.getElementById('landing-super-melvin-full')) document.getElementById('landing-super-melvin-full').style.opacity = '0';
+            let ls = document.getElementById('landing-sparkle-wrap');
+            if (ls) { ls.style.display = 'none'; ls.innerHTML = ''; }
+            demoStep = -3;
+            demoOunces = 104;
+            updateDemoWeight();
+            
+            isLandingClassicSpittingUp = false;
+            landingClassicSpitUpFrame = 0;
+            isLandingSuperSpittingUp = false;
+            landingSuperSpitUpFrame = 0;
+
+            // Initialize sparkles on instruction screen
+            createSparklePool('instr-powerup-sparkles');
+        }, 150);
     });
 
     function PausableTimer(callback, delay) {
@@ -473,16 +691,33 @@
 
     // Listen for tab visibility changes (e.g., opening a new tab for BMC) to trigger pause
     document.addEventListener("visibilitychange", () => {
-        if (document.hidden) {
-            if (gameRunning && !isPaused) {
-                togglePause();
-            }
+        isTabHidden = document.hidden;
+        if (isTabHidden) {
+            clearTimeout(musicTimeoutId);
+            if (masterGainNode) masterGainNode.gain.value = 0; // Instantly mute scheduled notes
+            if (audioCtx) audioCtx.suspend(); // Force suspend regardless of current state
+            if (gameRunning && !isPaused) togglePause();
             if (activeMsgTimer) activeMsgTimer.pause();
         } else {
+            if (masterGainNode) masterGainNode.gain.value = 1; // Restore volume
+            if (audioCtx) {
+                audioCtx.resume().then(() => {
+                    if (musicStarted && !document.hidden && !musicPausedForReport) {
+                        scheduler();
+                    }
+                }).catch(e => console.log(e));
+            }
             if (activeMsgTimer) activeMsgTimer.resume();
         }
     });
 
+    window.addEventListener("pagehide", () => {
+        isTabHidden = true;
+        clearTimeout(musicTimeoutId);
+        if (audioCtx) audioCtx.suspend(); // Failsafe for iOS Safari & Android locking
+    });
+
+    let isSuperModeGame = false;
     let totalOunces = 104.0; 
     const GROWTH_INTERVAL = 12; 
     let timeLeft = GROWTH_INTERVAL;
@@ -494,9 +729,20 @@
     let superMelvinActive = false;
     let gammaMelvinActive = false;
     let superCooldownDays = 0; 
+    let gammaCooldownDays = 0;
     let frameIndex = 0; 
     let lockedPowerUpTier = null;
-    let gammaUsedThisWeek = false;
+    let isSuperSpittingUp = false;
+    let superSpitUpFrame = 0;
+    let isClassicSpittingUp = false;
+    let classicSpitUpFrame = 0;
+    
+    // Mobile Animation Specific State Variables
+    let mobileAnimFrameIndex = 0;
+    let isMobileAnimActive = false;
+    let mobileFpsTransitionStart = 0;
+    let mobileCurrentFps = 6;
+    let mobileAnimTimeout = null;
     
     let difficultyMode = 'normal';
 
@@ -507,10 +753,13 @@
     let secondsPlayed = 0;
     let statsViewState = 'victory';
     let powerUpMsgShown = false; 
+    let currentRenderId = 0; // Tracks the current active animation block
+    let victoryAnimated = false;
+    let standardAnimated = false;
 
     const gameTips = [
         "Burping Melvin will make more room in his stomach. There's no harm in burping him before he's completely full!",
-        "Low doses of a certain kind of radiation have been found in formula. Feeding Melvin a large number of ounces per day could produce surprising results!",
+        "Low doses of a certain kind of radiation have been found in formula. Feeding Melvin a large number of ounces per day produce surprising results!",
         "When Melvin has gained a good average weight the prior day he will sparkle. If you burp him enough when he's completely full you could unlock something SUPER.",
         "Melvin will show signs of getting full before he can't take anymore. Sharp eyes and reflexes help when trying to feed him the maximum amount in a day.",
         "Off to a rough start? Hit START OVER for a fresh start and try again!",
@@ -535,38 +784,114 @@
         "Sleep when the baby sleeps!"
     ];
 
-    const classicMelvinSVG = '<svg data-classic="true" viewBox="0 0 48 48" style="display: block;"><image href="https://www.feedmelvin.com/classic_melvin_sprite_web.svg" width="384" height="48" /></svg>';
-    const classicFullMelvinSVG = '<svg data-classic-full="true" viewBox="0 0 48 48" style="display: none;"><image href="https://www.feedmelvin.com/classic_melvin_FULL_sprite_web.svg" width="384" height="48" /></svg>';
-    const superMelvinSVG = '<svg data-super="true" viewBox="0 0 48 48" style="display: none;"><image href="https://pxleight.github.io/feed-melvin-assets/super_levi_sprite_web.svg" width="384" height="48" /></svg>';
-    const superFullMelvinSVG = '<svg data-super-full="true" viewBox="0 0 48 48" style="display: none;"><image href="https://pxleight.github.io/feed-melvin-assets/super_levi_FULL_sprite_web.svg" width="384" height="48" /></svg>';
-    const gammaMelvinSVG = '<svg data-gamma="true" viewBox="0 0 48 48" style="display: none;"><image href="https://pxleight.github.io/feed-melvin-assets/gamma_levi_sprite_web.svg" width="384" height="48" /></svg>';
+    const baseStyle = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; transition: opacity 0s; pointer-events: none;';
+    const classicMelvinSVG = `<svg data-classic="true" viewBox="0 0 48 48" style="${baseStyle} opacity: 1;"><image href="https://www.feedmelvin.com/classic_melvin_sprite_web.svg" width="384" height="48" /></svg>`;
+    const classicFullMelvinSVG = `<svg data-classic-full="true" viewBox="0 0 48 48" style="${baseStyle} opacity: 0;"><image href="https://www.feedmelvin.com/classic_melvin_FULL_sprite_web.svg" width="384" height="48" /></svg>`;
+    const superMelvinSVG = `<svg data-super="true" viewBox="0 0 48 48" style="${baseStyle} opacity: 0;"><image href="https://pxleight.github.io/feed-melvin-assets/super_levi_sprite_web.svg" width="384" height="48" /></svg>`;
+    const superFullMelvinSVG = `<svg data-super-full="true" viewBox="0 0 48 48" style="${baseStyle} opacity: 0;"><image href="https://pxleight.github.io/feed-melvin-assets/super_levi_FULL_sprite_web.svg" width="384" height="48" /></svg>`;
+    const gammaMelvinSVG = `<svg data-gamma="true" viewBox="0 0 48 48" style="${baseStyle} opacity: 0;"><image href="https://pxleight.github.io/feed-melvin-assets/gamma_levi_sprite_web.svg" width="384" height="48" /></svg>`;
 
     const assetUrls = [
+        "https://www.feedmelvin.com/feed_melvin_logo_stacked_web.svg",
         "https://www.feedmelvin.com/classic_melvin_sprite_web.svg",
         "https://www.feedmelvin.com/classic_melvin_FULL_sprite_web.svg",
         "https://pxleight.github.io/feed-melvin-assets/super_levi_sprite_web.svg",
         "https://pxleight.github.io/feed-melvin-assets/super_levi_FULL_sprite_web.svg",
         "https://pxleight.github.io/feed-melvin-assets/gamma_levi_sprite_web.svg",
         "https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.svg",
-        "https://pxleight.github.io/feed-melvin-assets/burp_hand_sprite_web.svg"
+        "https://pxleight.github.io/feed-melvin-assets/burp_hand_sprite_web.svg",
+        "https://www.feedmelvin.com/scale_icon_web.svg",
+        "https://www.feedmelvin.com/spit_up_icon_web.svg",
+        "https://www.feedmelvin.com/full_icon_web.svg",
+        "https://www.feedmelvin.com/dr_swadlzworth_sprite_web.svg",
+        "https://www.feedmelvin.com/dr_swadlzworth_HAPPY_sprite_web.svg",
+        "https://www.feedmelvin.com/dr_swadlzworth_UPSET_sprite_web.svg",
+        "https://www.feedmelvin.com/dr_swadlzworth_ELATED_sprite_web.svg",
+        "https://www.feedmelvin.com/mobile_animation_web.svg"
     ];
+
+    let assetsLoaded = false;
+    let demoActive = false; 
 
     function preloadAssets() {
         let loadedCount = 0;
         const total = assetUrls.length;
-        const bar = document.getElementById('loading-bar');
-        const startBtnContainer = document.getElementById('start-btn-container');
-        const loadingWrap = document.getElementById('loading-wrap');
+        
         assetUrls.forEach(url => {
             const img = new Image();
             img.src = url;
             img.onload = img.onerror = () => {
                 loadedCount++;
-                bar.style.width = (loadedCount / total) * 100 + '%';
                 if (loadedCount === total) {
                     setTimeout(() => {
-                        loadingWrap.style.display = 'none';
-                        startBtnContainer.style.display = 'flex';
+                        let tapMsg = document.getElementById('tap-anywhere');
+                        tapMsg.style.transform = 'scale(1)';
+
+                        let landingScreen = document.getElementById('landing-screen');
+                        let hasTapped = false;
+                        
+                        function handleTap(e) {
+                            initGlobalMusic();
+
+                            if (hasTapped) return;
+                            hasTapped = true;
+
+                            tapMsg.style.transform = 'scale(0)';
+                            
+                            let logo = document.getElementById('landing-logo-container');
+                            logo.style.top = 'calc(env(safe-area-inset-top, 5px) + 4dvh)';
+                            logo.style.transform = 'translateY(0)';
+                            
+                            setTimeout(() => {
+                                let petWrap = document.getElementById('landing-pet-scale-wrap');
+                                petWrap.style.display = 'flex';
+                                void petWrap.offsetWidth; // Force reflow
+                                petWrap.style.top = '0';
+                                startLandingDrSwadlzworth();
+                                
+                                demoActive = true; 
+                                
+                                setTimeout(() => {
+                                    let playBtn = document.getElementById('play-btn');
+                                    playBtn.style.display = 'block';
+                                    playBtn.style.transform = 'scale(0)';
+                                    playBtn.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                                    void playBtn.offsetWidth; // Force reflow
+                                    playBtn.style.transform = 'scale(0.90)';
+                                    
+                                    setTimeout(() => {
+                                        playBtn.style.transition = 'transform 0.1s, box-shadow 0.1s';
+                                    }, 400);
+
+                                    setTimeout(() => {
+                                        let leftBtn = document.getElementById('landing-bmc-left');
+                                        if (leftBtn) {
+                                            leftBtn.style.transform = 'translateX(0)';
+                                            leftBtn.style.opacity = '1';
+                                        }
+                                        let rightBtn = document.getElementById('custom-bmc-btn');
+                                        if (rightBtn) {
+                                            rightBtn.classList.add('in-place');
+                                            setTimeout(() => {
+                                                const tooltip = document.getElementById('bmc-tooltip');
+                                                if (tooltip) {
+                                                    tooltip.classList.add('show');
+                                                    setTimeout(() => {
+                                                        tooltip.classList.remove('show');
+                                                    }, 3000);
+                                                }
+                                            }, 500); 
+                                        }
+                                    }, 400); 
+                                }, 333);
+                            }, 333);
+                        }
+
+                        landingScreen.addEventListener('pointerdown', handleTap);
+                        landingScreen.addEventListener('mousedown', handleTap);
+                        landingScreen.addEventListener('touchend', handleTap);
+
+                        assetsLoaded = true;
                     }, 600);
                 }
             };
@@ -577,6 +902,141 @@
     let totalBottles = 0, totalBurpClicks = 0, totalSuccessfulBurps = 0, totalOuncesSpitUp = 0;
     const petEl = document.getElementById('pet'), weightReadout = document.getElementById('weight-readout'), dayValDisp = document.getElementById('day-val'), timerBar = document.getElementById('timer-bar'), sparkleWrap = document.getElementById('sparkle-wrap');
     let audioCtx;
+    let masterGainNode;
+
+    // --- NEW LAYERED MUSIC SEQUENCER ---
+    const track1 = [{"note":"E4","time":802,"duration":358,"instrument":"synth","waveform":"square","volume":0.5},{"note":"C4","time":1880,"duration":454,"instrument":"synth","waveform":"square","volume":0.5},{"note":"F4","time":2521,"duration":402,"instrument":"synth","waveform":"square","volume":0.5},{"note":"D4","time":3157,"duration":408,"instrument":"synth","waveform":"square","volume":0.5},{"note":"E4","time":3797,"duration":465,"instrument":"synth","waveform":"square","volume":0.5},{"note":"C4","time":4467,"duration":439,"instrument":"synth","waveform":"square","volume":0.5},{"note":"D4","time":5145,"duration":1005,"instrument":"synth","waveform":"square","volume":0.5},{"note":"E4","time":6997,"duration":410,"instrument":"synth","waveform":"square","volume":0.5},{"note":"C4","time":7628,"duration":397,"instrument":"synth","waveform":"square","volume":0.5},{"note":"F4","time":8493,"duration":494,"instrument":"synth","waveform":"square","volume":0.5},{"note":"G4","time":9235,"duration":413,"instrument":"synth","waveform":"square","volume":0.5},{"note":"A4","time":9897,"duration":409,"instrument":"synth","waveform":"square","volume":0.5},{"note":"B4","time":10527,"duration":385,"instrument":"synth","waveform":"square","volume":0.5}];
+    const track2 = [{"note":"C3","time":626,"duration":777,"instrument":"synth","waveform":"sawtooth","volume":0.16},{"note":"E3","time":1382,"duration":721,"instrument":"synth","waveform":"sawtooth","volume":0.16},{"note":"F3","time":2038,"duration":765,"instrument":"synth","waveform":"sawtooth","volume":0.16},{"note":"E3","time":2721,"duration":893,"instrument":"synth","waveform":"sawtooth","volume":0.16},{"note":"C3","time":3564,"duration":790,"instrument":"synth","waveform":"sawtooth","volume":0.16},{"note":"E3","time":4272,"duration":870,"instrument":"synth","waveform":"sawtooth","volume":0.16},{"note":"D3","time":5110,"duration":1386,"instrument":"synth","waveform":"sawtooth","volume":0.16},{"note":"C3","time":6676,"duration":897,"instrument":"synth","waveform":"sawtooth","volume":0.16},{"note":"E3","time":7562,"duration":768,"instrument":"synth","waveform":"sawtooth","volume":0.16},{"note":"F3","time":8275,"duration":893,"instrument":"synth","waveform":"sawtooth","volume":0.16},{"note":"G3","time":9080,"duration":728,"instrument":"synth","waveform":"sawtooth","volume":0.16},{"note":"A3","time":9907,"duration":669,"instrument":"synth","waveform":"sawtooth","volume":0.16},{"note":"B3","time":10612,"duration":333,"instrument":"synth","waveform":"sawtooth","volume":0.16},{"note":"C5","time":11274,"duration":863,"instrument":"synth","waveform":"sawtooth","volume":0.16}];
+
+    const allNotes = [...track1, ...track2].sort((a, b) => a.time - b.time);
+    const LOOP_DURATION = 12.0;
+
+    const noteFreqs = {
+        "C3": 130.81, "D3": 146.83, "E3": 164.81, "F3": 174.61, "G3": 196.00, "A3": 220.00, "B3": 246.94,
+        "C4": 261.63, "D4": 293.66, "E4": 329.63, "F4": 349.23, "G4": 392.00, "A4": 440.00, "B4": 493.88,
+        "C5": 523.25
+    };
+
+    let musicTimeoutId = null;
+    let musicStarted = false;
+    let musicPausedForReport = false;
+    let isTabHidden = false;
+    let currentLoopStartTime = 0;
+    let currentNoteIndex = 0;
+    const lookahead = 25.0; // ms
+    const scheduleAheadTime = 0.1; // s
+
+    function scheduleNewNote(noteData, time) {
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+
+        osc.type = noteData.waveform; 
+        osc.frequency.setValueAtTime(noteFreqs[noteData.note] || 440, time);
+
+        let musicVol = noteData.volume * 0.125;
+        let duration = noteData.duration / 1000;
+
+        gainNode.gain.setValueAtTime(musicVol, time);
+        gainNode.gain.setValueAtTime(musicVol, time + duration - 0.03);
+        gainNode.gain.linearRampToValueAtTime(0.0001, time + duration);
+
+        osc.connect(gainNode);
+        gainNode.connect(masterGainNode);
+
+        osc.start(time);
+        osc.stop(time + duration);
+    }
+
+    function scheduler() {
+        if (!audioCtx || isTabHidden || document.hidden || musicPausedForReport) return;
+        clearTimeout(musicTimeoutId);
+        if (audioCtx.state === 'suspended') return;
+
+        while (currentNoteIndex < allNotes.length &&
+               (currentLoopStartTime + allNotes[currentNoteIndex].time / 1000) < audioCtx.currentTime + scheduleAheadTime) {
+            
+            let noteData = allNotes[currentNoteIndex];
+            let scheduleTime = currentLoopStartTime + noteData.time / 1000;
+            
+            scheduleNewNote(noteData, scheduleTime);
+            currentNoteIndex++;
+        }
+
+        if (currentNoteIndex >= allNotes.length && audioCtx.currentTime > currentLoopStartTime + LOOP_DURATION - scheduleAheadTime) {
+            currentLoopStartTime += LOOP_DURATION;
+            currentNoteIndex = 0;
+        }
+
+        musicTimeoutId = setTimeout(scheduler, lookahead);
+    }
+
+    function initGlobalMusic() {
+        if (musicStarted) return; 
+
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            masterGainNode = audioCtx.createGain();
+            masterGainNode.connect(audioCtx.destination);
+        }
+
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume().then(() => {
+                if (!musicStarted && audioCtx.state === 'running') {
+                    musicStarted = true;
+                    currentLoopStartTime = audioCtx.currentTime + 0.05;
+                    currentNoteIndex = 0;
+                    scheduler();
+                }
+            }).catch(e => console.log(e));
+        } else if (audioCtx.state === 'running') {
+            musicStarted = true;
+            currentLoopStartTime = audioCtx.currentTime + 0.05;
+            currentNoteIndex = 0;
+            scheduler();
+        }
+    }
+    // --- END MUSIC SEQUENCER ---
+
+    // --- MOBILE ANIMATION LOGIC ---
+    function updateMobileAnim() {
+        let img = document.getElementById('mobile-anim-img');
+        if (img) {
+            mobileAnimFrameIndex = (mobileAnimFrameIndex + 1) % 12;
+            img.style.transform = `translateX(-${mobileAnimFrameIndex * (100 / 12)}%)`;
+        }
+        
+        let now = performance.now();
+        if (isMobileAnimActive) {
+            let elapsed = now - mobileFpsTransitionStart;
+            // Ramp up for 1s, Hold for 3s, Ramp down for 1s (total effect duration 5s)
+            if (elapsed < 1000) { 
+                mobileCurrentFps = 6 + (6 * (elapsed / 1000));
+            } else if (elapsed < 4000) { 
+                mobileCurrentFps = 12;
+            } else if (elapsed < 5000) { 
+                mobileCurrentFps = 12 - (6 * ((elapsed - 4000) / 1000));
+            } else {
+                mobileCurrentFps = 6;
+                isMobileAnimActive = false;
+            }
+        } else {
+            mobileCurrentFps = 6;
+        }
+
+        let delay = 1000 / mobileCurrentFps;
+        mobileAnimTimeout = setTimeout(updateMobileAnim, delay);
+    }
+    
+    // Kickoff the mobile anim loop right away
+    updateMobileAnim();
+
+    window.triggerMobileAnim = function() {
+        if (!isMobileAnimActive) {
+            isMobileAnimActive = true;
+            mobileFpsTransitionStart = performance.now();
+        }
+    };
+    // --- END MOBILE ANIMATION LOGIC ---
 
     function togglePause() {
         if (!gameRunning) return;
@@ -590,58 +1050,162 @@
         }
     }
 
-    function startGame(mode) {
-        difficultyMode = mode;
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        document.getElementById('splash-screen').style.display = 'none';
-        document.getElementById('game-container').style.display = 'block';
-        gameRunning = true; 
-        isPaused = true; 
-        burpProgress = 0; 
-        petEl.innerHTML = classicMelvinSVG + classicFullMelvinSVG + superMelvinSVG + superFullMelvinSVG + gammaMelvinSVG; 
-        createSparklePool(); rollNewLimit(); updateUI();
-        
-        document.getElementById('pause-overlay').style.display = 'flex';
-        document.getElementById('icon-pause').style.display = 'none';
-        document.getElementById('icon-play').style.display = 'block';
-        document.getElementById('pause-tip').innerHTML = "It's normal for a baby to lose weight in the first week after leaving the hospital. Be patient with yourself and with Melvin. It will get better!<br><br>Click the play button to continue...";
-    }
-    
-    function resumeGame() { 
-        document.getElementById('checkup-screen').style.display = 'none'; 
-        // document.getElementById('share-btn').style.display = 'none';
-        
-        // Finalize the day transition that was paused for the report
-        dayCount++; 
-        
-        // If it's the start of a new week, reset the weekly metrics
-        if (dayCount % 7 === 1) {
-            superCooldownDays = 0; 
-            spitupsAverted = 0; 
-            totalGainAccrued = 0; 
-            lockedAvg = 0.0; 
-            lockedPowerUpTier = null; 
-            gammaUsedThisWeek = false;
-        }
+    function startGame(mode, btnEl, isSuperTest = false) {
+        if(btnEl) btnEl.classList.add('pressed');
+        setTimeout(() => {
+            if(btnEl) btnEl.classList.remove('pressed');
+            
+            let tooltip = document.getElementById('bmc-tooltip');
+            if (tooltip) tooltip.classList.remove('show');
 
-        // Reset the day's session tracking
-        timeLeft = GROWTH_INTERVAL; 
-        foodStored = 0; 
-        currentSessionOunces = 0; 
-        burpProgress = 0; 
-        
-        gameRunning = true; 
-        updateUI();
-        timerBar.style.height = '100%';
+            difficultyMode = mode;
+            
+            isSuperModeGame = isSuperTest;
+            if (isSuperTest) {
+                spitupsAverted = 4;
+                superMelvinActive = true;
+                gammaMelvinActive = false;
+            } else {
+                spitupsAverted = 0;
+                superMelvinActive = false;
+                gammaMelvinActive = false;
+            }
+
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                masterGainNode = audioCtx.createGain();
+                masterGainNode.connect(audioCtx.destination);
+            }
+            document.getElementById('splash-screen').style.display = 'none';
+            document.getElementById('game-container').style.display = 'block';
+            gameRunning = true; 
+            isPaused = true; 
+            burpProgress = 0; 
+            petEl.innerHTML = classicMelvinSVG + classicFullMelvinSVG + superMelvinSVG + superFullMelvinSVG + gammaMelvinSVG; 
+            createSparklePool('sparkle-wrap');
+            rollNewLimit(); 
+            
+            // Clear any lingering spitup flags
+            isClassicSpittingUp = false; classicSpitUpFrame = 0;
+            isSuperSpittingUp = false; superSpitUpFrame = 0;
+            
+            updateUI();
+            
+            document.getElementById('pause-overlay').style.display = 'flex';
+            document.getElementById('icon-pause').style.display = 'none';
+            document.getElementById('icon-play').style.display = 'block';
+            
+            if (isSuperModeGame) {
+                document.getElementById('pause-tip').innerHTML = "It's normal for a baby to lose weight in the first week after leaving the hospital. But then again... I've never seen a baby float off the ground!<br><br>Click the play button to continue...";
+            } else {
+                document.getElementById('pause-tip').innerHTML = "It's normal for a baby to lose weight in the first week after leaving the hospital. Be patient with yourself and with Melvin. It will get better!<br><br>Click the play button to continue...";
+            }
+        }, 150);
     }
     
-    function createSparklePool() {
-        for(let i=0; i<15; i++) {
-            let s = document.createElement('div'); s.className = 'sparkle-pixel';
-            s.style.left = Math.random() * 100 + '%'; s.style.top = Math.random() * 100 + '%';
-            s.style.animationDelay = (Math.random() * 1.5) + 's'; s.style.backgroundColor = i % 2 === 0 ? 'white' : 'var(--sparkle-gold)';
-            sparkleWrap.appendChild(s);
-        }
+    function resumeGame(btnEl) {
+        if(btnEl) btnEl.classList.add('pressed');
+        setTimeout(() => {
+            if(btnEl) btnEl.classList.remove('pressed');
+            document.getElementById('checkup-screen').style.display = 'none'; 
+            
+            musicPausedForReport = false;
+            if (audioCtx && audioCtx.state === 'running' && musicStarted && !isTabHidden) {
+                currentLoopStartTime = audioCtx.currentTime + 0.05;
+                currentNoteIndex = 0;
+                scheduler();
+            }
+
+            // Check if Super Mode button was clicked
+            if (btnEl && btnEl.classList.contains('super-mode')) {
+                btnEl.classList.remove('super-mode'); 
+                btnEl.innerText = 'RESUME';
+
+                isSuperModeGame = true;
+                difficultyMode = 'normal';
+                totalOunces = 104.0;
+                dayCount = 1;
+                totalGainAccrued = 0;
+                lockedAvg = 0.0;
+                spitupsAverted = 4;
+                superMelvinActive = true;
+                gammaMelvinActive = false;
+                superCooldownDays = 0;
+                gammaCooldownDays = 0;
+                lockedPowerUpTier = null;
+                totalBottles = 0;
+                totalBurpClicks = 0;
+                totalSuccessfulBurps = 0;
+                totalOuncesSpitUp = 0;
+                superCount = 0;
+                gammaCount = 0;
+                bestDailyAvg = 0.0;
+                secondsPlayed = 0;
+                nineLbDay = null;
+                
+                victoryAnimated = false;
+                standardAnimated = false;
+
+                timeLeft = GROWTH_INTERVAL;
+                foodStored = 0;
+                currentSessionOunces = 0;
+                burpProgress = 0;
+                
+                isClassicSpittingUp = false; classicSpitUpFrame = 0;
+                isSuperSpittingUp = false; superSpitUpFrame = 0;
+
+                petEl.innerHTML = classicMelvinSVG + classicFullMelvinSVG + superMelvinSVG + superFullMelvinSVG + gammaMelvinSVG; 
+                createSparklePool('sparkle-wrap');
+                rollNewLimit();
+                
+                gameRunning = true;
+                isPaused = true;
+                updateUI();
+                timerBar.style.height = '100%';
+
+                document.getElementById('pause-overlay').style.display = 'flex';
+                document.getElementById('icon-pause').style.display = 'none';
+                document.getElementById('icon-play').style.display = 'block';
+                document.getElementById('pause-tip').innerHTML = "It's normal for a baby to lose weight in the first week after leaving the hospital. But then again... I've never seen a baby float off the ground!<br><br>Click the play button to continue...";
+
+                return;
+            }
+
+            // Finalize the day transition that was paused for the report
+            dayCount++; 
+            
+            // If it's the start of a new week, reset the weekly metrics
+            if (dayCount % 7 === 1) {
+                superCooldownDays = 0; 
+                gammaCooldownDays = 0;
+                
+                if (isSuperModeGame) {
+                    spitupsAverted = 4;
+                    superMelvinActive = true;
+                    gammaMelvinActive = false;
+                } else {
+                    spitupsAverted = 0;
+                    superMelvinActive = false;
+                    gammaMelvinActive = false;
+                }
+                
+                totalGainAccrued = 0; 
+                lockedAvg = 0.0; 
+                lockedPowerUpTier = null; 
+            }
+
+            // Reset the day's session tracking
+            timeLeft = GROWTH_INTERVAL; 
+            foodStored = 0; 
+            currentSessionOunces = 0; 
+            burpProgress = 0; 
+            isClassicSpittingUp = false; classicSpitUpFrame = 0;
+            isSuperSpittingUp = false; superSpitUpFrame = 0;
+            
+            gameRunning = true; 
+            updateUI();
+            timerBar.style.height = '100%';
+        }, 150);
     }
     
     function rollNewLimit() {
@@ -657,7 +1221,7 @@
         let burpLevel = level === 0 ? 1 : level;
         let extraMargin = (burpLevel - 1) * (Math.floor(Math.random() * 3) + 1);
         let baseBurps = 3 + Math.floor(Math.random() * 4) + extraMargin;
-        if (difficultyMode === 'easy') {
+        if (difficultyMode === 'easy' && currentWeek > 1) {
             burpsRequired = Math.max(1, Math.round(baseBurps * 0.75));
         } else {
             burpsRequired = baseBurps;
@@ -667,10 +1231,11 @@
     }
     
     function playSound(f, t, d = 0.1, v = 0.05) {
-        if (!audioCtx) return; if (audioCtx.state === 'suspended') audioCtx.resume();
+        if (!audioCtx || document.hidden || isTabHidden) return; 
+        if (audioCtx.state === 'suspended') audioCtx.resume();
         const o = audioCtx.createOscillator(), g = audioCtx.createGain();
         o.type = t; o.frequency.setValueAtTime(f, audioCtx.currentTime);
-        g.gain.setValueAtTime(v, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination);
+        g.gain.setValueAtTime(v, audioCtx.currentTime); o.connect(g); g.connect(masterGainNode);
         o.start(); o.stop(audioCtx.currentTime + d);
     }
     
@@ -700,14 +1265,26 @@
             totalOuncesSpitUp += foodStored * penaltyRate; 
             foodStored -= foodStored * penaltyRate;
             
+            if (superMelvinActive) {
+                isSuperSpittingUp = true;
+                superSpitUpFrame = 1;
+            } else if (!gammaMelvinActive) {
+                isClassicSpittingUp = true;
+                classicSpitUpFrame = 1;
+            }
+
             currentSessionOunces = 0; 
             if (spitupsAverted > 0) {
                 spitupsAverted = Math.max(0, spitupsAverted - 1);
-                if (spitupsAverted < 4) lockedPowerUpTier = null;
+                if (spitupsAverted < 4 && !isSuperModeGame && !superMelvinActive && !gammaMelvinActive) {
+                    lockedPowerUpTier = null;
+                }
             }
-            playSound(150, 'sawtooth', 0.4, 0.1); triggerSpitup(); rollNewLimit();
+            playSound(150, 'sawtooth', 0.4, 0.0335);
+            triggerSpitup(); rollNewLimit();
         } else {
-            foodStored += 0.5; currentSessionOunces += 0.5; playSound(800, 'square', 0.08, 0.05);
+            foodStored += 0.5; currentSessionOunces += 0.5; 
+            playSound(800, 'square', 0.08, 0.00825);
             petEl.style.transform = 'scale(1.1)'; setTimeout(() => petEl.style.transform = 'scale(1)', 100);
         }
         updateUI();
@@ -722,25 +1299,33 @@
 
         if (burpProgress >= currentReq) {
             totalSuccessfulBurps++; 
-            const isAvailable = (superCooldownDays === 0 && !superMelvinActive && !gammaMelvinActive);
+            const isAvailable = isSuperModeGame ? true : (superCooldownDays === 0 && !superMelvinActive && !gammaMelvinActive);
+            const meetsAvgReq = isSuperModeGame ? true : (currentAvg >= 1.0);
             
             let currentWeekForCap = Math.floor((dayCount - 1) / 7) + 1;
             let capacityMultiplier = (difficultyMode === 'easy' && currentWeekForCap > 1) ? 2.0 : 1.0;
             const effectiveLimit = (gammaMelvinActive ? Infinity : (superMelvinActive ? (ozLimit * 2) : ozLimit)) * capacityMultiplier;
 
-            if (currentSessionOunces >= effectiveLimit && currentAvg >= 1.0 && isAvailable) {
+            if (currentSessionOunces >= effectiveLimit && meetsAvgReq && isAvailable) {
                 if (spitupsAverted < 4) {
                     spitupsAverted++;
-                    if (spitupsAverted === 4) {
-                        lockedPowerUpTier = (currentAvg >= 2.0 && !gammaUsedThisWeek) ? 'gamma' : 'super';
+                    
+                    let canLock = isSuperModeGame ? false : (!superMelvinActive && !gammaMelvinActive);
+                    if (spitupsAverted === 4 && canLock) {
+                        if (currentAvg >= 2.0 && gammaCooldownDays === 0) {
+                            lockedPowerUpTier = 'gamma';
+                        } else {
+                            lockedPowerUpTier = 'super';
+                        }
                     }
                 }
             }
             burpProgress = 0; currentSessionOunces = 0; rollNewLimit();
-            petEl.style.transform = 'translateY(-5px) scale(1.3)'; playSound(120, 'sawtooth', 0.5, 0.2);
+            petEl.style.transform = 'translateY(-5px) scale(1.3)'; 
+            playSound(120, 'sawtooth', 0.5, 0.03325);
             setTimeout(() => petEl.style.transform = 'scale(1)', 200); updateUI();
         } else {
-            playSound(300, 'triangle', 0.08, 0.1); 
+            playSound(300, 'triangle', 0.08, 0.0665);
             petEl.style.transform = 'translateY(-5px)';
             setTimeout(() => petEl.style.transform = 'scale(1)', 100);
         }
@@ -748,39 +1333,201 @@
 
     function toggleStatsView() {
         statsViewState = (statsViewState === 'victory') ? 'standard' : 'victory';
-        renderStats(); updateArrows();
+        renderStatsView(statsViewState);
     }
 
-    function updateArrows() {
-        const prevBtn = document.getElementById('prev-stats-btn');
-        const nextBtn = document.getElementById('next-stats-btn');
+    function updateArrowsVisibility() {
         if (totalOunces >= 144) {
-            if (statsViewState === 'victory') { prevBtn.style.display = 'none'; nextBtn.style.display = 'flex'; }
-            else { prevBtn.style.display = 'flex'; nextBtn.style.display = 'none'; }
+            document.getElementById('prev-stats-btn').style.display = (statsViewState === 'victory') ? 'none' : 'flex';
+            document.getElementById('next-stats-btn').style.display = (statsViewState === 'victory') ? 'flex' : 'none';
         } else {
-            prevBtn.style.display = 'none'; nextBtn.style.display = 'none';
+            document.getElementById('prev-stats-btn').style.display = 'none';
+            document.getElementById('next-stats-btn').style.display = 'none';
         }
     }
 
-    function renderStats() {
+    async function renderStatsView(view) {
+        currentRenderId++;
+        const myRenderId = currentRenderId;
         const statsArea = document.getElementById('stats-area');
-        if (statsViewState === 'victory') {
+        const reportTitle = document.getElementById('checkup-title');
+        const congratsWrap = document.getElementById('congrats-text-wrap');
+        const docImg = document.getElementById('dr-swadlzworth-img');
+        const docBox = document.getElementById('svg-reference-box-red');
+
+        // --- NEW AUDIO HELPERS FOR STATS VIEW ---
+        const playCoin = (stepDown = false) => {
+            let f1 = stepDown ? 880 : 1109; // Changed 987 to 1109 (C#6)
+            let f2 = stepDown ? 1174 : 1480; // Changed 1318 to 1480 (F#6)
+            playSound(f1, 'square', 0.08, 0.035);
+            setTimeout(() => playSound(f2, 'square', 0.1, 0.035), 80);
+        };
+
+        const playWoosh = () => {
+            if (!audioCtx || document.hidden || isTabHidden) return;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+            o.type = 'triangle';
+            o.frequency.setValueAtTime(150, audioCtx.currentTime);
+            o.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.2);
+            g.gain.setValueAtTime(0.08, audioCtx.currentTime);
+            g.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+            o.connect(g); g.connect(masterGainNode);
+            o.start(); o.stop(audioCtx.currentTime + 0.2);
+        };
+        
+        const playMidSlide = () => {
+            if (!audioCtx || document.hidden || isTabHidden) return;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+            o.type = 'square';
+            o.frequency.setValueAtTime(440, audioCtx.currentTime);
+            o.frequency.exponentialRampToValueAtTime(330, audioCtx.currentTime + 0.2);
+            g.gain.setValueAtTime(0.02, audioCtx.currentTime);
+            g.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+            o.connect(g); g.connect(masterGainNode);
+            o.start(); o.stop(audioCtx.currentTime + 0.2);
+        };
+        // ----------------------------------------
+
+        statsArea.innerHTML = '';
+        
+        let isInitialLoad = !victoryAnimated && !standardAnimated;
+        let needsStatsAnimation = (view === 'victory' && !victoryAnimated) || (view === 'standard' && !standardAnimated);
+
+        if (isInitialLoad) {
+            reportTitle.style.animation = 'none';
+            congratsWrap.style.animation = 'none';
+            reportTitle.style.transform = 'translateY(250%)';
+            congratsWrap.style.transform = 'scale(0)';
+            
+            docImg.style.left = '-30%';
+            docBox.style.opacity = '0';
+            docBox.style.transform = 'scale(0)';
+        }
+
+        if (needsStatsAnimation) {
+            document.getElementById('prev-stats-btn').style.display = 'none';
+            document.getElementById('next-stats-btn').style.display = 'none';
+        }
+        
+        const bottleIcon = '<img src="https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.svg" class="stat-bullet" />';
+        const scaleIcon = '<img src="https://www.feedmelvin.com/scale_icon_web.svg" class="stat-bullet" />';
+        const spitUpIcon = '<img src="https://www.feedmelvin.com/spit_up_icon_web.svg" class="stat-bullet" />';
+        const fullIcon = '<img src="https://www.feedmelvin.com/full_icon_web.svg" class="stat-bullet" />';
+
+        let rowsData = [];
+
+        if (view === 'victory') {
             const minsPlayed = Math.floor(secondsPlayed / 60);
             const finalLb = Math.floor(totalOunces / 16);
             const finalOz = Math.floor(totalOunces % 16);
             const gammaText = gammaCount === 0 ? '? ? ? ? Melvins' : 'Gamma Melvins';
             
-            statsArea.innerHTML = '<div class="stat-row">Difficulty Level: <span style="color: var(--sparkle-gold);">' + difficultyMode.toUpperCase() + '</span></div>' +
-                '<div class="stat-row">Final weight: <span style="color: var(--sparkle-gold);">' + finalLb + 'lb ' + finalOz + 'oz</span></div>' +
-                '<div class="stat-row">Best Daily Average: <span style="color: var(--sparkle-gold);">' + bestDailyAvg.toFixed(1) + ' oz</span></div>' +
-                '<div class="stat-row">Super Levis: <span style="color: var(--sparkle-gold);">' + superCount + '</span></div>' +
-                '<div class="stat-row">' + gammaText + ': <span style="color: var(--sparkle-gold);">' + gammaCount + '</span></div>' +
-                '<div class="stat-row">Minutes Played: <span style="color: var(--sparkle-gold);">' + minsPlayed + '</span></div>';
+            rowsData = [
+                { icon: bottleIcon, label: 'Difficulty Level: ', value: difficultyMode.toUpperCase() },
+                { icon: scaleIcon, label: 'Final weight: ', value: finalLb + 'lb ' + finalOz + 'oz' },
+                { icon: scaleIcon, label: 'Best Daily Avg.: ', value: bestDailyAvg.toFixed(1) + ' oz' },
+                { icon: fullIcon, label: 'Super Melvins: ', value: superCount },
+                { icon: fullIcon, label: gammaText + ': ', value: gammaCount },
+                { icon: bottleIcon, label: 'Minutes Played: ', value: minsPlayed }
+            ];
         } else {
-            statsArea.innerHTML = '<div class="stat-row">Bottles Fed: <span>' + totalBottles + '</span></div>' +
-                '<div class="stat-row">Ounces Spit-up: <span>' + totalOuncesSpitUp.toFixed(1) + '</span> oz</div>' +
-                '<div class="stat-row">Successful Burps: <span>' + totalSuccessfulBurps + '</span></div>';
+            rowsData = [
+                { icon: scaleIcon, label: 'Weight Gain: ', value: totalGainAccrued.toFixed(1) + 'oz' },
+                { icon: bottleIcon, label: 'Bottles Fed: ', value: totalBottles },
+                { icon: spitUpIcon, label: 'Ounces Spit-up: ', value: totalOuncesSpitUp.toFixed(1) + 'oz' },
+                { icon: fullIcon, label: 'Successful Burps: ', value: totalSuccessfulBurps }
+            ];
         }
+
+        if (isInitialLoad) {
+            // 1. Report Title slides up
+            await new Promise(r => setTimeout(r, 333));
+            if (myRenderId !== currentRenderId) return;
+            playCoin(false); // Header text coin sound
+            reportTitle.style.animation = 'titleSlideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
+            
+            // 2. Wait for first line to finish, then GREAT WORK scales up
+            if (view === 'victory') {
+                await new Promise(r => setTimeout(r, 500));
+                if (myRenderId !== currentRenderId) return;
+                congratsWrap.style.animation = 'titleScaleUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
+            }
+            
+            // 3. Wait for header animations to finish
+            await new Promise(r => setTimeout(r, 500));
+            if (myRenderId !== currentRenderId) return;
+        }
+
+        for (let row of rowsData) {
+            const rowDiv = document.createElement('div');
+            rowDiv.className = 'stat-row';
+            
+            let iconStr = row.icon;
+            if (needsStatsAnimation) {
+                iconStr = iconStr.replace('class="stat-bullet"', 'class="stat-bullet fade-in" style="opacity:0;"');
+            }
+            rowDiv.innerHTML = iconStr;
+            
+            const textDiv = document.createElement('div');
+            rowDiv.appendChild(textDiv);
+            statsArea.appendChild(rowDiv);
+
+            if (needsStatsAnimation) {
+                playCoin(true); // Whole step down coin sound for icon appearing
+                await new Promise(r => setTimeout(r, 333));
+                if (myRenderId !== currentRenderId) return;
+
+                let currentText = '';
+                for (let char of row.label) {
+                    currentText += char;
+                    textDiv.textContent = currentText;
+                    playSound(600, 'square', 0.02, 0.02); // Mid pitched typing beep
+                    await new Promise(r => setTimeout(r, 25));
+                    if (myRenderId !== currentRenderId) return;
+                }
+
+                await new Promise(r => setTimeout(r, 333));
+                if (myRenderId !== currentRenderId) return;
+
+                const span = document.createElement('span');
+                span.textContent = row.value;
+                span.className = 'land-hard-anim';
+                textDiv.appendChild(span);
+                
+                // Low pitch sawtooth stomp after the 150ms land hard animation completes
+                setTimeout(() => {
+                    if (myRenderId === currentRenderId) playSound(100, 'sawtooth', 0.3, 0.1);
+                }, 150);
+
+                await new Promise(r => setTimeout(r, 833));
+                if (myRenderId !== currentRenderId) return;
+            } else {
+                textDiv.textContent = row.label;
+                const span = document.createElement('span');
+                span.textContent = row.value;
+                textDiv.appendChild(span);
+            }
+        }
+
+        if (isInitialLoad) {
+            await new Promise(r => setTimeout(r, 333));
+            if (myRenderId !== currentRenderId) return;
+            playWoosh(); // Electronic woosh for slide animation
+            playMidSlide(); // Mid pitch sound for slide
+            docImg.style.left = '1.34%';
+            
+            await new Promise(r => setTimeout(r, 333));
+            if (myRenderId !== currentRenderId) return;
+            docBox.style.opacity = '1';
+            docBox.style.transform = 'scale(1)';
+        }
+
+        if (view === 'victory') victoryAnimated = true;
+        if (view === 'standard') standardAnimated = true;
+
+        updateArrowsVisibility();
     }
     
     function updateUI() {
@@ -800,21 +1547,31 @@
         let feedsRemaining = (effectiveLimit - currentSessionOunces) / 0.5;
         let tintOpacity = 0;
         
-        if (effectiveLimit !== Infinity && feedsRemaining <= 2) {
+        if (isClassicSpittingUp) {
+            tintOpacity = 0.75 * (1 - (classicSpitUpFrame / 7));
+            if (tintOpacity < 0) tintOpacity = 0;
+        } else if (isSuperSpittingUp) {
+            tintOpacity = 0.75 * (1 - (superSpitUpFrame / 7));
+            if (tintOpacity < 0) tintOpacity = 0;
+        } else if (effectiveLimit !== Infinity && feedsRemaining <= 2) {
             let progress = (2 - Math.max(0, feedsRemaining)) / 2;
             tintOpacity = progress * 0.75;
         }
         
         document.getElementById('green-flood').setAttribute('flood-opacity', tintOpacity);
 
-        const isAvailable = (superCooldownDays === 0 && !superMelvinActive && !gammaMelvinActive);
-        const isPanelActive = (roundedAvg >= 1.0 && isAvailable);
-        document.querySelectorAll('.super-slots').forEach(slot => slot.style.opacity = isPanelActive ? '1.0' : '0.25');
+        const isAvailable = isSuperModeGame ? true : (superCooldownDays === 0 && !superMelvinActive && !gammaMelvinActive);
         
-        let isGammaTier = (lockedPowerUpTier === 'gamma') || (lockedPowerUpTier === null && roundedAvg >= 2.0 && !gammaUsedThisWeek);
+        let isGammaTier = false;
+        if (isSuperModeGame) {
+            isGammaTier = (roundedAvg >= 2.0 && gammaCooldownDays === 0 && spitupsAverted === 4);
+        } else {
+            isGammaTier = (lockedPowerUpTier === 'gamma') || (lockedPowerUpTier === null && roundedAvg >= 2.0 && gammaCooldownDays === 0 && !superMelvinActive && !gammaMelvinActive);
+        }
+        
         const superLabel = document.querySelector('.super-label');
-        if (gammaMelvinActive) superLabel.innerText = "GAMMA";
-        else if (isGammaTier) superLabel.innerText = "? ? ? ?";
+        if (isGammaTier && !gammaMelvinActive) superLabel.innerText = "? ? ? ?";
+        else if (gammaMelvinActive) superLabel.innerText = "GAMMA";
         else superLabel.innerText = "SUPER";
         
         const classicSvg = petEl.querySelector('svg[data-classic]');
@@ -824,18 +1581,20 @@
         const gammaSvg = petEl.querySelector('svg[data-gamma]');
         if (classicSvg && classicFullSvg && superSvg && superFullSvg && gammaSvg) {
             if (gammaMelvinActive) {
-                classicSvg.style.display = 'none'; classicFullSvg.style.display = 'none'; superSvg.style.display = 'none'; superFullSvg.style.display = 'none'; gammaSvg.style.display = 'block';
+                classicSvg.style.opacity = '0'; classicFullSvg.style.opacity = '0'; superSvg.style.opacity = '0'; superFullSvg.style.opacity = '0'; gammaSvg.style.opacity = '1';
             } else if (superMelvinActive) {
-                classicSvg.style.display = 'none'; classicFullSvg.style.display = 'none';
+                classicSvg.style.opacity = '0'; classicFullSvg.style.opacity = '0';
                 const isFull = currentSessionOunces >= (ozLimit * 2 * capMult);
-                superSvg.style.display = isFull ? 'none' : 'block';
-                superFullSvg.style.display = isFull ? 'block' : 'none';
-                gammaSvg.style.display = 'none';
+                const showFull = isFull || isSuperSpittingUp;
+                superSvg.style.opacity = showFull ? '0' : '1';
+                superFullSvg.style.opacity = showFull ? '1' : '0';
+                gammaSvg.style.opacity = '0';
             } else {
                 const isClassicFull = currentSessionOunces >= (ozLimit * capMult);
-                classicSvg.style.display = isClassicFull ? 'none' : 'block';
-                classicFullSvg.style.display = isClassicFull ? 'block' : 'none';
-                superSvg.style.display = 'none'; superFullSvg.style.display = 'none'; gammaSvg.style.display = 'none';
+                const showClassicFull = isClassicFull || isClassicSpittingUp;
+                classicSvg.style.opacity = showClassicFull ? '0' : '1';
+                classicFullSvg.style.opacity = showClassicFull ? '1' : '0';
+                superSvg.style.opacity = '0'; superFullSvg.style.opacity = '0'; gammaSvg.style.opacity = '0';
             }
         }
 
@@ -844,15 +1603,15 @@
         const slot3 = document.getElementById('super-slot-3');
         const slot4 = document.getElementById('super-slot-4');
 
-        if (isPanelActive) {
-            let activeFrame = isGammaTier ? '52 0 26 26' : '26 0 26 26';
-            slot1.setAttribute('viewBox', spitupsAverted >= 1 ? activeFrame : '0 0 26 26');
-            slot2.setAttribute('viewBox', spitupsAverted >= 2 ? activeFrame : '0 0 26 26');
-            slot3.setAttribute('viewBox', spitupsAverted >= 3 ? activeFrame : '0 0 26 26');
-            slot4.setAttribute('viewBox', spitupsAverted >= 4 ? activeFrame : '0 0 26 26');
-        } else {
-            slot1.setAttribute('viewBox', '0 0 26 26'); slot2.setAttribute('viewBox', '0 0 26 26'); slot3.setAttribute('viewBox', '0 0 26 26'); slot4.setAttribute('viewBox', '0 0 26 26');
-        }
+        // Force opacity to 1.0 if in Super Mode game, otherwise use normal avg check
+        let visualPanelActive = isSuperModeGame ? true : (roundedAvg >= 1.0 && isAvailable);
+        document.querySelectorAll('.super-slots').forEach(slot => slot.style.opacity = visualPanelActive ? '1.0' : '0.25');
+
+        let activeFrame = isGammaTier ? '52 0 26 26' : '26 0 26 26';
+        slot1.setAttribute('viewBox', spitupsAverted >= 1 ? activeFrame : '0 0 26 26');
+        slot2.setAttribute('viewBox', spitupsAverted >= 2 ? activeFrame : '0 0 26 26');
+        slot3.setAttribute('viewBox', spitupsAverted >= 3 ? activeFrame : '0 0 26 26');
+        slot4.setAttribute('viewBox', spitupsAverted >= 4 ? activeFrame : '0 0 26 26');
 
         let currentWeekForLvl = Math.floor((dayCount - 1) / 7) + 1;
         document.getElementById('lvl-val').innerText = currentWeekForLvl === 1 ? 0 : Math.max(1, Math.floor((totalOunces - 104) / 8) + 1);
@@ -860,31 +1619,389 @@
         let scaleMultiplier = (currentWeekForLvl === 1 && totalOunces < 104) ? 5.4 : 3.6;
         let visualScale = Math.min(600, 120 + ((totalOunces - 104) * scaleMultiplier));
         petEl.style.width = visualScale + 'px'; petEl.style.height = visualScale + 'px';
+        sparkleWrap.style.width = visualScale + 'px'; sparkleWrap.style.height = visualScale + 'px';
         document.getElementById('scale-graphic').style.marginTop = '-' + (visualScale * 0.065) + 'px';
     }
 
     setInterval(() => {
+        // Increment and calculate frame for idle animations
+        frameIndex = (frameIndex + 1) % 8;
+        let offsetX = frameIndex * 48;
+
+        // Dr. Swadlzworth Checkup Screen Animation
+        let drInner = document.getElementById('dr-swadlzworth-inner');
+        if (document.getElementById('checkup-screen').style.display !== 'none' && drInner) {
+            if (drReportFrame === 0) {
+                if (drReportTicks < drReportHoldTicks) {
+                    drReportTicks++;
+                } else {
+                    drReportFrame = 1;
+                    drReportTicks = 0;
+                    drInner.style.transform = `translateX(-33.333%)`;
+                }
+            } else {
+                drReportFrame++;
+                if (drReportFrame >= 3) {
+                    drReportFrame = 0;
+                    drReportHoldTicks = Math.floor(Math.random() * 29) + 4; // Reset hold for 0.5-4 seconds
+                    drInner.style.transform = `translateX(0%)`;
+                } else {
+                    drInner.style.transform = `translateX(-${drReportFrame * 33.333}%)`;
+                }
+            }
+        }
+
+        // Dr. Swadlzworth Landing Screen Animation
+        let landingDrInner = document.getElementById('landing-dr-swadlzworth-inner');
+        if (document.getElementById('landing-screen').style.display !== 'none' && landingDrInner) {
+            if (landingDrFrame === 0) {
+                if (landingDrTicks < landingDrHoldTicks) {
+                    landingDrTicks++;
+                } else {
+                    landingDrFrame = 1;
+                    landingDrTicks = 0;
+                    landingDrInner.style.transform = `translateX(-33.333%)`;
+                }
+            } else {
+                landingDrFrame++;
+                if (landingDrFrame >= 3) {
+                    landingDrFrame = 0;
+                    landingDrHoldTicks = Math.floor(Math.random() * 29) + 4; // Reset hold for 0.5-4 seconds
+                    landingDrInner.style.transform = `translateX(0%)`;
+                } else {
+                    landingDrInner.style.transform = `translateX(-${landingDrFrame * 33.333}%)`;
+                }
+            }
+        }
+
+        // Apply idle animation to landing screen Melvin if visible
+        if (document.getElementById('landing-screen').style.display !== 'none') {
+            if (isLandingClassicSpittingUp) {
+                let landingSvg = document.getElementById('landing-melvin-full');
+                if (landingSvg) landingSvg.setAttribute('viewBox', (landingClassicSpitUpFrame * 48) + ' 0 48 48');
+                
+                let flood = document.getElementById('green-flood');
+                let tintOpacity = 0.75 * (1 - (landingClassicSpitUpFrame / 7));
+                if (tintOpacity < 0) tintOpacity = 0;
+                flood.setAttribute('flood-opacity', tintOpacity);
+
+                landingClassicSpitUpFrame++;
+                if (landingClassicSpitUpFrame >= 8) {
+                    isLandingClassicSpittingUp = false;
+                    document.getElementById('landing-melvin').style.opacity = '1';
+                    document.getElementById('landing-melvin-full').style.opacity = '0';
+                    flood.setAttribute('flood-opacity', 0);
+                }
+            } else if (isLandingSuperSpittingUp) {
+                let landingSvg = document.getElementById('landing-super-melvin-full');
+                if (landingSvg) landingSvg.setAttribute('viewBox', (landingSuperSpitUpFrame * 48) + ' 0 48 48');
+                
+                let flood = document.getElementById('green-flood');
+                let tintOpacity = 0.75 * (1 - (landingSuperSpitUpFrame / 7));
+                if (tintOpacity < 0) tintOpacity = 0;
+                flood.setAttribute('flood-opacity', tintOpacity);
+
+                landingSuperSpitUpFrame++;
+                if (landingSuperSpitUpFrame >= 8) {
+                    isLandingSuperSpittingUp = false;
+                    document.getElementById('landing-melvin').style.opacity = '1'; // Revert to classic Melvin
+                    document.getElementById('landing-melvin-full').style.opacity = '0';
+                    if (document.getElementById('landing-super-melvin')) document.getElementById('landing-super-melvin').style.opacity = '0';
+                    if (document.getElementById('landing-super-melvin-full')) document.getElementById('landing-super-melvin-full').style.opacity = '0';
+                    flood.setAttribute('flood-opacity', 0);
+                }
+            } else {
+                let isSuperFull = document.getElementById('landing-super-melvin-full') && document.getElementById('landing-super-melvin-full').style.opacity === '1';
+                let isSuper = document.getElementById('landing-super-melvin') && document.getElementById('landing-super-melvin').style.opacity === '1';
+                let isClassicFull = document.getElementById('landing-melvin-full').style.opacity === '1';
+                
+                if (isSuperFull) {
+                    let landingSvg = document.getElementById('landing-super-melvin-full');
+                    if (landingSvg) landingSvg.setAttribute('viewBox', '0 0 48 48'); // Freeze full
+                } else if (isSuper) {
+                    let landingSvg = document.getElementById('landing-super-melvin');
+                    if (landingSvg) landingSvg.setAttribute('viewBox', offsetX + ' 0 48 48');
+                } else if (isClassicFull) {
+                    let landingSvg = document.getElementById('landing-melvin-full');
+                    if (landingSvg) landingSvg.setAttribute('viewBox', '0 0 48 48'); // Freeze full
+                } else {
+                    let landingSvg = document.getElementById('landing-melvin');
+                    if (landingSvg) landingSvg.setAttribute('viewBox', offsetX + ' 0 48 48');
+                }
+            }
+        }
+
         if (!gameRunning || isPaused) return;
+
+        // Apply idle animation to active game Melvin
         let currentWeekForCap = Math.floor((dayCount - 1) / 7) + 1;
         let capMult = (difficultyMode === 'easy' && currentWeekForCap > 1) ? 2.0 : 1.0;
         const superLimit = ozLimit * 2 * capMult;
         let activeSvg;
+
         if (gammaMelvinActive) {
             activeSvg = petEl.querySelector('svg[data-gamma]');
+            if (activeSvg) activeSvg.setAttribute('viewBox', offsetX + ' 0 48 48');
         } else if (superMelvinActive) {
-            const isSuperFull = currentSessionOunces >= superLimit;
-            activeSvg = isSuperFull ? petEl.querySelector('svg[data-super-full]') : petEl.querySelector('svg[data-super]');
+            if (isSuperSpittingUp) {
+                activeSvg = petEl.querySelector('svg[data-super-full]');
+                if (activeSvg) activeSvg.setAttribute('viewBox', (superSpitUpFrame * 48) + ' 0 48 48');
+                superSpitUpFrame++;
+                if (superSpitUpFrame >= 8) {
+                    isSuperSpittingUp = false;
+                    updateUI();
+                }
+            } else {
+                const isSuperFull = currentSessionOunces >= superLimit;
+                if (isSuperFull) {
+                    activeSvg = petEl.querySelector('svg[data-super-full]');
+                    if (activeSvg) activeSvg.setAttribute('viewBox', '0 0 48 48');
+                } else {
+                    activeSvg = petEl.querySelector('svg[data-super]');
+                    if (activeSvg) activeSvg.setAttribute('viewBox', offsetX + ' 0 48 48');
+                }
+            }
         } else {
-            const isClassicFull = currentSessionOunces >= (ozLimit * capMult);
-            activeSvg = isClassicFull ? petEl.querySelector('svg[data-classic-full]') : petEl.querySelector('svg[data-classic]');
-        }
-        
-        if (activeSvg) {
-            frameIndex = (frameIndex + 1) % 8;
-            let offsetX = frameIndex * 48;
-            activeSvg.setAttribute('viewBox', offsetX + ' 0 48 48');
+            if (isClassicSpittingUp) {
+                activeSvg = petEl.querySelector('svg[data-classic-full]');
+                if (activeSvg) activeSvg.setAttribute('viewBox', (classicSpitUpFrame * 48) + ' 0 48 48');
+                classicSpitUpFrame++;
+                updateUI();
+                if (classicSpitUpFrame >= 8) {
+                    isClassicSpittingUp = false;
+                    updateUI();
+                }
+            } else {
+                const isClassicFull = currentSessionOunces >= (ozLimit * capMult);
+                activeSvg = isClassicFull ? petEl.querySelector('svg[data-classic-full]') : petEl.querySelector('svg[data-classic]');
+                if (activeSvg) {
+                    if (isClassicFull) {
+                        activeSvg.setAttribute('viewBox', '0 0 48 48');
+                    } else {
+                        activeSvg.setAttribute('viewBox', offsetX + ' 0 48 48');
+                    }
+                }
+            }
         }
     }, 1000 / 8);
+
+    // Landing Screen Automated Demo Sequence
+    let demoStep = -3; 
+    setInterval(() => {
+        if (!demoActive || !assetsLoaded || document.getElementById('landing-screen').style.display === 'none' || document.hidden) return;
+
+        demoStep++;
+        let landingPet = document.getElementById('landing-pet');
+        let landingSpitup = document.getElementById('landing-spitup-overlay');
+        let flood = document.getElementById('green-flood');
+        let landingSparkle = document.getElementById('landing-sparkle-wrap');
+
+        if (demoStep >= 1 && demoStep <= 6) {
+            // First Feed Sequence
+            landingPet.style.transform = 'scale(1.1)';
+            playSound(800, 'square', 0.08, 0.00825);
+            setTimeout(() => landingPet.style.transform = 'scale(1)', 100);
+            
+            // Replicate game's green tint logic as he gets full
+            if (demoStep === 4) flood.setAttribute('flood-opacity', 0);
+            if (demoStep === 5) flood.setAttribute('flood-opacity', 0.375);
+            if (demoStep === 6) {
+                flood.setAttribute('flood-opacity', 0.75);
+                document.getElementById('landing-melvin').style.opacity = '0';
+                document.getElementById('landing-melvin-full').style.opacity = '1';
+            }
+        } else if (demoStep === 16) {
+            demoOunces -= 1; updateDemoWeight();
+            // Overfeed bounce (delayed 10 steps = 2 full seconds)
+            landingPet.style.transform = 'scale(1.1)';
+            playSound(150, 'sawtooth', 0.4, 0.0335);
+            setTimeout(() => landingPet.style.transform = 'scale(1)', 100);
+            
+            // Trigger Spit-up Effect to exactly match gameplay
+            landingSpitup.innerHTML = '';
+            const svgNS = "http://www.w3.org/2000/svg";
+            const svg = document.createElementNS(svgNS, "svg");
+            svg.setAttribute("viewBox", "0 0 100 100"); 
+            svg.setAttribute("preserveAspectRatio", "none"); 
+            svg.style.width = "100%"; 
+            svg.style.height = "100%";
+            for(let i=0; i<25; i++) {
+                const rect = document.createElementNS(svgNS, "rect");
+                rect.setAttribute("x", Math.random() * 85); 
+                rect.setAttribute("y", Math.random() * 85);
+                rect.setAttribute("width", 6 + Math.random() * 18); 
+                rect.setAttribute("height", 6 + Math.random() * 18);
+                rect.setAttribute("fill", "white"); 
+                svg.appendChild(rect);
+            }
+            landingSpitup.appendChild(svg); 
+            landingSpitup.classList.remove('show-spitup'); 
+            void landingSpitup.offsetWidth; 
+            landingSpitup.classList.add('show-spitup');
+            
+            // Trigger animation in the 125ms interval loop
+            isLandingClassicSpittingUp = true;
+            landingClassicSpitUpFrame = 1;
+        } else if (demoStep >= 22 && demoStep <= 27) {
+            // Second Feed Sequence
+            landingPet.style.transform = 'scale(1.1)';
+            playSound(800, 'square', 0.08, 0.00825);
+            setTimeout(() => landingPet.style.transform = 'scale(1)', 100);
+            
+            // Replicate game's green tint logic as he gets full again
+            if (demoStep === 25) flood.setAttribute('flood-opacity', 0);
+            if (demoStep === 26) flood.setAttribute('flood-opacity', 0.375);
+            if (demoStep === 27) {
+                flood.setAttribute('flood-opacity', 0.75);
+                document.getElementById('landing-melvin').style.opacity = '0';
+                document.getElementById('landing-melvin-full').style.opacity = '1';
+            }
+        } else if (demoStep >= 29 && demoStep <= 36) {
+            // First Burp Sequence (8 times)
+            if (demoStep === 36) {
+                demoOunces += 1; updateDemoWeight();
+                // 8th burp triggers the big reset bounce
+                landingPet.style.transform = 'translateY(-5px) scale(1.3)';
+                playSound(120, 'sawtooth', 0.5, 0.03325);
+                setTimeout(() => landingPet.style.transform = 'scale(1)', 200);
+                
+                // Reset State
+                flood.setAttribute('flood-opacity', 0);
+                document.getElementById('landing-melvin').style.opacity = '1';
+                document.getElementById('landing-melvin-full').style.opacity = '0';
+                
+                // Trigger Sparkles
+                landingSparkle.innerHTML = '';
+                landingSparkle.style.display = 'block';
+                for(let i=0; i<15; i++) {
+                    let s = document.createElement('div'); s.className = 'sparkle-pixel';
+                    s.style.left = Math.random() * 100 + '%'; s.style.top = Math.random() * 100 + '%';
+                    s.style.animationDelay = (Math.random() * 1.5) + 's'; s.style.backgroundColor = i % 2 === 0 ? 'white' : 'var(--sparkle-gold)';
+                    landingSparkle.appendChild(s);
+                }
+            } else {
+                // Normal burp bounce
+                landingPet.style.transform = 'translateY(-5px)';
+                playSound(300, 'triangle', 0.08, 0.0665);
+                setTimeout(() => landingPet.style.transform = 'scale(1)', 100);
+            }
+        } else if (demoStep >= 40 && demoStep <= 45) {
+            // Third Feed Sequence (While sparkling)
+            landingPet.style.transform = 'scale(1.1)';
+            playSound(800, 'square', 0.08, 0.00825);
+            setTimeout(() => landingPet.style.transform = 'scale(1)', 100);
+            
+            if (demoStep === 43) flood.setAttribute('flood-opacity', 0);
+            if (demoStep === 44) flood.setAttribute('flood-opacity', 0.375);
+            if (demoStep === 45) {
+                flood.setAttribute('flood-opacity', 0.75);
+                document.getElementById('landing-melvin').style.opacity = '0';
+                document.getElementById('landing-melvin-full').style.opacity = '1';
+            }
+        } else if (demoStep >= 48 && demoStep <= 55) {
+            // Second Burp Sequence (8 times)
+            if (demoStep === 55) {
+                demoOunces += 1; updateDemoWeight();
+                // 8th burp triggers the big reset bounce to Super Melvin!
+                landingPet.style.transform = 'translateY(-5px) scale(1.3)';
+                playSound(120, 'sawtooth', 0.5, 0.03325);
+                setTimeout(() => landingPet.style.transform = 'scale(1)', 200);
+                
+                // Turn off flood tint and sparkles
+                flood.setAttribute('flood-opacity', 0);
+                landingSparkle.style.display = 'none';
+                landingSparkle.innerHTML = '';
+                
+                // Swap to Super Melvin
+                document.getElementById('landing-melvin').style.opacity = '0';
+                document.getElementById('landing-melvin-full').style.opacity = '0';
+                document.getElementById('landing-super-melvin').style.opacity = '1';
+                if (document.getElementById('landing-super-melvin-full')) document.getElementById('landing-super-melvin-full').style.opacity = '0';
+            } else {
+                landingPet.style.transform = 'translateY(-5px)';
+                playSound(300, 'triangle', 0.08, 0.0665);
+                setTimeout(() => landingPet.style.transform = 'scale(1)', 100);
+            }
+        } else if (demoStep >= 59 && demoStep <= 64) {
+            // Fourth Feed Sequence (Super Melvin - 6 feeds)
+            landingPet.style.transform = 'scale(1.1)';
+            playSound(800, 'square', 0.08, 0.00825);
+            setTimeout(() => landingPet.style.transform = 'scale(1)', 100);
+            
+            if (demoStep === 62) flood.setAttribute('flood-opacity', 0);
+            if (demoStep === 63) flood.setAttribute('flood-opacity', 0.375);
+            if (demoStep === 64) {
+                flood.setAttribute('flood-opacity', 0.75);
+                document.getElementById('landing-super-melvin').style.opacity = '0';
+                document.getElementById('landing-super-melvin-full').style.opacity = '1';
+            }
+        } else if (demoStep >= 67 && demoStep <= 68) {
+            // Super Burp Sequence (2 burps reset)
+            if (demoStep === 68) {
+                demoOunces += 1; updateDemoWeight();
+                landingPet.style.transform = 'translateY(-5px) scale(1.3)';
+                playSound(120, 'sawtooth', 0.5, 0.03325);
+                setTimeout(() => landingPet.style.transform = 'scale(1)', 200);
+                
+                flood.setAttribute('flood-opacity', 0);
+                document.getElementById('landing-super-melvin').style.opacity = '1';
+                document.getElementById('landing-super-melvin-full').style.opacity = '0';
+            } else {
+                landingPet.style.transform = 'translateY(-5px)';
+                playSound(300, 'triangle', 0.08, 0.0665);
+                setTimeout(() => landingPet.style.transform = 'scale(1)', 100);
+            }
+        } else if (demoStep >= 71 && demoStep <= 76) {
+            // Fifth Feed Sequence (Super Melvin - 6 feeds)
+            landingPet.style.transform = 'scale(1.1)';
+            playSound(800, 'square', 0.08, 0.00825);
+            setTimeout(() => landingPet.style.transform = 'scale(1)', 100);
+            
+            if (demoStep === 74) flood.setAttribute('flood-opacity', 0);
+            if (demoStep === 75) flood.setAttribute('flood-opacity', 0.375);
+            if (demoStep === 76) {
+                flood.setAttribute('flood-opacity', 0.75);
+                document.getElementById('landing-super-melvin').style.opacity = '0';
+                document.getElementById('landing-super-melvin-full').style.opacity = '1';
+            }
+        } else if (demoStep === 86) {
+            demoOunces -= 1; updateDemoWeight();
+            // 7th Super Feed / Overfeed bounce (delayed 10 steps = 2 full seconds)
+            landingPet.style.transform = 'scale(1.1)';
+            playSound(150, 'sawtooth', 0.4, 0.0335);
+            setTimeout(() => landingPet.style.transform = 'scale(1)', 100);
+            
+            // Trigger Spit-up Effect to exactly match gameplay
+            landingSpitup.innerHTML = '';
+            const svgNS = "http://www.w3.org/2000/svg";
+            const svg = document.createElementNS(svgNS, "svg");
+            svg.setAttribute("viewBox", "0 0 100 100"); 
+            svg.setAttribute("preserveAspectRatio", "none"); 
+            svg.style.width = "100%"; 
+            svg.style.height = "100%";
+            for(let i=0; i<25; i++) {
+                const rect = document.createElementNS(svgNS, "rect");
+                rect.setAttribute("x", Math.random() * 85); 
+                rect.setAttribute("y", Math.random() * 85);
+                rect.setAttribute("width", 6 + Math.random() * 18); 
+                rect.setAttribute("height", 6 + Math.random() * 18);
+                rect.setAttribute("fill", "white"); 
+                svg.appendChild(rect);
+            }
+            landingSpitup.appendChild(svg); 
+            landingSpitup.classList.remove('show-spitup'); 
+            void landingSpitup.offsetWidth; 
+            landingSpitup.classList.add('show-spitup');
+            
+            // Trigger animation in the 125ms interval loop
+            isLandingSuperSpittingUp = true;
+            landingSuperSpitUpFrame = 1;
+        } else if (demoStep >= 94) {
+            demoOunces = 104; updateDemoWeight();
+            // Pause before looping sequence again and clear state back to start
+            demoStep = -3;
+        }
+    }, 200);
 
     setInterval(() => {
         if (!gameRunning || isPaused) return;
@@ -902,24 +2019,84 @@
             
             if (lockedAvg > bestDailyAvg) bestDailyAvg = lockedAvg;
             
-            if (superMelvinActive || gammaMelvinActive) superCooldownDays = 2; 
-            else if (superCooldownDays > 0) superCooldownDays--; 
+            // End of Day Super Mechanics
+            if (isSuperModeGame) {
+                let wasGamma = gammaMelvinActive;
 
-            if (superCooldownDays === 0 && spitupsAverted >= 4) { 
-                if (lockedPowerUpTier === 'gamma') { gammaMelvinActive = true; superMelvinActive = false; gammaUsedThisWeek = true; gammaCount++; }
-                else { superMelvinActive = true; gammaMelvinActive = false; superCount++; }
-                spitupsAverted = 0; lockedPowerUpTier = null;
-            } else { superMelvinActive = false; gammaMelvinActive = false; }
+                if (gammaCooldownDays > 0 && !wasGamma) {
+                    gammaCooldownDays--;
+                }
+
+                if (spitupsAverted === 0) {
+                    if (wasGamma) gammaCooldownDays = 2;
+                    superMelvinActive = false;
+                    gammaMelvinActive = false;
+                } else if (spitupsAverted > 0 && spitupsAverted < 4) {
+                    if (wasGamma) gammaCooldownDays = 2;
+                    superMelvinActive = true;
+                    gammaMelvinActive = false;
+                } else if (spitupsAverted === 4) {
+                    if (wasGamma) {
+                        gammaCooldownDays = 2;
+                        superMelvinActive = true;
+                        gammaMelvinActive = false;
+                        superCount++; 
+                    } else if (lockedAvg >= 2.0 && gammaCooldownDays === 0) { 
+                        gammaMelvinActive = true; 
+                        superMelvinActive = false;
+                        gammaCount++; 
+                    } else { 
+                        if (gammaMelvinActive && lockedAvg < 2.0) gammaCooldownDays = 2; 
+                        superMelvinActive = true; 
+                        gammaMelvinActive = false;
+                        superCount++; 
+                    }
+                }
+            } else {
+                if (superMelvinActive || gammaMelvinActive) {
+                    superCooldownDays = 2; 
+                    if (gammaMelvinActive) gammaCooldownDays = 2;
+                } else {
+                    if (superCooldownDays > 0) superCooldownDays--; 
+                    if (gammaCooldownDays > 0) gammaCooldownDays--;
+                }
+
+                if (superCooldownDays === 0 && spitupsAverted >= 4) { 
+                    if (lockedPowerUpTier === 'gamma') { 
+                        gammaMelvinActive = true; superMelvinActive = false; gammaCount++; 
+                    } else { 
+                        superMelvinActive = true; gammaMelvinActive = false; superCount++; 
+                    }
+                    spitupsAverted = 0; lockedPowerUpTier = null;
+                } else { 
+                    superMelvinActive = false; gammaMelvinActive = false; 
+                }
+            }
 
             // If the week is over, pause the game for the report
             if (dayCount % 7 === 0) {
                 gameRunning = false;
-                let congratsWrap = document.getElementById('congrats-wrap');
-                let tipEl = document.getElementById('random-tip-msg');
+                musicPausedForReport = true;
+                clearTimeout(musicTimeoutId);
+                
+                let checkupScreen = document.getElementById('checkup-screen');
+                let congratsWrap = document.getElementById('congrats-text-wrap');
+                let resumeBtn = document.querySelector('.resume-btn');
+                let tipEl = document.getElementById('random-tip-msg-container');
+                let tipMsgEl = document.getElementById('random-tip-msg');
+
+                victoryAnimated = false;
+                standardAnimated = false;
                 
                 if (totalOunces >= 144) { 
-                    congratsWrap.style.display = 'block'; statsViewState = 'victory'; 
+                    checkupScreen.classList.add('victory-layout');
+                    congratsWrap.style.display = 'block'; 
+                    statsViewState = 'victory'; 
                     tipEl.style.display = 'none'; // Hide tip on victory screen
+                    setDrSprite('elated');
+                    resumeBtn.innerText = "SUPER MODE";
+                    resumeBtn.classList.add('super-mode');
+
                     let cSparkles = document.getElementById('congrats-sparkles');
                     if (cSparkles.innerHTML === '') {
                         for(let i=0; i<20; i++) {
@@ -930,15 +2107,21 @@
                         }
                     }
                 } else { 
-                    congratsWrap.style.display = 'none'; statsViewState = 'standard'; 
+                    checkupScreen.classList.remove('victory-layout');
+                    congratsWrap.style.display = 'none'; 
+                    statsViewState = 'standard'; 
+                    resumeBtn.innerText = "RESUME";
+                    resumeBtn.classList.remove('super-mode');
                     let randomTip = gameTips[Math.floor(Math.random() * gameTips.length)];
-                    tipEl.innerText = "TIP: " + randomTip;
-                    tipEl.style.display = 'block'; // Show tip on standard checkup
+                    tipMsgEl.innerText = "TIP: " + randomTip;
+                    tipEl.style.display = 'flex'; // Show tip on standard checkup
+                    
+                    if (lockedAvg >= 1.0) setDrSprite('happy');
+                    else setDrSprite('upset');
                 }
 
                 let currentWeek = Math.floor((dayCount - 1) / 7) + 1;
                 document.getElementById('checkup-title').innerHTML = 'WEEK <span style="color: var(--sparkle-gold);">' + currentWeek + '</span> REPORT';
-                renderStats(); updateArrows();
                 
                 let msgEl = document.getElementById('dr-swadlzworth-msg');
                 let extraDrMsg = " " + drRandomMsgs[Math.floor(Math.random() * drRandomMsgs.length)];
@@ -982,10 +2165,12 @@
                         wrapper.style.display = 'none';
 
                         document.getElementById('checkup-screen').style.display = 'flex';
+                        renderStatsView(statsViewState); 
                         activeMsgTimer = null;
                     }, 5000);
                 } else {
                     document.getElementById('checkup-screen').style.display = 'flex';
+                    renderStatsView(statsViewState); 
                 }
 
                 return; 
@@ -993,6 +2178,12 @@
             
             dayCount++; 
             
+            // Reset daily tracking logic exactly as it was requested
+            timeLeft = GROWTH_INTERVAL; foodStored = 0; currentSessionOunces = 0; burpProgress = 0; 
+            isClassicSpittingUp = false; classicSpitUpFrame = 0;
+            isSuperSpittingUp = false; superSpitUpFrame = 0;
+            updateUI(); 
+
             let msgQueue = [];
 
             if (dayCount === 2) {
@@ -1080,7 +2271,6 @@
                 showNextMsg();
             }
 
-            timeLeft = GROWTH_INTERVAL; foodStored = 0; currentSessionOunces = 0; burpProgress = 0; updateUI(); 
         }
         timerBar.style.height = (timeLeft / GROWTH_INTERVAL) * 100 + '%';
     }, 1000);
@@ -1096,12 +2286,15 @@
     }
 
     if (!window.matchMedia("(pointer: coarse)").matches) {
-        document.getElementById('instruction-box').innerHTML = 
-            "Press the <strong>F</strong> key (or Tap FEED) to give Melvin 1/2 an ounce.<br><br>" +
-            "Melvin will start to turn green when he's getting full. Keep pressing the <strong>B</strong> key (or click the Hand button) to burp him.<br><br>" +
-            "Press the <strong>P</strong> key to Pause/Resume.<br><br>" +
-            "If you overfeed Melvin he will spit up and you will lose ounces!<br><br>" +
-            "<span style=\"color: var(--sparkle-gold);\">Help Melvin grow to 9lbs and you will make his Pediatrician (and you) proud!</span>";
+        let instrBox = document.getElementById('instruction-box');
+        if (instrBox) {
+            instrBox.innerHTML = 
+                "Press the <strong>F</strong> key (or Tap FEED) to give Melvin 1/2 an ounce.<br><br>" +
+                "Melvin will start to turn green when he's getting full. Keep pressing the <strong>B</strong> key (or click the Hand button) to burp him.<br><br>" +
+                "Press the <strong>P</strong> key to Pause/Resume.<br><br>" +
+                "If you overfeed Melvin he will spit up and you will lose ounces!<br><br>" +
+                "<span style=\"color: var(--sparkle-gold);\">Help Melvin grow to 9lbs and you will make his Pediatrician (and you) proud!</span>";
+        }
     }
 
     document.addEventListener('keydown', function(event) {
@@ -1131,16 +2324,6 @@
             document.getElementById('pause-toggle-btn').classList.remove('key-pressed');
         }
     });
-
-    setTimeout(() => {
-        const tooltip = document.getElementById('bmc-tooltip');
-        if (tooltip) {
-            tooltip.classList.add('show');
-            setTimeout(() => {
-                tooltip.classList.remove('show');
-            }, 3000);
-        }
-    }, 2000);
 
     let deferredPrompt;
     const installBtn = document.getElementById('install-btn');
