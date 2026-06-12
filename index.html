@@ -17,20 +17,36 @@
     <style>
         * { font-family: 'VT323', monospace !important; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
         :root { --bg-wall: #aed9e0; --bg-floor: #d4a373; --ui-panel: #3d5a80; --ui-border: #293241; --sparkle-gold: #ffec51; }
-        body, html { margin: 0; padding: 0; height: 100%; width: 100%; image-rendering: pixelated; overflow: hidden; user-select: none; -webkit-user-select: none; background-color: #fcb38b; touch-action: none; }
-        #splash-screen, #checkup-screen { position: fixed; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 56.25dvh; background-color: #fcb38b; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; z-index: 200; padding-top: 40px; box-sizing: border-box; }
+        body, html { margin: 0; padding: 0; height: 100svh; width: 100%; image-rendering: pixelated; overflow: hidden; user-select: none; -webkit-user-select: none; background-color: #fcb38b; touch-action: none; }
+        
+        .desktop-key { display: none; }
+        @media (hover: hover) and (pointer: fine) { .desktop-key { display: inline; } }
+
+        #master-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 439.875px;
+            height: 782px;
+            transform-origin: center center;
+            overflow: hidden;
+            background-color: #fcb38b;
+            outline: 5px solid #fee5d4;
+        }
+
+        #splash-screen, #checkup-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #fcb38b; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; z-index: 200; padding-top: 40px; box-sizing: border-box; }
         #checkup-screen { display: none; z-index: 210; }
         .instruction-box { background: rgba(0, 0, 0, 0.4); border: 3px solid #fff; padding: 15px; color: white; font-size: 1.4rem; max-width: 80%; text-align: center; margin: 20px 0; line-height: 1.2; }
         
-        #instructions-logo { position: absolute; top: 4.80%; left: 1.49%; width: 97.03%; height: 9.92%; z-index: 2; object-fit: contain; pointer-events: none; filter: drop-shadow(-8px 8px 0px #e59a72); }
-        #instructions-white-box { position: absolute; top: 20.26%; left: 8.47%; width: 83.05%; height: 54.98%; background-color: #ffffff; border: 4px solid #5ea1fd; box-shadow: -12px 12px 0 #fee5d4; box-sizing: border-box; z-index: 1; color: #5ea1fd; overflow-y: auto; }
-        #instructions-dr-swadlzworth { position: absolute; top: calc(75.24% - 18.19%); left: 77.84%; width: 21.56%; height: 18.19%; z-index: 2; object-fit: contain; pointer-events: none; filter: drop-shadow(-8px 0px 0px #fcb38b); }
+        #instructions-logo { position: absolute; top: 37.5px; left: 6.5px; width: 426.8px; height: 77.6px; z-index: 2; object-fit: contain; pointer-events: none; filter: drop-shadow(-8px 8px 0px #e59a72); }
+        #instructions-white-box { position: absolute; top: 158.4px; left: 37.3px; width: 365.3px; height: 430px; background-color: #ffffff; border: 4px solid #5ea1fd; box-shadow: -12px 12px 0 #fee5d4; box-sizing: border-box; z-index: 1; color: #5ea1fd; overflow-y: auto; }
+        #instructions-dr-swadlzworth { position: absolute; top: 446px; left: 342.4px; width: 94.8px; height: 142.2px; z-index: 2; object-fit: contain; pointer-events: none; filter: drop-shadow(-8px 0px 0px #fcb38b); }
         
-        #instructions-box-left { position: absolute; top: 79.35%; left: 12.58%; width: 31.31%; height: 7.43%; background-color: #5ea1fd; z-index: 2; border: 4px solid #326efc; box-shadow: -5px 5px 0 #326efc; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.6rem; font-style: italic; cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; }
-        #instructions-box-right { position: absolute; top: 79.35%; left: 56.11%; width: 31.31%; height: 7.43%; background-color: #5ea1fd; z-index: 2; border: 4px solid #326efc; box-shadow: -5px 5px 0 #326efc; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.6rem; font-style: italic; cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; }
+        #instructions-box-left { position: absolute; top: 620.5px; left: 55.3px; width: 137.7px; height: 58.1px; background-color: #5ea1fd; z-index: 2; border: 4px solid #326efc; box-shadow: -5px 5px 0 #326efc; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.6rem; font-style: italic; cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; }
+        #instructions-box-right { position: absolute; top: 620.5px; left: 246.8px; width: 137.7px; height: 58.1px; background-color: #5ea1fd; z-index: 2; border: 4px solid #326efc; box-shadow: -5px 5px 0 #326efc; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.6rem; font-style: italic; cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; }
         #instructions-box-left:active, #instructions-box-right:active, #instructions-box-left.pressed, #instructions-box-right.pressed { transform: translate(-5px, 5px); box-shadow: 0px 0px 0 #326efc; }
         
-        #instructions-box-super { position: absolute; top: 88%; left: 34.34%; width: 31.31%; height: 7.43%; background-color: #5ea1fd; z-index: 2; border: 4px solid #326efc; box-shadow: -5px 5px 0 #326efc; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.6rem; font-style: italic; cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; }
+        #instructions-box-super { position: absolute; top: 688.2px; left: 151.1px; width: 137.7px; height: 58.1px; background-color: #5ea1fd; z-index: 2; border: 4px solid #326efc; box-shadow: -5px 5px 0 #326efc; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.6rem; font-style: italic; cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; }
         #instructions-box-super:active, #instructions-box-super.pressed { transform: translate(-5px, 5px); box-shadow: 0px 0px 0 #326efc; }
 
         .instr-row { display: flex; align-items: center; margin: 12px 0; font-size: 1.3rem; line-height: 1.05; padding: 0 10px; }
@@ -39,19 +55,19 @@
         .share-btn { background: #e1306c; color: white; border: 6px solid var(--ui-border); padding: 8px 16px; width: fit-content; min-width: 100px; font-size: 2.5rem; cursor: pointer; margin-top: 10px; box-shadow: 0 6px 0 #000; }
         .share-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #000; }
         
-        #game-container { display: none; position: relative; width: 100%; max-width: 56.25dvh; height: 100%; background-color: var(--bg-wall); margin: 0 auto; overflow: hidden; }
+        #game-container { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-wall); margin: 0; overflow: hidden; }
         .game-bg-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
-        .game-title { position: absolute; top: 2%; width: 100%; text-align: center; font-size: 4rem; color: #293241; text-shadow: 2px 2px 0px #fff; z-index: 150; margin: 0; }
-        #checkup-bar { position: absolute; top: 10%; left: 50%; transform: translateX(-50%); background: rgba(61, 90, 128, 0.7); padding: 8px 15px; z-index: 140; color: white; font-size: 1.6rem; text-align: center; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
+        .game-title { position: absolute; top: 5px; width: 100%; text-align: center; font-size: 4rem; color: #293241; text-shadow: 2px 2px 0px #fff; z-index: 150; margin: 0; }
+        #checkup-bar { position: absolute; top: 75px; left: 50%; transform: translateX(-50%); background: rgba(61, 90, 128, 0.7); padding: 8px 15px; z-index: 140; color: white; font-size: 1.6rem; text-align: center; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
         .top-ui-num { color: var(--sparkle-gold); font-size: 2.2rem; line-height: 1; }
-        .right-stats-panel { position: absolute; top: 20%; right: 15px; background: rgba(61, 90, 128, 0.7); padding: 15px 8px; z-index: 140; display: flex; flex-direction: column; align-items: center; width: 88px; box-sizing: border-box; }
+        .right-stats-panel { position: absolute; top: 160px; right: 15px; background: rgba(61, 90, 128, 0.7); padding: 15px 8px; z-index: 140; display: flex; flex-direction: column; align-items: center; width: 88px; box-sizing: border-box; }
         .stat-line { color: white; font-size: 1.5rem; text-align: center; width: 100%; white-space: nowrap; }
         .stat-divider { width: 100%; height: 3px; background-color: rgba(255, 255, 255, 0.25); margin: 8px 0; }
-        #super-panel { position: absolute; top: 42%; right: 15px; width: 88px; display: flex; flex-direction: column; align-items: center; gap: 5px; z-index: 140; }
+        #super-panel { position: absolute; top: 340px; right: 15px; width: 88px; display: flex; flex-direction: column; align-items: center; gap: 5px; z-index: 140; }
         .super-label { color: white; font-size: 1.5rem; font-weight: bold; text-shadow: 2px 2px 0 var(--ui-border); }
         .super-slots { display: flex; justify-content: center; gap: 16px; width: 100%; opacity: 0.25; }
         .super-svg { width: 26px; height: 26px; display: block; }
-        #pet-container { position: absolute; top: 65%; left: 50%; transform: translate(-50%, -100%); z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
+        #pet-container { position: absolute; top: 508.3px; left: 50%; transform: translate(-50%, -100%); z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
         #scale-graphic { width: 240px; height: 80px; z-index: 5; position: relative; transform: scale(1.58); transform-origin: bottom center; top: 38px; }
         #weight-readout { position: absolute; bottom: 21px; width: 100%; text-align: center; color: white; font-size: 1.8rem; font-weight: bold; text-shadow: 1px 1px 2px #000; pointer-events: none; mix-blend-mode: overlay; }
         #pet { width: 160px; height: 160px; display: flex; align-items: flex-end; justify-content: center; transition: filter 0.2s, transform 0.1s; transform-origin: bottom center; z-index: 10; overflow: visible; filter: url(#green-tint); position: relative; }
@@ -70,7 +86,7 @@
             animation: superDrift 3s ease-in-out infinite;
         }
 
-        .action-btns { position: absolute; top: 82%; width: 100%; display: flex; justify-content: center; gap: 15px; padding: 0 15px; box-sizing: border-box; }
+        .action-btns { position: absolute; bottom: 93.8px; width: 100%; display: flex; justify-content: center; gap: 15px; padding: 0 15px; box-sizing: border-box; }
         .btn-wrapper { flex: 1; max-width: 170px; position: relative; }
         .feed-btn, .burp-btn { width: 100%; height: 70px; margin: 0; padding: 0; border: none; border-radius: 0; cursor: pointer; box-shadow: 0 6px 0 rgba(0, 0, 0, 0.5); outline: none; position: relative; z-index: 120; display: block; }
         .feed-btn { background: #6cb0ff; }
@@ -80,7 +96,7 @@
         .feed-btn:active, .burp-btn:active, .feed-btn.key-pressed, .burp-btn.key-pressed { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0, 0, 0, 0.5); }
         .feed-btn:active + .btn-icon, .burp-btn:active + .btn-icon, .feed-btn.key-pressed + .btn-icon, .burp-btn.key-pressed + .btn-icon { margin-top: 4px; }
         
-        .left-column { position: absolute; top: 18%; left: 15px; height: 50%; display: flex; flex-direction: column; align-items: center; width: 50px; z-index: 110; }
+        .left-column { position: absolute; top: 135px; left: 15px; bottom: 168.8px; display: flex; flex-direction: column; align-items: center; width: 50px; z-index: 110; }
         #timer-container { width: 22px; flex-grow: 1; background: #293241; border: 3px solid #fff; border-radius: 4px; overflow: hidden; margin-top: 5px; display: flex; flex-direction: column; justify-content: flex-end; }
         #timer-bar { width: 100%; height: 100%; background: #ff9b54; }
         
@@ -89,15 +105,15 @@
 
         #pause-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 155; display: none; align-items: center; justify-content: center; pointer-events: auto; }
         #pause-box { background: rgba(61, 90, 128, 0.7); padding: 18px; width: 60%; max-width: 255px; text-align: center; box-shadow: 0 6px 0 #000; }
-        #pause-toggle-btn { position: absolute; top: 55%; right: 26px; background: rgba(0,0,0,0.25); border: none; cursor: pointer; z-index: 160; outline: none; padding: 6px; display: flex; justify-content: center; align-items: center; width: 52px; height: 52px; transition: transform 0.1s; }
+        #pause-toggle-btn { position: absolute; top: 460px; right: 26px; background: rgba(0,0,0,0.25); border: none; cursor: pointer; z-index: 160; outline: none; padding: 6px; display: flex; justify-content: center; align-items: center; width: 52px; height: 52px; transition: transform 0.1s; }
         #pause-toggle-btn svg { fill: #eeeeee; filter: drop-shadow(2px 2px 0 #000); }
         #pause-toggle-btn:active, #pause-toggle-btn.key-pressed { transform: translateY(2px); }
         .pause-start-over-btn { background: rgba(0,0,0,0.25); color: rgba(255, 255, 255, 0.7); font-size: 1.8rem; text-align: center; margin-top: 20px; cursor: pointer; padding: 8px; width: fit-content; margin-left: auto; margin-right: auto; }
         
-        #random-tip-msg-container { position: absolute; top: 77.5%; left: 8.3%; width: 83.4%; height: auto; display: flex; align-items: center; justify-content: flex-start; padding-top: 4px; padding-bottom: 4px; border: 4px solid #326efc; background: #5ea1fd; box-sizing: border-box; box-shadow: 8px 8px 0 #326efc; z-index: 2; }
+        #random-tip-msg-container { position: absolute; top: 606px; left: 36.5px; width: 366.8px; height: auto; display: flex; align-items: center; justify-content: flex-start; padding-top: 4px; padding-bottom: 4px; border: 4px solid #326efc; background: #5ea1fd; box-sizing: border-box; box-shadow: 8px 8px 0 #326efc; z-index: 2; }
         #random-tip-msg { color: white; font-size: 1.25rem; text-align: center; max-width: 95%; line-height: 1.2; font-style: italic; margin: 0; padding: 5px; }
 
-        #day2-msg-wrapper { position: absolute; top: 18%; left: 50%; transform: translateX(-50%); width: 90%; max-width: 380px; z-index: 250; display: none; padding: 15px 10px; box-sizing: border-box; pointer-events: none; }
+        #day2-msg-wrapper { position: absolute; top: 130px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 380px; z-index: 250; display: none; padding: 15px 10px; box-sizing: border-box; pointer-events: none; }
         #frustrating-msg { text-align: center; color: white; font-size: 1.8rem; text-shadow: 2px 2px 0 var(--ui-border); opacity: 0; margin: 0; line-height: 1.2; }
         .big-arrow { font-size: 3rem; vertical-align: middle; }
         #frustrating-msg.show-msg { opacity: 1; }
@@ -106,7 +122,7 @@
         @media screen and (orientation: landscape) and (pointer: coarse) { #orientation-lock { display: flex; } }
         @keyframes phoneTilt { 0%, 100% { transform: rotate(-90deg); } 50% { transform: rotate(0deg); } }
 
-        #landing-screen { position: fixed; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 56.25dvh; background-color: #fcb38b; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; justify-content: center; z-index: 300; }
+        #landing-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #fcb38b; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; justify-content: center; z-index: 300; }
         .play-btn { background: #5ea1fd; border: 6px solid #326efc; padding: 0px 20px; font-size: 5rem; cursor: pointer; box-shadow: -8px 8px 0 #326efc; color: var(--sparkle-gold); margin-top: 40px; text-shadow: 4px 4px 0 #234de2; transform: scale(0.90); transition: transform 0.1s, box-shadow 0.1s; }
         .play-btn:active, .play-btn.pressed { transform: translate(-8px, 8px) scale(0.90); box-shadow: 0px 0px 0 #326efc; }
 
@@ -117,13 +133,13 @@
         #install-btn { display: none; position: absolute; top: 15px; left: 15px; background: #fff; border: 4px solid var(--ui-border); padding: 8px 12px; font-size: 1.5rem; cursor: pointer; box-shadow: 0 4px 0 #000; z-index: 310; color: #3d5a80; }
         #install-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #000; }
 
-        #global-ui-layer { position: fixed; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 56.25dvh; pointer-events: none; z-index: 9999999; }
+        #global-ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999999; }
         
-        #custom-bmc-btn { position: absolute; bottom: calc(env(safe-area-inset-bottom, 0px) + 26px); right: 18px; width: 50px; height: 50px; background-color: #FB9052; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.3); pointer-events: auto; cursor: pointer; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease, box-shadow 0.1s; transform: translateX(200%); opacity: 0; }
+        #custom-bmc-btn { position: absolute; bottom: 26px; right: 18px; width: 50px; height: 50px; background-color: #FB9052; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.3); pointer-events: auto; cursor: pointer; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease, box-shadow 0.1s; transform: translateX(200%); opacity: 0; }
         #custom-bmc-btn.in-place { transform: translateX(0); opacity: 1; }
         #custom-bmc-btn.in-place:active { transform: translateY(2px); box-shadow: 0 2px 3px rgba(0,0,0,0.3); transition: transform 0.1s, box-shadow 0.1s; }
 
-        #bmc-tooltip { position: absolute; bottom: calc(env(safe-area-bottom, 0px) + 22px); right: 75px; background: #fff; color: #3d5a80; padding: 4px 8px; border: none; box-shadow: none; font-size: 1.4rem; line-height: 1.0; width: 170px; text-align: center; pointer-events: none; transform-origin: right center; transform: scale(0); opacity: 0; visibility: hidden; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease, visibility 0.4s; }
+        #bmc-tooltip { position: absolute; bottom: 22px; right: 75px; background: #fff; color: #3d5a80; padding: 4px 8px; border: none; box-shadow: none; font-size: 1.4rem; line-height: 1.0; width: 170px; text-align: center; pointer-events: none; transform-origin: right center; transform: scale(0); opacity: 0; visibility: hidden; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease, visibility 0.4s; }
         #bmc-tooltip.show { transform: scale(1); opacity: 1; visibility: visible; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease, visibility 0s; }
 
         /* Integrated Checkup UI CSS - Base Styles for Standard Weekly Report */
@@ -134,14 +150,14 @@
         #checkup-title { color: white; font-size: 3.5rem; font-weight: normal; text-shadow: 6px 6px 0 #234de2; line-height: 1; margin-top: 0; }
         #congrats-sparkles { position: absolute; top: -10%; left: -5%; width: 110%; height: 120%; pointer-events: none; z-index: 1; }
 
-        #svg-reference-box { position: absolute; top: 30.03%; left: 12.06%; width: 75.86%; height: 44.41%; background-color: #fee5d4; border: 4px solid #ffffff; box-sizing: border-box; z-index: 0; display: flex; flex-direction: column; justify-content: flex-start; padding: calc(8px + 3%) 12px 8px 12px; color: #326efc; font-size: 1.6rem; line-height: 1.1; }
+        #svg-reference-box { position: absolute; top: 234.8px; left: 53px; width: 333.7px; height: 347.3px; background-color: #fee5d4; border: 4px solid #ffffff; box-sizing: border-box; z-index: 0; display: flex; flex-direction: column; justify-content: flex-start; padding: calc(8px + 3%) 12px 8px 12px; color: #326efc; font-size: 1.6rem; line-height: 1.1; }
         #stats-area { text-align: left; width: 100%; }
         #stats-area span { color: #5ea1fd; } 
 
-        #svg-reference-box-red { position: absolute; top: 53.5%; left: 29.49%; width: 53.53%; height: auto; background-color: #ffffff; border: 4px solid #5ea1fd; box-shadow: 9px 9px 0 #fcb383; box-sizing: border-box; z-index: 1; display: flex; align-items: center; justify-content: center; padding: 6px 4px; opacity: 0; transform: scale(0); transition: opacity 0.3s, transform 0.3s; }
+        #svg-reference-box-red { position: absolute; top: 418.4px; left: 129.7px; width: 235.5px; height: auto; background-color: #ffffff; border: 4px solid #5ea1fd; box-shadow: 9px 9px 0 #fcb383; box-sizing: border-box; z-index: 1; display: flex; align-items: center; justify-content: center; padding: 6px 4px; opacity: 0; transform: scale(0); transition: opacity 0.3s, transform 0.3s; }
         #dr-swadlzworth-msg { color: #5ea1fd; font-size: 1.2rem; text-align: center; line-height: 1; width: 100%; }
         
-        #dr-swadlzworth-img { position: absolute; top: 52.51%; left: -30%; height: 25.06%; z-index: 10; pointer-events: none; filter: drop-shadow(7.6px 0 0 #fcb38b); transition: left 0.2s ease-out; display: flex; overflow: hidden; }
+        #dr-swadlzworth-img { position: absolute; top: 410.6px; left: -132px; height: 196px; z-index: 10; pointer-events: none; filter: drop-shadow(7.6px 0 0 #fcb38b); transition: left 0.2s ease-out; display: flex; overflow: hidden; }
         #dr-swadlzworth-inner { height: 100%; width: auto; max-width: none; flex-shrink: 0; }
         
         .checkup-btn-row { position: relative; display: flex; justify-content: center; gap: 15px; width: 100%; margin-bottom: 10px; z-index: 2; }
@@ -151,10 +167,10 @@
         /* Victory Mode Overrides (Applied when game is won) */
         #checkup-screen.victory-layout #checkup-title-container { padding: 10px 30px; margin-bottom: 10px; }
         #checkup-screen.victory-layout #checkup-title { font-size: 2.8rem; line-height: 0.9; margin-top: 4px; }
-        #checkup-screen.victory-layout #svg-reference-box { top: 39%; height: 56%; }
-        #checkup-screen.victory-layout #svg-reference-box-red { top: 73%; }
-        #checkup-screen.victory-layout #dr-swadlzworth-img { top: 72%; }
-        #checkup-screen.victory-layout .checkup-btn-row { position: absolute; top: 26%; margin-bottom: 0; }
+        #checkup-screen.victory-layout #svg-reference-box { top: 305px; height: 438px; }
+        #checkup-screen.victory-layout #svg-reference-box-red { top: 571px; }
+        #checkup-screen.victory-layout #dr-swadlzworth-img { top: 563px; }
+        #checkup-screen.victory-layout .checkup-btn-row { position: absolute; top: 203.3px; margin-bottom: 0; }
 
         @keyframes superFlash {
             0%, 49.99% { color: #fff; text-shadow: none; }
@@ -181,11 +197,6 @@
     </style>
 </head>
 <body>
-
-<div id="global-ui-layer">
-    <div id="bmc-tooltip">Thanks for playing! Care to buy us some baby formula?</div>
-    <a id="custom-bmc-btn" href="https://www.buymeacoffee.com/pixelmover" target="_blank" rel="noopener noreferrer" title="Buy me a coffee!">🍼</a>
-</div>
 
 <div id="orientation-lock">
     <svg width="80" height="80" viewBox="0 0 24 24" fill="white" style="margin-bottom: 20px; animation: phoneTilt 2s infinite ease-in-out;">
@@ -215,240 +226,270 @@
     </defs>
 </svg>
 
-<div id="landing-screen">
-    <div id="landing-spitup-overlay"></div>
-    
-    <div id="landing-dr-swadlzworth">
-        <img id="landing-dr-swadlzworth-inner" src="https://www.feedmelvin.com/dr_swadlzworth_HAPPY_sprite_web.svg" alt="Dr Swadlzworth">
+<div id="master-container">
+
+    <div id="global-ui-layer">
+        <div id="bmc-tooltip">Thanks for playing! Care to buy us some baby formula?</div>
+        <a id="custom-bmc-btn" href="https://www.buymeacoffee.com/pixelmover" target="_blank" rel="noopener noreferrer" title="Buy me a coffee!">🍼</a>
     </div>
 
-    <button id="install-btn">INSTALL APP</button>
-    
-    <div id="landing-logo-container" style="position: absolute; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; width: 100%; z-index: 10; transition: top 0.5s cubic-bezier(0.25, 1, 0.5, 1), transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);">
-        <img src="https://www.feedmelvin.com/feed_melvin_logo_stacked_web.svg" alt="Feed Melvin" style="width: 76.5%; max-width: 360px; margin-bottom: 10px; filter: drop-shadow(-8px 8px 0px #e59a72); pointer-events: none;">
+    <div id="landing-screen">
+        <div id="landing-spitup-overlay"></div>
         
-        <div style="text-align: center; width: 100%;">
-            <a href="https://www.pixel-mover.com" target="_blank" rel="noopener noreferrer" style="color: white; font-size: 1.8rem; line-height: 1.1; text-decoration: none; pointer-events: auto; display: inline-block;">Made By: pixel-mover.com</a>
+        <div id="landing-dr-swadlzworth">
+            <img id="landing-dr-swadlzworth-inner" src="https://www.feedmelvin.com/dr_swadlzworth_HAPPY_sprite_web.svg" alt="Dr Swadlzworth">
         </div>
-    </div>
-    
-    <div id="tap-anywhere" style="position: absolute; top: 85%; width: 100%; text-align: center; color: white; font-size: 2.5rem; text-shadow: 2px 2px 0 #000; display: block; transform: scale(0); z-index: 20; pointer-events: none; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">TAP ANYWHERE</div>
-        
-    <div id="landing-visual-area" style="position: absolute; top: 43%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 278px; width: 100%; z-index: 15; pointer-events: none;">
 
-        <div id="landing-pet-scale-wrap" style="display: none; flex-direction: column; align-items: center; justify-content: flex-end; width: 100%; position: relative; transform: scale(0.83); transform-origin: bottom center; top: 100dvh; transition: top 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
-            <div id="landing-sparkle-wrap" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 160px; height: 160px; pointer-events: none; z-index: 12; display: none;"></div>
+        <button id="install-btn">INSTALL APP</button>
+        
+        <div id="landing-logo-container" style="position: absolute; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; width: 100%; z-index: 10; transition: top 0.5s cubic-bezier(0.25, 1, 0.5, 1), transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);">
+            <img src="https://www.feedmelvin.com/feed_melvin_logo_stacked_web.svg" alt="Feed Melvin" style="width: 76.5%; max-width: 360px; margin-bottom: 10px; filter: drop-shadow(-8px 8px 0px #e59a72); pointer-events: none;">
             
-            <div id="landing-shadow-wrap" style="display: flex; flex-direction: column; align-items: center; filter: drop-shadow(-8px 8px 0px #e59a72);">
-                <div id="landing-pet" style="width: 160px; height: 160px; display: block; transform-origin: bottom center; overflow: visible; filter: url(#green-tint); transition: filter 0.2s, transform 0.1s; position: relative; z-index: 10;">
-                    <svg id="landing-melvin" viewBox="0 0 48 48" style="width: 100%; height: 100%; position: absolute; top: 12px; left: 0; opacity: 1;">
-                        <image href="https://www.feedmelvin.com/classic_melvin_sprite_web.svg" width="384" height="48" />
-                    </svg>
-                    <svg id="landing-melvin-full" viewBox="0 0 48 48" style="width: 100%; height: 100%; position: absolute; top: 12px; left: 0; opacity: 0;">
-                        <image href="https://www.feedmelvin.com/classic_melvin_FULL_sprite_web.svg" width="384" height="48" />
-                    </svg>
-                    <svg id="landing-super-melvin" data-super="true" viewBox="0 0 48 48" style="width: 100%; height: 100%; position: absolute; top: 12px; left: 0; opacity: 0; pointer-events: none;">
-                        <image href="https://pxleight.github.io/feed-melvin-assets/super_levi_sprite_web.svg" width="384" height="48" />
-                    </svg>
-                    <svg id="landing-super-melvin-full" data-super-full="true" viewBox="0 0 48 48" style="width: 100%; height: 100%; position: absolute; top: 12px; left: 0; opacity: 0; pointer-events: none;">
-                        <image href="https://pxleight.github.io/feed-melvin-assets/super_levi_FULL_sprite_web.svg" width="384" height="48" />
-                    </svg>
-                </div>
-                
-                <div id="landing-scale" style="width: 240px; height: 80px; z-index: 5; position: relative; transform: scale(1.58); transform-origin: bottom center; top: 38px;">
-                    <img src="https://pxleight.github.io/feed-melvin-assets/levi_scale_sprite_web.svg" style="width: 100%; height: 100%; display: block;" />
-                    <div style="position: absolute; bottom: 21px; width: 100%; text-align: center; color: white; font-size: 1.8rem; font-weight: bold; text-shadow: 1px 1px 2px #000; pointer-events: none; mix-blend-mode: overlay;">6lb 8oz</div>
-                </div>
+            <div style="text-align: center; width: 100%;">
+                <a href="https://www.pixel-mover.com" target="_blank" rel="noopener noreferrer" style="color: white; font-size: 1.8rem; line-height: 1.1; text-decoration: none; pointer-events: auto; display: inline-block;">Made By: pixel-mover.com</a>
             </div>
         </div>
-    </div>
-
-    <button id="play-btn" class="play-btn" style="position: absolute; bottom: calc(18dvh + 2px); margin: 0; display: none; transform: scale(0); z-index: 20; pointer-events: auto;">PLAY!</button>
-
-    <div id="landing-bmc-left" style="position: absolute; bottom: calc(env(safe-area-inset-bottom, 0px) + 26px); left: 18px; pointer-events: auto; transform: translateX(-200%); opacity: 0; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease;">
-        <a href="https://www.buymeacoffee.com/pixelmover/membership" target="_blank" rel="noopener noreferrer"><img src="https://img.buymeacoffee.com/button-api/?text=Monthly%20Baby%20Formula&emoji=🍼&slug=pixelmover&button_colour=FB9052&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" /></a>
-    </div>
-</div>
-
-<div id="splash-screen" style="display: none;">
-    <img id="instructions-logo" src="https://www.feedmelvin.com/feed_melvin_logo_web.svg" alt="Feed Melvin">
-    
-    <div id="instructions-white-box">
-        <div style="font-size: 2.2rem; text-align: center; width: 100%; margin-top: 15px;">D<span style="margin-right: -0.05em;">r</span>.<span style="margin-right: -0.1em;"> </span>Swadlzworth<span style="margin-right: -0.1em;"> </span>Says:</div>
-        <div style="width: 85%; height: 4px; background-color: #5ea1fd; margin: 10px auto;"></div>
-        <div style="font-size: 1.35rem; text-align: left; padding: 0 15px; line-height: 1.0;">
-            <div class="instr-row">
-                <img src="https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.svg" class="instr-icon" style="margin-right: 10px;">
-                <span>Tap the BOTTLE to give<br>Melvin a 1/2 <span style="font-size: 1.2rem;">a</span> ounce of Formula.</span>
-            </div>
-            <div class="instr-row">
-                <img src="https://www.feedmelvin.com/full_icon_web.svg" class="instr-icon" style="margin-right: 10px; width: 37.8px; height: 37.8px;">
-                <span>Melvin will start to turn<br>GREEN when he's getting full.</span>
-            </div>
-            <div class="instr-row">
-                <img src="https://pxleight.github.io/feed-melvin-assets/burp_hand_sprite_web.svg" class="instr-icon" style="margin-right: 10px;">
-                <span>Keep tapping the hand<br>until Melvin BURPS.</span>
-            </div>
-            <div class="instr-row">
-                <img src="https://www.feedmelvin.com/spit_up_icon_web.svg" class="instr-icon" style="margin-right: 10px; width: 37.8px; height: 37.8px;">
-                <span>If you overfeed Melvin<br>he will spit up and you<br>will <span style="font-size: 1.2rem;">lose</span> ounces!</span>
-            </div>
-            <div id="instr-powerup-wrap" style="position: relative; text-align: center; width: 100%; margin-top: 15px; box-sizing: border-box; z-index: 2;">
-                <div id="instr-powerup-sparkles" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3;"></div>
-                <div style="position: relative; color: #326efc; font-size: 1.5rem; line-height: 1.1; margin-bottom: 10px; z-index: 2;">
-                    Help Melvin grow to 9lbs to<br>make Dr Swadlzworth proud!
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <img id="instructions-dr-swadlzworth" src="https://www.feedmelvin.com/dr_swadlzworth_sprite_web.svg" alt="Dr Swadlzworth">
-    
-    <div id="instructions-box-left" onclick="startGame('easy', this)">EASY</div>
-    <div id="instructions-box-right" onclick="startGame('normal', this)">NORMAL</div>
-    <div id="instructions-box-super" onclick="startGame('normal', this, true)">SUPER</div>
-</div>
-
-<div id="checkup-screen" style="display: none;">
-    
-    <div id="checkup-title-container">
-        <div id="congrats-text-wrap">
-            <div id="congrats-sparkles"></div>
-            <h1 id="congrats-title">GREAT WORK!</h1>
-        </div>
-        <h1 id="checkup-title">WEEKLY REPORT</h1>
-    </div>
-
-    <div id="svg-reference-box">
-        <button id="prev-stats-btn" class="toggle-arrow-btn" onclick="toggleStatsView()">
-            <svg viewBox="0 0 24 24"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>
-        </button>
-        <div id="stats-area"></div>
-        <button id="next-stats-btn" class="toggle-arrow-btn" onclick="toggleStatsView()">
-            <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
-        </button>
-    </div>
-
-    <div id="svg-reference-box-red">
-        <div id="dr-swadlzworth-msg"></div>
-    </div>
-    
-    <div id="dr-swadlzworth-img">
-        <img id="dr-swadlzworth-inner" src="https://www.feedmelvin.com/dr_swadlzworth_HAPPY_sprite_web.svg" alt="Dr Swadlzworth" />
-    </div>
-    
-    <div class="checkup-btn-row">
-        <button class="resume-btn" onclick="resumeGame(this)">RESUME</button>
-    </div>
         
-    <div id="random-tip-msg-container">
-        <div id="random-tip-msg"></div>
-    </div>
-</div>
-<div id="game-container" style="display: none;">
-    <svg class="game-bg-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" preserveAspectRatio="xMidYMid slice">
-        <image href="https://pxleight.github.io/feed-melvin-assets/Nursery_background_rev002.svg" width="1080" height="1920" preserveAspectRatio="xMidYMid slice" />
-    </svg>
-    
-    <div id="mobile-anim-container" style="position: absolute; top: 0; left: 0; width: 100%; z-index: 1; pointer-events: auto; overflow: hidden; cursor: pointer;" onclick="triggerMobileAnim()">
-        <img id="mobile-anim-img" src="https://www.feedmelvin.com/mobile_animation_web.svg" style="display: block; width: 1200%; max-width: none; image-rendering: pixelated; transform: translateX(0%); pointer-events: none;" />
+        <div id="tap-anywhere" style="position: absolute; top: 85%; width: 100%; text-align: center; color: white; font-size: 2.5rem; text-shadow: 2px 2px 0 #000; display: block; transform: scale(0); z-index: 20; pointer-events: none; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">TAP ANYWHERE</div>
+            
+        <div id="landing-visual-area" style="position: absolute; top: 370px; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 278px; width: 100%; z-index: 15; pointer-events: none;">
+
+            <div id="landing-pet-scale-wrap" style="display: none; flex-direction: column; align-items: center; justify-content: flex-end; width: 100%; position: relative; transform: scale(0.83); transform-origin: bottom center; top: 100dvh; transition: top 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                <div id="landing-sparkle-wrap" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 160px; height: 160px; pointer-events: none; z-index: 12; display: none;"></div>
+                
+                <div id="landing-shadow-wrap" style="display: flex; flex-direction: column; align-items: center; filter: drop-shadow(-8px 8px 0px #e59a72);">
+                    <div id="landing-pet" style="width: 160px; height: 160px; display: block; transform-origin: bottom center; overflow: visible; filter: url(#green-tint); transition: filter 0.2s, transform 0.1s; position: relative; z-index: 10;">
+                        <svg id="landing-melvin" viewBox="0 0 48 48" style="width: 100%; height: 100%; position: absolute; top: 12px; left: 0; opacity: 1;">
+                            <image href="https://www.feedmelvin.com/classic_melvin_sprite_web.svg" width="384" height="48" />
+                        </svg>
+                        <svg id="landing-melvin-full" viewBox="0 0 48 48" style="width: 100%; height: 100%; position: absolute; top: 12px; left: 0; opacity: 0;">
+                            <image href="https://www.feedmelvin.com/classic_melvin_FULL_sprite_web.svg" width="384" height="48" />
+                        </svg>
+                        <svg id="landing-super-melvin" data-super="true" viewBox="0 0 48 48" style="width: 100%; height: 100%; position: absolute; top: 12px; left: 0; opacity: 0; pointer-events: none;">
+                            <image href="https://pxleight.github.io/feed-melvin-assets/super_levi_sprite_web.svg" width="384" height="48" />
+                        </svg>
+                        <svg id="landing-super-melvin-full" data-super-full="true" viewBox="0 0 48 48" style="width: 100%; height: 100%; position: absolute; top: 12px; left: 0; opacity: 0; pointer-events: none;">
+                            <image href="https://pxleight.github.io/feed-melvin-assets/super_levi_FULL_sprite_web.svg" width="384" height="48" />
+                        </svg>
+                    </div>
+                    
+                    <div id="landing-scale" style="width: 240px; height: 80px; z-index: 5; position: relative; transform: scale(1.58); transform-origin: bottom center; top: 38px;">
+                        <img src="https://pxleight.github.io/feed-melvin-assets/levi_scale_sprite_web.svg" style="width: 100%; height: 100%; display: block;" />
+                        <div style="position: absolute; bottom: 21px; width: 100%; text-align: center; color: white; font-size: 1.8rem; font-weight: bold; text-shadow: 1px 1px 2px #000; pointer-events: none; mix-blend-mode: overlay;">6lb 8oz</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button id="play-btn" class="play-btn" style="position: absolute; bottom: 142.8px; margin: 0; display: none; transform: scale(0); z-index: 20; pointer-events: auto;">PLAY!</button>
+
+        <div id="landing-bmc-left" style="position: absolute; bottom: 26px; left: 18px; pointer-events: auto; transform: translateX(-200%); opacity: 0; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease;">
+            <a href="https://www.buymeacoffee.com/pixelmover/membership" target="_blank" rel="noopener noreferrer"><img src="https://img.buymeacoffee.com/button-api/?text=Monthly%20Baby%20Formula&emoji=🍼&slug=pixelmover&button_colour=FB9052&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" /></a>
+        </div>
     </div>
 
-    <div id="pause-overlay">
-        <div id="pause-box">
-            <h2 style="color: rgba(255, 255, 255, 0.7); font-size: 2.5rem; text-shadow: none; margin-top: 0; margin-bottom: 10px;">PAUSED</h2>
-            <div id="pause-tip" style="color: #aed9e0; font-size: 1.6rem; line-height: 1.3;"></div>
-            <div class="pause-start-over-btn" onclick="location.reload()">START OVER</div>
+    <div id="splash-screen" style="display: none;">
+        <img id="instructions-logo" src="https://www.feedmelvin.com/feed_melvin_logo_web.svg" alt="Feed Melvin">
+        
+        <div id="instructions-white-box">
+            <div style="font-size: 2.2rem; text-align: center; width: 100%; margin-top: 15px;">D<span style="margin-right: -0.05em;">r</span>.<span style="margin-right: -0.1em;"> </span>Swadlzworth<span style="margin-right: -0.1em;"> </span>Says:</div>
+            <div style="width: 85%; height: 4px; background-color: #5ea1fd; margin: 10px auto;"></div>
+            <div style="font-size: 1.35rem; text-align: left; padding: 0 15px; line-height: 1.0;">
+                <div class="instr-row">
+                    <img src="https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.svg" class="instr-icon" style="margin-right: 10px;">
+                    <span>Tap the BOTTLE<span class="desktop-key"> (f key)</span> to feed<br>Melvin a 1/2 ounce of Formula.</span>
+                </div>
+                <div class="instr-row">
+                    <img src="https://www.feedmelvin.com/full_icon_web.svg" class="instr-icon" style="margin-right: 10px; width: 37.8px; height: 37.8px;">
+                    <span>Melvin will start to turn<br>GREEN when he's getting full.</span>
+                </div>
+                <div class="instr-row">
+                    <img src="https://pxleight.github.io/feed-melvin-assets/burp_hand_sprite_web.svg" class="instr-icon" style="margin-right: 10px;">
+                    <span>Keep tapping the HAND<span class="desktop-key"> (b key)</span><br>until Melvin Burps.</span>
+                </div>
+                <div class="instr-row">
+                    <img src="https://www.feedmelvin.com/spit_up_icon_web.svg" class="instr-icon" style="margin-right: 10px; width: 37.8px; height: 37.8px;">
+                    <span>If you overfeed Melvin<br>he will spit up and you<br>will <span style="font-size: 1.2rem;">lose</span> ounces!</span>
+                </div>
+                <div id="instr-powerup-wrap" style="position: relative; text-align: center; width: 100%; margin-top: 15px; box-sizing: border-box; z-index: 2;">
+                    <div id="instr-powerup-sparkles" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3;"></div>
+                    <div style="position: relative; color: #326efc; font-size: 1.5rem; line-height: 1.1; margin-bottom: 10px; z-index: 2;">
+                        Help Melvin grow to 9lbs to<br>make Dr Swadlzworth proud!
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-    <div id="spitup-overlay"></div>
-    <h1 class="game-title"><img src="https://www.feedmelvin.com/feed_melvin_logo_web.svg" alt="Feed Melvin" style="width: 75%; max-width: 320px; display: inline-block; pointer-events: none;"></h1>
-    <div id="checkup-bar">
-        OZ/DAY <span id="top-avg-val" class="top-ui-num">0.0</span> <div style="width: 3px; height: 22px; background-color: rgba(255, 255, 255, 0.25);"></div> Checkup in <span id="days-until-val" class="top-ui-num">6</span> days
-    </div>
-    
-    <div id="day2-msg-wrapper">
-        <div id="frustrating-msg"><span class="big-arrow">↑</span> this might feel frustrating especially if your watching the daily average.</div>
+
+        <img id="instructions-dr-swadlzworth" src="https://www.feedmelvin.com/dr_swadlzworth_sprite_web.svg" alt="Dr Swadlzworth">
+        
+        <div id="instructions-box-left" onclick="startGame('easy', this)">EASY</div>
+        <div id="instructions-box-right" onclick="startGame('normal', this)">NORMAL</div>
+        <div id="instructions-box-super" onclick="startGame('normal', this, true)">SUPER</div>
     </div>
 
-    <div class="left-column">
-        <div style="font-size: 1.5rem; font-weight: bold; color: #293241;">time</div>
-        <div id="timer-container"><div id="timer-bar"></div></div>
-    </div>
-    <div class="right-stats-panel">
-        <div class="stat-line">WEEK: <span id="week-val-sidebar">1</span></div>
-        <div class="stat-divider"></div>
-        <div class="stat-line">DAY: <span id="day-val">1</span></div>
-        <div class="stat-divider"></div>
-        <div class="stat-line">LVL: <span id="lvl-val">1</span></div>
-    </div>
-    <div id="super-panel">
-        <div class="super-label">SUPER</div>
-        <div class="super-slots">
-            <svg id="super-slot-1" class="super-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26">
-                <defs>
-                    <g id="counter-graphic">
-                        <rect x="0" y="0" width="26" height="26" fill="#293241"/>
-                        <rect x="3" y="3" width="20" height="20" fill="#9eb3c2"/>
-                        <rect x="26" y="0" width="26" height="26" fill="#293241"/>
-                        <rect x="29" y="3" width="20" height="20" fill="#ff4d4d"/>
-                        <rect x="52" y="0" width="26" height="26" fill="#293241"/>
-                        <rect x="55" y="3" width="20" height="20" fill="#4ade80"/>
-                    </g>
-                </defs>
-                <use href="#counter-graphic" />
-            </svg>
-            <svg id="super-slot-2" class="super-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26">
-                <use href="#counter-graphic" />
-            </svg>
+    <div id="checkup-screen" style="display: none;">
+        
+        <div id="checkup-title-container">
+            <div id="congrats-text-wrap">
+                <div id="congrats-sparkles"></div>
+                <h1 id="congrats-title">GREAT WORK!</h1>
+            </div>
+            <h1 id="checkup-title">WEEKLY REPORT</h1>
         </div>
-        <div class="super-slots">
-            <svg id="super-slot-3" class="super-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26">
-                <use href="#counter-graphic" />
-            </svg>
-            <svg id="super-slot-4" class="super-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26">
-                <use href="#counter-graphic" />
-            </svg>
+
+        <div id="svg-reference-box">
+            <button id="prev-stats-btn" class="toggle-arrow-btn" onclick="toggleStatsView()">
+                <svg viewBox="0 0 24 24"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>
+            </button>
+            <div id="stats-area"></div>
+            <button id="next-stats-btn" class="toggle-arrow-btn" onclick="toggleStatsView()">
+                <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+            </button>
         </div>
-    </div>
-    <button id="pause-toggle-btn" onclick="togglePause()">
-        <svg id="icon-pause" width="38" height="38" viewBox="0 0 24 24">
-            <rect x="6" y="4" width="4" height="16" />
-            <rect x="14" y="4" width="4" height="16" />
-        </svg>
-        <svg id="icon-play" width="38" height="38" viewBox="0 0 24 24" style="display: none;">
-            <polygon points="5,3 19,12 5,21" />
-        </svg>
-    </button>
-    <div id="pet-container">
-        <div id="sparkle-wrap"></div>
-        <div id="pet"></div>
-        <div id="scale-graphic">
-            <img src="https://pxleight.github.io/feed-melvin-assets/levi_scale_sprite_web.svg" style="width: 100%; height: 100%; display: block;" />
-            <div id="weight-readout">6lb 8oz</div>
+
+        <div id="svg-reference-box-red">
+            <div id="dr-swadlzworth-msg"></div>
         </div>
-    </div>
-    <div style="position: absolute; top: 74%; width: 100%; text-align: center; font-size: 2.2rem; color: var(--sparkle-gold); text-shadow: 2px 2px 0 #000; font-weight: bold;">
-        <span id="food-val">0.0</span> ounces
+        
+        <div id="dr-swadlzworth-img">
+            <img id="dr-swadlzworth-inner" src="https://www.feedmelvin.com/dr_swadlzworth_HAPPY_sprite_web.svg" alt="Dr Swadlzworth" />
+        </div>
+        
+        <div class="checkup-btn-row">
+            <button class="resume-btn" onclick="resumeGame(this)">RESUME</button>
+        </div>
+            
+        <div id="random-tip-msg-container">
+            <div id="random-tip-msg"></div>
+        </div>
     </div>
     
-    <div class="action-btns">
-        <div class="btn-wrapper">
-            <button class="feed-btn" onclick="feed()"></button>
-            <svg class="btn-icon" viewBox="0 0 48 48">
-                <image href="https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.svg" width="48" height="48" />
-            </svg>
+    <div id="game-container" style="display: none;">
+        <svg class="game-bg-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" preserveAspectRatio="xMidYMid slice">
+            <image href="https://pxleight.github.io/feed-melvin-assets/Nursery_background_rev002.svg" width="1080" height="1920" preserveAspectRatio="xMidYMid slice" />
+        </svg>
+        
+        <div id="mobile-anim-container" style="position: absolute; top: 0; left: 0; width: 100%; z-index: 1; pointer-events: auto; overflow: hidden; cursor: pointer;" onclick="triggerMobileAnim()">
+            <img id="mobile-anim-img" src="https://www.feedmelvin.com/mobile_animation_web.svg" style="display: block; width: 1200%; max-width: none; image-rendering: pixelated; transform: translateX(0%); pointer-events: none;" />
         </div>
-        <div class="btn-wrapper">
-            <button class="burp-btn" onclick="burp()"></button>
-            <svg class="btn-icon" viewBox="0 0 48 48">
-                <image href="https://pxleight.github.io/feed-melvin-assets/burp_hand_sprite_web.svg" width="48" height="48" />
+
+        <div id="pause-overlay">
+            <div id="pause-box">
+                <h2 style="color: rgba(255, 255, 255, 0.7); font-size: 2.5rem; text-shadow: none; margin-top: 0; margin-bottom: 10px;">PAUSED</h2>
+                <div id="pause-tip" style="color: #aed9e0; font-size: 1.6rem; line-height: 1.3;"></div>
+                <div class="pause-start-over-btn" onclick="location.reload()">START OVER</div>
+            </div>
+        </div>
+        <div id="spitup-overlay"></div>
+        <h1 class="game-title"><img src="https://www.feedmelvin.com/feed_melvin_logo_web.svg" alt="Feed Melvin" style="width: 75%; max-width: 320px; display: inline-block; pointer-events: none;"></h1>
+        <div id="checkup-bar">
+            OZ/DAY <span id="top-avg-val" class="top-ui-num">0.0</span> <div style="width: 3px; height: 22px; background-color: rgba(255, 255, 255, 0.25);"></div> Checkup in <span id="days-until-val" class="top-ui-num">6</span> days
+        </div>
+        
+        <div id="day2-msg-wrapper">
+            <div id="frustrating-msg"><span class="big-arrow">↑</span> this might feel frustrating especially if your watching the daily average.</div>
+        </div>
+
+        <div class="left-column">
+            <div style="font-size: 1.5rem; font-weight: bold; color: #293241;">time</div>
+            <div id="timer-container"><div id="timer-bar"></div></div>
+        </div>
+        <div class="right-stats-panel">
+            <div class="stat-line">WEEK: <span id="week-val-sidebar">1</span></div>
+            <div class="stat-divider"></div>
+            <div class="stat-line">DAY: <span id="day-val">1</span></div>
+            <div class="stat-divider"></div>
+            <div class="stat-line">LVL: <span id="lvl-val">1</span></div>
+        </div>
+        <div id="super-panel">
+            <div class="super-label">SUPER</div>
+            <div class="super-slots">
+                <svg id="super-slot-1" class="super-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26">
+                    <defs>
+                        <g id="counter-graphic">
+                            <rect x="0" y="0" width="26" height="26" fill="#293241"/>
+                            <rect x="3" y="3" width="20" height="20" fill="#9eb3c2"/>
+                            <rect x="26" y="0" width="26" height="26" fill="#293241"/>
+                            <rect x="29" y="3" width="20" height="20" fill="#ff4d4d"/>
+                            <rect x="52" y="0" width="26" height="26" fill="#293241"/>
+                            <rect x="55" y="3" width="20" height="20" fill="#4ade80"/>
+                        </g>
+                    </defs>
+                    <use href="#counter-graphic" />
+                </svg>
+                <svg id="super-slot-2" class="super-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26">
+                    <use href="#counter-graphic" />
+                </svg>
+            </div>
+            <div class="super-slots">
+                <svg id="super-slot-3" class="super-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26">
+                    <use href="#counter-graphic" />
+                </svg>
+                <svg id="super-slot-4" class="super-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26">
+                    <use href="#counter-graphic" />
+                </svg>
+            </div>
+        </div>
+        <button id="pause-toggle-btn" onclick="togglePause()">
+            <svg id="icon-pause" width="38" height="38" viewBox="0 0 24 24">
+                <rect x="6" y="4" width="4" height="16" />
+                <rect x="14" y="4" width="4" height="16" />
             </svg>
+            <svg id="icon-play" width="38" height="38" viewBox="0 0 24 24" style="display: none;">
+                <polygon points="5,3 19,12 5,21" />
+            </svg>
+        </button>
+        <div id="pet-container">
+            <div id="sparkle-wrap"></div>
+            <div id="pet"></div>
+            <div id="scale-graphic">
+                <img src="https://pxleight.github.io/feed-melvin-assets/levi_scale_sprite_web.svg" style="width: 100%; height: 100%; display: block;" />
+                <div id="weight-readout">6lb 8oz</div>
+            </div>
+        </div>
+        <div style="position: absolute; bottom: 25%; width: 100%; text-align: center; font-size: 2.2rem; color: var(--sparkle-gold); text-shadow: 2px 2px 0 #000; font-weight: bold;">
+            <span id="food-val">0.0</span> ounces
+        </div>
+        
+        <div class="action-btns">
+            <div class="btn-wrapper">
+                <button class="feed-btn" onclick="feed()"></button>
+                <svg class="btn-icon" viewBox="0 0 48 48">
+                    <image href="https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.svg" width="48" height="48" />
+                </svg>
+            </div>
+            <div class="btn-wrapper">
+                <button class="burp-btn" onclick="burp()"></button>
+                <svg class="btn-icon" viewBox="0 0 48 48">
+                    <image href="https://pxleight.github.io/feed-melvin-assets/burp_hand_sprite_web.svg" width="48" height="48" />
+                </svg>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
+    // --- MASTER CONTAINER RESIZE LOGIC ---
+    function resizeMasterContainer() {
+        const master = document.getElementById('master-container');
+        if (!master) return;
+        // Native Master Container Grid
+        const baseW = 439.875;
+        const baseH = 782;
+        
+        // Measure exact 100svh height to account for dynamic mobile browser UI
+        const winH = document.body.clientHeight;
+        
+        // Scale strictly based on height, dropping the width constraint 
+        const scale = winH / baseH;
+        
+        master.style.transform = `translate(-50%, -50%) scale(${scale})`;
+    }
+    window.addEventListener('resize', resizeMasterContainer);
+    window.addEventListener('orientationchange', resizeMasterContainer);
+    resizeMasterContainer(); // Trigger on initial load
+    // -------------------------------------
+
     document.addEventListener('contextmenu', event => event.preventDefault());
     document.addEventListener('gesturestart', function(e) { e.preventDefault(); });
     let lastTouchEnd = 0;
@@ -839,7 +880,7 @@
                             tapMsg.style.transform = 'scale(0)';
                             
                             let logo = document.getElementById('landing-logo-container');
-                            logo.style.top = 'calc(env(safe-area-inset-top, 5px) + 4dvh)';
+                            logo.style.top = '36.3px';
                             logo.style.transform = 'translateY(0)';
                             
                             setTimeout(() => {
@@ -1401,7 +1442,7 @@
             reportTitle.style.transform = 'translateY(250%)';
             congratsWrap.style.transform = 'scale(0)';
             
-            docImg.style.left = '-30%';
+            docImg.style.left = '-132px';
             docBox.style.opacity = '0';
             docBox.style.transform = 'scale(0)';
         }
@@ -1516,7 +1557,7 @@
             if (myRenderId !== currentRenderId) return;
             playWoosh(); // Electronic woosh for slide animation
             playMidSlide(); // Mid pitch sound for slide
-            docImg.style.left = '1.34%';
+            docImg.style.left = '5.9px';
             
             await new Promise(r => setTimeout(r, 333));
             if (myRenderId !== currentRenderId) return;
@@ -2139,7 +2180,7 @@
                     pauseOverlay.style.display = 'flex';
 
                     let wrapper = document.getElementById('day2-msg-wrapper');
-                    wrapper.style.top = '25%';
+                    wrapper.style.top = '190px';
                     wrapper.style.left = '10px';
                     wrapper.style.right = '105px';
                     wrapper.style.width = 'auto';
@@ -2234,19 +2275,19 @@
                     wrapper.style.width = '90%';
                     
                     if (msg.alignPowerUp) {
-                        wrapper.style.top = '38%';
+                        wrapper.style.top = '300px';
                         wrapper.style.left = '10px';
                         wrapper.style.right = '105px';
                         wrapper.style.width = 'auto';
                         wrapper.style.transform = 'none';
                         msgEl.style.textAlign = 'right';
                     } else if (msg.center) {
-                        wrapper.style.top = '48%';
+                        wrapper.style.top = 'calc(55% - 60px)';
                         wrapper.style.left = '50%';
                         wrapper.style.right = 'auto';
                         wrapper.style.transform = 'translate(-50%, -50%)';
                     } else {
-                        wrapper.style.top = '18%';
+                        wrapper.style.top = '130px';
                         wrapper.style.left = '50%';
                         wrapper.style.right = 'auto';
                         wrapper.style.transform = 'translateX(-50%)';
