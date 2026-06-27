@@ -20,7 +20,13 @@
         body, html { margin: 0; padding: 0; height: 100svh; width: 100%; image-rendering: pixelated; overflow: hidden; user-select: none; -webkit-user-select: none; background-color: #fcb38b; touch-action: none; }
         
         .desktop-key { display: none; }
-        @media (hover: hover) and (pointer: fine) { .desktop-key { display: inline; } }
+        .mobile-text { display: inline; }
+        .desktop-text { display: none; }
+        @media (hover: hover) and (pointer: fine) { 
+            .desktop-key { display: inline; } 
+            .mobile-text { display: none; }
+            .desktop-text { display: inline; }
+        }
 
         #master-container {
             position: absolute;
@@ -38,19 +44,22 @@
         #checkup-screen { display: none; z-index: 210; }
         .instruction-box { background: rgba(0, 0, 0, 0.4); border: 3px solid #fff; padding: 15px; color: white; font-size: 1.4rem; max-width: 80%; text-align: center; margin: 20px 0; line-height: 1.2; }
         
-        #instructions-logo { position: absolute; top: 37.5px; left: 6.5px; width: 426.8px; height: 77.6px; z-index: 2; object-fit: contain; pointer-events: none; filter: drop-shadow(-8px 8px 0px #e59a72); }
-        #instructions-white-box { position: absolute; top: 158.4px; left: 37.3px; width: 365.3px; height: 430px; background-color: #ffffff; border: 4px solid #5ea1fd; box-shadow: -12px 12px 0 #fee5d4; box-sizing: border-box; z-index: 1; color: #5ea1fd; overflow-y: auto; }
-        #instructions-dr-swadlzworth { position: absolute; top: 446px; left: 342.4px; width: 94.8px; height: 142.2px; z-index: 2; object-fit: contain; pointer-events: none; filter: drop-shadow(-8px 0px 0px #fcb38b); }
+        #instructions-logo { position: absolute; top: 37.5px; left: 31.4px; width: 377.1px; height: auto; z-index: 2; pointer-events: none; filter: drop-shadow(-8px 8px 0px #e59a72); overflow: hidden; }
         
-        #instructions-box-left { position: absolute; top: 620.5px; left: 55.3px; width: 137.7px; height: 58.1px; background-color: #5ea1fd; z-index: 2; border: 4px solid #326efc; box-shadow: -5px 5px 0 #326efc; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.6rem; font-style: italic; cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; }
-        #instructions-box-right { position: absolute; top: 620.5px; left: 246.8px; width: 137.7px; height: 58.1px; background-color: #5ea1fd; z-index: 2; border: 4px solid #326efc; box-shadow: -5px 5px 0 #326efc; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.6rem; font-style: italic; cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; }
+        #instructions-white-box-bg { position: absolute; top: 129.6px; left: 57.4px; width: 325px; height: 450px; background-color: #ffffff; border: 4px solid #5ea1fd; box-shadow: -12px 12px 0 #fee5d4; box-sizing: border-box; z-index: 1; }
+        #instructions-dr-swadlzworth-wrap { position: absolute; top: 439.1px; left: 330px; width: 91px; height: 136.5px; z-index: 2; pointer-events: none; filter: drop-shadow(-8px 0px 0px #fcb38b); display: flex; overflow: hidden; }
+        #instructions-dr-swadlzworth-inner { height: 100%; width: auto; max-width: none; flex-shrink: 0; }
+        #instructions-white-box { position: absolute; top: 129.6px; left: 57.4px; width: 325px; height: 450px; box-sizing: border-box; z-index: 3; color: #5ea1fd; overflow: hidden; pointer-events: auto; }
+        
+        #instructions-box-left { position: absolute; top: 611.7px; left: 57.4px; width: 120px; height: 50px; background-color: #5ea1fd; z-index: 4; border: 4px solid #326efc; box-shadow: -5px 5px 0 #326efc; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.3rem; font-style: italic; cursor: pointer; transition: transform 0.05s, box-shadow 0.05s; }
+        #instructions-box-right { position: absolute; top: 611.7px; left: 262.4px; width: 120px; height: 50px; background-color: #5ea1fd; z-index: 4; border: 4px solid #326efc; box-shadow: -5px 5px 0 #326efc; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.3rem; font-style: italic; cursor: pointer; transition: transform 0.05s, box-shadow 0.05s; }
         #instructions-box-left:active, #instructions-box-right:active, #instructions-box-left.pressed, #instructions-box-right.pressed { transform: translate(-5px, 5px); box-shadow: 0px 0px 0 #326efc; }
         
-        #instructions-box-super { position: absolute; top: 688.2px; left: 151.1px; width: 137.7px; height: 58.1px; background-color: #5ea1fd; z-index: 2; border: 4px solid #326efc; box-shadow: -5px 5px 0 #326efc; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.6rem; font-style: italic; cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; }
+        #instructions-box-super { position: absolute; top: 679.4px; left: 159.9px; width: 120px; height: 50px; background-color: #5ea1fd; z-index: 4; border: 4px solid #326efc; box-shadow: -5px 5px 0 #326efc; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.3rem; font-style: italic; cursor: pointer; transition: transform 0.05s, box-shadow 0.05s; }
         #instructions-box-super:active, #instructions-box-super.pressed { transform: translate(-5px, 5px); box-shadow: 0px 0px 0 #326efc; }
 
         .instr-row { display: flex; align-items: center; margin: 12px 0; font-size: 1.3rem; line-height: 1.05; padding: 0 10px; }
-        .instr-icon { width: 37.8px; height: 37.8px; flex-shrink: 0; filter: drop-shadow(-2px 2px 0 #fcb38b); }
+        .instr-icon { width: 44px; height: 44px; flex-shrink: 0; filter: drop-shadow(-2px 2px 0 #fcb38b); }
 
         .share-btn { background: #e1306c; color: white; border: 6px solid var(--ui-border); padding: 8px 16px; width: fit-content; min-width: 100px; font-size: 2.5rem; cursor: pointer; margin-top: 10px; box-shadow: 0 6px 0 #000; }
         .share-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #000; }
@@ -60,10 +69,13 @@
         .game-title { position: absolute; top: 5px; width: 100%; text-align: center; font-size: 4rem; color: #293241; text-shadow: 2px 2px 0px #fff; z-index: 150; margin: 0; }
         #checkup-bar { position: absolute; top: 75px; left: 50%; transform: translateX(-50%); background: rgba(61, 90, 128, 0.7); padding: 8px 15px; z-index: 140; color: white; font-size: 1.6rem; text-align: center; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
         .top-ui-num { color: var(--sparkle-gold); font-size: 2.2rem; line-height: 1; }
-        .right-stats-panel { position: absolute; top: 160px; right: 15px; background: rgba(61, 90, 128, 0.7); padding: 15px 8px; z-index: 140; display: flex; flex-direction: column; align-items: center; width: 88px; box-sizing: border-box; }
-        .stat-line { color: white; font-size: 1.5rem; text-align: center; width: 100%; white-space: nowrap; }
+        
+        .right-stats-panel { position: absolute; top: 160px; left: 336.875px; background: rgba(61, 90, 128, 0.7); padding: 15px 8px; z-index: 140; display: flex; flex-direction: column; align-items: center; width: 75px; box-sizing: border-box; }
+        .stat-line { color: white; font-size: 1.5rem; display: flex; justify-content: space-between; width: 100%; white-space: nowrap; }
+        .stat-line span { color: var(--sparkle-gold); }
         .stat-divider { width: 100%; height: 3px; background-color: rgba(255, 255, 255, 0.25); margin: 8px 0; }
-        #super-panel { position: absolute; top: 340px; right: 15px; width: 88px; display: flex; flex-direction: column; align-items: center; gap: 5px; z-index: 140; }
+        
+        #super-panel { position: absolute; top: 312px; right: 19px; width: 88px; display: flex; flex-direction: column; align-items: center; gap: 5px; z-index: 140; }
         .super-label { color: white; font-size: 1.5rem; font-weight: bold; text-shadow: 2px 2px 0 var(--ui-border); }
         .super-slots { display: flex; justify-content: center; gap: 16px; width: 100%; opacity: 0.25; }
         .super-svg { width: 26px; height: 26px; display: block; }
@@ -96,7 +108,7 @@
         .feed-btn:active, .burp-btn:active, .feed-btn.key-pressed, .burp-btn.key-pressed { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0, 0, 0, 0.5); }
         .feed-btn:active + .btn-icon, .burp-btn:active + .btn-icon, .feed-btn.key-pressed + .btn-icon, .burp-btn.key-pressed + .btn-icon { margin-top: 4px; }
         
-        .left-column { position: absolute; top: 135px; left: 15px; bottom: 168.8px; display: flex; flex-direction: column; align-items: center; width: 50px; z-index: 110; }
+        .left-column { position: absolute; top: 135px; left: 20px; bottom: 168.8px; display: flex; flex-direction: column; align-items: center; width: 50px; z-index: 110; }
         #timer-container { width: 22px; flex-grow: 1; background: #293241; border: 3px solid #fff; border-radius: 4px; overflow: hidden; margin-top: 5px; display: flex; flex-direction: column; justify-content: flex-end; }
         #timer-bar { width: 100%; height: 100%; background: #ff9b54; }
         
@@ -105,7 +117,7 @@
 
         #pause-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 155; display: none; align-items: center; justify-content: center; pointer-events: auto; }
         #pause-box { background: rgba(61, 90, 128, 0.7); padding: 18px; width: 60%; max-width: 255px; text-align: center; box-shadow: 0 6px 0 #000; }
-        #pause-toggle-btn { position: absolute; top: 460px; right: 26px; background: rgba(0,0,0,0.25); border: none; cursor: pointer; z-index: 160; outline: none; padding: 6px; display: flex; justify-content: center; align-items: center; width: 52px; height: 52px; transition: transform 0.1s; }
+        #pause-toggle-btn { position: absolute; top: 460px; right: 30px; background: rgba(0,0,0,0.25); border: none; cursor: pointer; z-index: 160; outline: none; padding: 6px; display: flex; justify-content: center; align-items: center; width: 52px; height: 52px; transition: transform 0.05s; }
         #pause-toggle-btn svg { fill: #eeeeee; filter: drop-shadow(2px 2px 0 #000); }
         #pause-toggle-btn:active, #pause-toggle-btn.key-pressed { transform: translateY(2px); }
         .pause-start-over-btn { background: rgba(0,0,0,0.25); color: rgba(255, 255, 255, 0.7); font-size: 1.8rem; text-align: center; margin-top: 20px; cursor: pointer; padding: 8px; width: fit-content; margin-left: auto; margin-right: auto; }
@@ -123,8 +135,8 @@
         @keyframes phoneTilt { 0%, 100% { transform: rotate(-90deg); } 50% { transform: rotate(0deg); } }
 
         #landing-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #fcb38b; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; justify-content: center; z-index: 300; }
-        .play-btn { background: #5ea1fd; border: 6px solid #326efc; padding: 0px 20px; font-size: 5rem; cursor: pointer; box-shadow: -8px 8px 0 #326efc; color: var(--sparkle-gold); margin-top: 40px; text-shadow: 4px 4px 0 #234de2; transform: scale(0.90); transition: transform 0.1s, box-shadow 0.1s; }
-        .play-btn:active, .play-btn.pressed { transform: translate(-8px, 8px) scale(0.90); box-shadow: 0px 0px 0 #326efc; }
+        .play-btn { background: #5ea1fd; border: 6px solid #326efc; padding: 0px 18px; font-size: 4.5rem; cursor: pointer; box-shadow: -8px 8px 0 #326efc; color: var(--sparkle-gold); margin-top: 40px; text-shadow: 4px 4px 0 #234de2; transition: transform 0.05s, box-shadow 0.05s; }
+        .play-btn:active, .play-btn.pressed { transform: translate(-8px, 8px); box-shadow: 0px 0px 0 #326efc; }
 
         #ios-install-instructions { display: none; position: fixed; top: 0; bottom: 0; left: 0; width: 100%; background: rgba(0, 0, 0, 0.8); z-index: 999999; align-items: flex-end; justify-content: center; }
         .ios-instruction-box { background: #FB9052; color: white; border: 4px solid #fff; padding: 20px; width: 90%; max-width: 400px; text-align: center; font-size: 1.6rem; margin-bottom: 20px; box-shadow: 0 6px 0 #000; }
@@ -135,9 +147,11 @@
 
         #global-ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999999; }
         
-        #custom-bmc-btn { position: absolute; bottom: 26px; right: 18px; width: 50px; height: 50px; background-color: #FB9052; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.3); pointer-events: auto; cursor: pointer; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease, box-shadow 0.1s; transform: translateX(200%); opacity: 0; }
+        #custom-bmc-btn { position: absolute; bottom: 26px; right: 18px; width: 50px; height: 50px; background-color: #FB9052; border-radius: 0; display: flex; align-items: center; justify-content: center; font-size: 28px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.3); pointer-events: auto; cursor: pointer; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease, box-shadow 0.1s; transform: translateX(200%); opacity: 0; }
         #custom-bmc-btn.in-place { transform: translateX(0); opacity: 1; }
-        #custom-bmc-btn.in-place:active { transform: translateY(2px); box-shadow: 0 2px 3px rgba(0,0,0,0.3); transition: transform 0.1s, box-shadow 0.1s; }
+        #custom-bmc-btn.in-place:active { transform: translateY(2px); box-shadow: 0 2px 3px rgba(0,0,0,0.3); transition: transform 0.05s, box-shadow 0.05s; }
+
+        #left-story-btn:active { transform: translateY(2px); box-shadow: 0 2px 3px rgba(0,0,0,0.3); }
 
         #bmc-tooltip { position: absolute; bottom: 22px; right: 75px; background: #fff; color: #3d5a80; padding: 4px 8px; border: none; box-shadow: none; font-size: 1.4rem; line-height: 1.0; width: 170px; text-align: center; pointer-events: none; transform-origin: right center; transform: scale(0); opacity: 0; visibility: hidden; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease, visibility 0.4s; }
         #bmc-tooltip.show { transform: scale(1); opacity: 1; visibility: visible; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease, visibility 0s; }
@@ -161,7 +175,7 @@
         #dr-swadlzworth-inner { height: 100%; width: auto; max-width: none; flex-shrink: 0; }
         
         .checkup-btn-row { position: relative; display: flex; justify-content: center; gap: 15px; width: 100%; margin-bottom: 10px; z-index: 2; }
-        .resume-btn { position: relative; z-index: 2; background: #fff; border: 8.5px solid #5ea1fd; color: #326efc; padding: 7.5px 15px; width: fit-content; min-width: 96px; font-size: 2.64rem; cursor: pointer; box-shadow: 6px 6px 0 #fee5d4; transition: transform 0.1s, box-shadow 0.1s; }
+        .resume-btn { position: relative; z-index: 2; background: #fff; border: 8.5px solid #5ea1fd; color: #326efc; padding: 7.5px 15px; width: fit-content; min-width: 96px; font-size: 2.64rem; cursor: pointer; box-shadow: 6px 6px 0 #fee5d4; transition: transform 0.05s, box-shadow 0.05s; }
         .resume-btn:active { transform: translate(6px, 6px); box-shadow: 0px 0px 0 #fee5d4; }
 
         /* Victory Mode Overrides (Applied when game is won) */
@@ -179,10 +193,10 @@
         .resume-btn.super-mode { background: #5ea1fd; border: 8.5px solid #326efc; color: #fff; box-shadow: 6px 6px 0 #326efc; animation: superFlash 0.5s infinite; }
         .resume-btn.super-mode:active { transform: translate(6px, 6px); box-shadow: 0px 0px 0 #326efc; }
 
-        .toggle-arrow-btn { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center; z-index: 10; transition: transform 0.1s; }
+        .toggle-arrow-btn { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center; z-index: 10; transition: transform 0.05s; }
         .toggle-arrow-btn:active { transform: translateY(-50%) scale(0.9); }
-        #prev-stats-btn { left: -55px; display: none; }
-        #next-stats-btn { right: -55px; display: none; } 
+        #prev-stats-btn { left: -38px; display: none; }
+        #next-stats-btn { right: -38px; display: none; } 
         .toggle-arrow-btn svg { width: 45px; height: 45px; fill: white; filter: drop-shadow(1px 1px 0 #000); }
 
         #landing-dr-swadlzworth { position: absolute; width: 36%; max-width: 216px; z-index: 999; pointer-events: none; filter: drop-shadow(-4px 4px 0px #e59a72); top: -50%; left: -50%; display: flex; overflow: hidden; }
@@ -194,13 +208,25 @@
         .land-hard-anim { display: inline-block; animation: landHardAnim 0.15s ease-in forwards; transform-origin: center; opacity: 1; }
         @keyframes titleSlideUp { 0% { transform: translateY(250%); } 100% { transform: translateY(0); } }
         @keyframes titleScaleUp { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+
+        @keyframes dayEndOuncesAnim {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            70% { opacity: 1; }
+            100% { transform: translateY(-470px) scale(1.33); opacity: 0; }
+        }
+        .day-end-ounces {
+            position: absolute; bottom: 25%; width: 100%; text-align: center; 
+            font-size: 2.2rem; color: var(--sparkle-gold); text-shadow: 2px 2px 0 #000; 
+            font-weight: bold; pointer-events: none; z-index: 106;
+            animation: dayEndOuncesAnim 4s ease-out forwards;
+        }
     </style>
 </head>
 <body>
 
 <div id="orientation-lock">
     <svg width="80" height="80" viewBox="0 0 24 24" fill="white" style="margin-bottom: 20px; animation: phoneTilt 2s infinite ease-in-out;">
-        <path d="M16 1H8C6.9 1 6 1.9 6 3v18c0 1.1.9 2 2 2h8c1.1 0 2-2-2zm0 19H8V4h8v16z"/>
+        <path d="M18 1H6v22h12V1zm-2 19H8V4h8v16z"/>
     </svg>
     <div>Please rotate your device<br>back to portrait mode<br>to play Feed Melvin.</div>
 </div>
@@ -250,7 +276,10 @@
             </div>
         </div>
         
-        <div id="tap-anywhere" style="position: absolute; top: 85%; width: 100%; text-align: center; color: white; font-size: 2.5rem; text-shadow: 2px 2px 0 #000; display: block; transform: scale(0); z-index: 20; pointer-events: none; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">TAP ANYWHERE</div>
+        <div id="tap-anywhere" style="position: absolute; top: 85%; width: 100%; text-align: center; color: white; font-size: 2.5rem; text-shadow: 2px 2px 0 #000; display: block; transform: scale(0); z-index: 20; pointer-events: none; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+            <span class="mobile-text">TAP ANYWHERE</span>
+            <span class="desktop-text">CLICK ANYWHERE</span>
+        </div>
             
         <div id="landing-visual-area" style="position: absolute; top: 370px; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 278px; width: 100%; z-index: 15; pointer-events: none;">
 
@@ -284,43 +313,64 @@
         <button id="play-btn" class="play-btn" style="position: absolute; bottom: 142.8px; margin: 0; display: none; transform: scale(0); z-index: 20; pointer-events: auto;">PLAY!</button>
 
         <div id="landing-bmc-left" style="position: absolute; bottom: 26px; left: 18px; pointer-events: auto; transform: translateX(-200%); opacity: 0; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease;">
-            <a href="https://www.buymeacoffee.com/pixelmover/membership" target="_blank" rel="noopener noreferrer"><img src="https://img.buymeacoffee.com/button-api/?text=Monthly%20Baby%20Formula&emoji=🍼&slug=pixelmover&button_colour=FB9052&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" /></a>
+            <a id="left-story-btn" href="https://www.pixel-mover.com/blog" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; justify-content: center; background-color: #FB9052; color: white; text-decoration: none; font-size: 1.8rem; padding: 0 15px; height: 50px; box-sizing: border-box; box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: transform 0.05s, box-shadow 0.05s;">
+                <svg viewBox="0 0 48 48" style="width: 28px; height: 28px; margin-right: 8px;">
+                    <image href="https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.svg" width="192" height="48" />
+                </svg>
+                THE STORY
+            </a>
         </div>
     </div>
 
     <div id="splash-screen" style="display: none;">
-        <img id="instructions-logo" src="https://www.feedmelvin.com/feed_melvin_logo_web.svg" alt="Feed Melvin">
+        
+        <svg id="instructions-logo" viewBox="0 0 288 48">
+            <image href="https://www.feedmelvin.com/feed_melvin_logo_sprite_web.svg" width="288" height="192" />
+        </svg>
+        
+        <div id="instructions-white-box-bg"></div>
+        
+        <div id="instructions-dr-swadlzworth-wrap">
+            <img id="instructions-dr-swadlzworth-inner" src="https://www.feedmelvin.com/dr_swadlzworth_HAPPY_sprite_web.svg" alt="Dr Swadlzworth">
+        </div>
         
         <div id="instructions-white-box">
-            <div style="font-size: 2.2rem; text-align: center; width: 100%; margin-top: 15px;">D<span style="margin-right: -0.05em;">r</span>.<span style="margin-right: -0.1em;"> </span>Swadlzworth<span style="margin-right: -0.1em;"> </span>Says:</div>
-            <div style="width: 85%; height: 4px; background-color: #5ea1fd; margin: 10px auto;"></div>
+            <div style="font-size: 2.0rem; text-align: center; width: 100%; margin-top: 15px;">
+                <div style="display: inline-block; text-align: left;">
+                    D<span style="margin-right: -0.05em;">r</span>.<span style="margin-right: -0.1em;"> </span>Swadlzworth<span style="margin-right: -0.1em;"> </span>Says:
+                    <div style="width: 100%; height: 3px; background-color: #5ea1fd; margin-top: 10px; margin-bottom: 10px;"></div>
+                </div>
+            </div>
+            
             <div style="font-size: 1.35rem; text-align: left; padding: 0 15px; line-height: 1.0;">
                 <div class="instr-row">
-                    <img src="https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.svg" class="instr-icon" style="margin-right: 10px;">
-                    <span>Tap the BOTTLE<span class="desktop-key"> (f key)</span> to feed<br>Melvin a 1/2 ounce of Formula.</span>
+                    <img src="https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.svg" class="instr-icon" style="margin-right: 18px;">
+                    <span class="mobile-text">Tap the BOTTLE to<br>feed Melvin a 1/2<br>ounce of formula.</span>
+                    <span class="desktop-text">Tap the BOTTLE (f key)<br>to feed Melvin a 1/2<br>ounce of formula.</span>
                 </div>
                 <div class="instr-row">
-                    <img src="https://www.feedmelvin.com/full_icon_web.svg" class="instr-icon" style="margin-right: 10px; width: 37.8px; height: 37.8px;">
-                    <span>Melvin will start to turn<br>GREEN when he's getting full.</span>
+                    <img src="https://www.feedmelvin.com/full_icon_web.svg" class="instr-icon" style="margin-right: 18px; width: 44px; height: 44px;">
+                    <span class="mobile-text">Melvin will start to<br>turn GREEN when<br>he's getting full.</span>
+                    <span class="desktop-text">Melvin will start to<br>turn GREEN when<br>he's getting full.</span>
                 </div>
                 <div class="instr-row">
-                    <img src="https://pxleight.github.io/feed-melvin-assets/burp_hand_sprite_web.svg" class="instr-icon" style="margin-right: 10px;">
-                    <span>Keep tapping the HAND<span class="desktop-key"> (b key)</span><br>until Melvin Burps.</span>
+                    <img src="https://pxleight.github.io/feed-melvin-assets/burp_hand_sprite_web.svg" class="instr-icon" style="margin-right: 18px;">
+                    <span class="mobile-text">Keep tapping the HAND<br>until Melvin burps.</span>
+                    <span class="desktop-text">Tap the HAND (b key)<br>until Melvin burps.</span>
                 </div>
                 <div class="instr-row">
-                    <img src="https://www.feedmelvin.com/spit_up_icon_web.svg" class="instr-icon" style="margin-right: 10px; width: 37.8px; height: 37.8px;">
-                    <span>If you overfeed Melvin<br>he will spit up and you<br>will <span style="font-size: 1.2rem;">lose</span> ounces!</span>
+                    <img src="https://www.feedmelvin.com/spit_up_icon_web.svg" class="instr-icon" style="margin-right: 18px; width: 44px; height: 44px;">
+                    <span class="mobile-text">If you overfeed Melvin<br>he will spit-up and you<br>will <span style="font-size: 1.2rem;">lose</span> ounces!</span>
+                    <span class="desktop-text">If you overfeed Melvin<br>he will spit-up and you<br>will <span style="font-size: 1.2rem;">lose</span> ounces!</span>
                 </div>
                 <div id="instr-powerup-wrap" style="position: relative; text-align: center; width: 100%; margin-top: 15px; box-sizing: border-box; z-index: 2;">
                     <div id="instr-powerup-sparkles" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3;"></div>
-                    <div style="position: relative; color: #326efc; font-size: 1.5rem; line-height: 1.1; margin-bottom: 10px; z-index: 2;">
+                    <div style="position: relative; color: #326efc; font-size: 1.35rem; line-height: 1.1; margin-bottom: 10px; z-index: 2;">
                         Help Melvin grow to 9lbs to<br>make Dr Swadlzworth proud!
                     </div>
                 </div>
             </div>
         </div>
-
-        <img id="instructions-dr-swadlzworth" src="https://www.feedmelvin.com/dr_swadlzworth_sprite_web.svg" alt="Dr Swadlzworth">
         
         <div id="instructions-box-left" onclick="startGame('easy', this)">EASY</div>
         <div id="instructions-box-right" onclick="startGame('normal', this)">NORMAL</div>
@@ -369,7 +419,7 @@
             <image href="https://pxleight.github.io/feed-melvin-assets/Nursery_background_rev002.svg" width="1080" height="1920" preserveAspectRatio="xMidYMid slice" />
         </svg>
         
-        <div id="mobile-anim-container" style="position: absolute; top: 0; left: 0; width: 100%; z-index: 1; pointer-events: auto; overflow: hidden; cursor: pointer;" onclick="triggerMobileAnim()">
+        <div id="mobile-anim-container" style="position: absolute; top: 0; left: -7px; width: 100%; z-index: 1; pointer-events: auto; overflow: hidden; cursor: pointer; transform: scale(0.81); transform-origin: top center;" onclick="triggerMobileAnim()">
             <img id="mobile-anim-img" src="https://www.feedmelvin.com/mobile_animation_web.svg" style="display: block; width: 1200%; max-width: none; image-rendering: pixelated; transform: translateX(0%); pointer-events: none;" />
         </div>
 
@@ -381,7 +431,11 @@
             </div>
         </div>
         <div id="spitup-overlay"></div>
-        <h1 class="game-title"><img src="https://www.feedmelvin.com/feed_melvin_logo_web.svg" alt="Feed Melvin" style="width: 75%; max-width: 320px; display: inline-block; pointer-events: none;"></h1>
+        <h1 class="game-title">
+            <svg id="game-logo-svg" viewBox="0 0 288 48" style="width: 75%; max-width: 320px; display: inline-block; pointer-events: none;">
+                <image href="https://www.feedmelvin.com/feed_melvin_logo_sprite_web.svg" width="288" height="192" />
+            </svg>
+        </h1>
         <div id="checkup-bar">
             OZ/DAY <span id="top-avg-val" class="top-ui-num">0.0</span> <div style="width: 3px; height: 22px; background-color: rgba(255, 255, 255, 0.25);"></div> Checkup in <span id="days-until-val" class="top-ui-num">6</span> days
         </div>
@@ -391,7 +445,7 @@
         </div>
 
         <div class="left-column">
-            <div style="font-size: 1.5rem; font-weight: bold; color: #293241;">time</div>
+            <div style="font-size: 1.5rem; font-weight: bold; color: white; text-shadow: 2px 2px 0 #000;">time</div>
             <div id="timer-container"><div id="timer-bar"></div></div>
         </div>
         <div class="right-stats-panel">
@@ -525,6 +579,11 @@
     let drReportFrame = 0;
     let drReportTicks = 0;
     let drReportHoldTicks = Math.floor(Math.random() * 29) + 4; // Random hold 0.5 to 4 seconds
+    
+    // Instructions Screen Dr. Swadlzworth Sprite Logic
+    let instrDrFrame = 0;
+    let instrDrTicks = 0;
+    let instrDrHoldTicks = Math.floor(Math.random() * 29) + 4;
 
     function setDrSprite(state) {
         let url;
@@ -797,6 +856,7 @@
     let currentRenderId = 0; // Tracks the current active animation block
     let victoryAnimated = false;
     let standardAnimated = false;
+    let tooltipHideTimer = null; // Globally manage tooltip hide timing
 
     const gameTips = [
         "Burping Melvin will make more room in his stomach. There's no harm in burping him before he's completely full!",
@@ -834,6 +894,7 @@
 
     const assetUrls = [
         "https://www.feedmelvin.com/feed_melvin_logo_stacked_web.svg",
+        "https://www.feedmelvin.com/feed_melvin_logo_sprite_web.svg",
         "https://www.feedmelvin.com/classic_melvin_sprite_web.svg",
         "https://www.feedmelvin.com/classic_melvin_FULL_sprite_web.svg",
         "https://pxleight.github.io/feed-melvin-assets/super_levi_sprite_web.svg",
@@ -841,6 +902,7 @@
         "https://pxleight.github.io/feed-melvin-assets/gamma_levi_sprite_web.svg",
         "https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.svg",
         "https://pxleight.github.io/feed-melvin-assets/burp_hand_sprite_web.svg",
+        "https://pxleight.github.io/feed-melvin-assets/levi_scale_sprite_web.svg",
         "https://www.feedmelvin.com/scale_icon_web.svg",
         "https://www.feedmelvin.com/spit_up_icon_web.svg",
         "https://www.feedmelvin.com/full_icon_web.svg",
@@ -848,7 +910,14 @@
         "https://www.feedmelvin.com/dr_swadlzworth_HAPPY_sprite_web.svg",
         "https://www.feedmelvin.com/dr_swadlzworth_UPSET_sprite_web.svg",
         "https://www.feedmelvin.com/dr_swadlzworth_ELATED_sprite_web.svg",
-        "https://www.feedmelvin.com/mobile_animation_web.svg"
+        "https://www.feedmelvin.com/mobile_animation_web.svg",
+        "https://pxleight.github.io/feed-melvin-assets/melvin_icon_web_app.png",
+        "https://www.feedmelvin.com/easy_mode_icon_web.svg",
+        "https://www.feedmelvin.com/normal_mode_icon_web.svg",
+        "https://www.feedmelvin.com/super_icon_web.svg",
+        "https://www.feedmelvin.com/gamma_icon_web.svg",
+        "https://www.feedmelvin.com/time_icon_web.svg",
+        "https://pxleight.github.io/feed-melvin-assets/Nursery_background_rev002.svg"
     ];
 
     let assetsLoaded = false;
@@ -898,10 +967,11 @@
                                     playBtn.style.transform = 'scale(0)';
                                     playBtn.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
                                     void playBtn.offsetWidth; // Force reflow
-                                    playBtn.style.transform = 'scale(0.90)';
+                                    playBtn.style.transform = 'scale(1)';
                                     
                                     setTimeout(() => {
-                                        playBtn.style.transition = 'transform 0.1s, box-shadow 0.1s';
+                                        playBtn.style.transition = 'transform 0.05s, box-shadow 0.05s';
+                                        playBtn.style.transform = '';
                                     }, 400);
 
                                     setTimeout(() => {
@@ -917,11 +987,12 @@
                                                 const tooltip = document.getElementById('bmc-tooltip');
                                                 if (tooltip) {
                                                     tooltip.classList.add('show');
-                                                    setTimeout(() => {
+                                                    clearTimeout(tooltipHideTimer);
+                                                    tooltipHideTimer = setTimeout(() => {
                                                         tooltip.classList.remove('show');
                                                     }, 3000);
                                                 }
-                                            }, 500); 
+                                            }, 2500); 
                                         }
                                     }, 400); 
                                 }, 333);
@@ -944,6 +1015,7 @@
     const petEl = document.getElementById('pet'), weightReadout = document.getElementById('weight-readout'), dayValDisp = document.getElementById('day-val'), timerBar = document.getElementById('timer-bar'), sparkleWrap = document.getElementById('sparkle-wrap');
     let audioCtx;
     let masterGainNode;
+    let petAnimTimeout = null, isBigBurpAnimating = false;
 
     // --- NEW LAYERED MUSIC SEQUENCER ---
     const track1 = [{"note":"E4","time":802,"duration":358,"instrument":"synth","waveform":"square","volume":0.5},{"note":"C4","time":1880,"duration":454,"instrument":"synth","waveform":"square","volume":0.5},{"note":"F4","time":2521,"duration":402,"instrument":"synth","waveform":"square","volume":0.5},{"note":"D4","time":3157,"duration":408,"instrument":"synth","waveform":"square","volume":0.5},{"note":"E4","time":3797,"duration":465,"instrument":"synth","waveform":"square","volume":0.5},{"note":"C4","time":4467,"duration":439,"instrument":"synth","waveform":"square","volume":0.5},{"note":"D4","time":5145,"duration":1005,"instrument":"synth","waveform":"square","volume":0.5},{"note":"E4","time":6997,"duration":410,"instrument":"synth","waveform":"square","volume":0.5},{"note":"C4","time":7628,"duration":397,"instrument":"synth","waveform":"square","volume":0.5},{"note":"F4","time":8493,"duration":494,"instrument":"synth","waveform":"square","volume":0.5},{"note":"G4","time":9235,"duration":413,"instrument":"synth","waveform":"square","volume":0.5},{"note":"A4","time":9897,"duration":409,"instrument":"synth","waveform":"square","volume":0.5},{"note":"B4","time":10527,"duration":385,"instrument":"synth","waveform":"square","volume":0.5}];
@@ -1051,11 +1123,11 @@
             let elapsed = now - mobileFpsTransitionStart;
             // Ramp up for 1s, Hold for 3s, Ramp down for 1s (total effect duration 5s)
             if (elapsed < 1000) { 
-                mobileCurrentFps = 6 + (6 * (elapsed / 1000));
+                mobileCurrentFps = 6 + (10 * (elapsed / 1000));
             } else if (elapsed < 4000) { 
-                mobileCurrentFps = 12;
+                mobileCurrentFps = 16;
             } else if (elapsed < 5000) { 
-                mobileCurrentFps = 12 - (6 * ((elapsed - 4000) / 1000));
+                mobileCurrentFps = 16 - (10 * ((elapsed - 4000) / 1000));
             } else {
                 mobileCurrentFps = 6;
                 isMobileAnimActive = false;
@@ -1079,6 +1151,29 @@
     };
     // --- END MOBILE ANIMATION LOGIC ---
 
+    // --- LOGO SPRITE ANIMATION LOGIC ---
+    const logoTotalFrames = 4;
+    const logoFps = 4;
+    const logoIntervalTime = 1000 / logoFps;
+    let currentLogoFrame = 0;
+
+    function updateLogoSpritePosition() {
+        const yOffset = currentLogoFrame * 48;
+        const viewBoxStr = `0 ${yOffset} 288 48`;
+        
+        let splashLogo = document.getElementById('instructions-logo');
+        if (splashLogo) splashLogo.setAttribute('viewBox', viewBoxStr);
+        
+        let gameLogo = document.getElementById('game-logo-svg');
+        if (gameLogo) gameLogo.setAttribute('viewBox', viewBoxStr);
+    }
+
+    setInterval(() => {
+        currentLogoFrame = (currentLogoFrame + 1) % logoTotalFrames;
+        updateLogoSpritePosition();
+    }, logoIntervalTime);
+    // -----------------------------------
+
     function togglePause() {
         if (!gameRunning) return;
         isPaused = !isPaused;
@@ -1096,6 +1191,7 @@
         setTimeout(() => {
             if(btnEl) btnEl.classList.remove('pressed');
             
+            clearTimeout(tooltipHideTimer);
             let tooltip = document.getElementById('bmc-tooltip');
             if (tooltip) tooltip.classList.remove('show');
 
@@ -1122,6 +1218,7 @@
             gameRunning = true; 
             isPaused = true; 
             burpProgress = 0; 
+            isBigBurpAnimating = false;
             petEl.innerHTML = classicMelvinSVG + classicFullMelvinSVG + superMelvinSVG + superFullMelvinSVG + gammaMelvinSVG; 
             createSparklePool('sparkle-wrap');
             rollNewLimit(); 
@@ -1148,6 +1245,11 @@
         if(btnEl) btnEl.classList.add('pressed');
         setTimeout(() => {
             if(btnEl) btnEl.classList.remove('pressed');
+            
+            clearTimeout(tooltipHideTimer);
+            let tooltip = document.getElementById('bmc-tooltip');
+            if (tooltip) tooltip.classList.remove('show');
+            
             document.getElementById('checkup-screen').style.display = 'none'; 
             
             musicPausedForReport = false;
@@ -1191,6 +1293,7 @@
                 foodStored = 0;
                 currentSessionOunces = 0;
                 burpProgress = 0;
+                isBigBurpAnimating = false;
                 
                 isClassicSpittingUp = false; classicSpitUpFrame = 0;
                 isSuperSpittingUp = false; superSpitUpFrame = 0;
@@ -1240,6 +1343,7 @@
             foodStored = 0; 
             currentSessionOunces = 0; 
             burpProgress = 0; 
+            isBigBurpAnimating = false;
             isClassicSpittingUp = false; classicSpitUpFrame = 0;
             isSuperSpittingUp = false; superSpitUpFrame = 0;
             
@@ -1326,7 +1430,14 @@
         } else {
             foodStored += 0.5; currentSessionOunces += 0.5; 
             playSound(800, 'square', 0.08, 0.00825);
-            petEl.style.transform = 'scale(1.1)'; setTimeout(() => petEl.style.transform = 'scale(1)', 100);
+            
+            if (!isBigBurpAnimating) {
+                clearTimeout(petAnimTimeout);
+                petEl.style.transform = 'scale(1.1)'; 
+                petAnimTimeout = setTimeout(() => {
+                    petEl.style.transform = 'scale(1)';
+                }, 100);
+            }
         }
         updateUI();
     }
@@ -1362,13 +1473,25 @@
                 }
             }
             burpProgress = 0; currentSessionOunces = 0; rollNewLimit();
+            
+            isBigBurpAnimating = true;
+            clearTimeout(petAnimTimeout);
             petEl.style.transform = 'translateY(-5px) scale(1.3)'; 
             playSound(120, 'sawtooth', 0.5, 0.03325);
-            setTimeout(() => petEl.style.transform = 'scale(1)', 200); updateUI();
+            petAnimTimeout = setTimeout(() => {
+                petEl.style.transform = 'scale(1)';
+                isBigBurpAnimating = false;
+            }, 200); 
+            updateUI();
         } else {
             playSound(300, 'triangle', 0.08, 0.0665);
-            petEl.style.transform = 'translateY(-5px)';
-            setTimeout(() => petEl.style.transform = 'scale(1)', 100);
+            if (!isBigBurpAnimating) {
+                clearTimeout(petAnimTimeout);
+                petEl.style.transform = 'translateY(-5px)';
+                petAnimTimeout = setTimeout(() => {
+                    petEl.style.transform = 'scale(1)';
+                }, 100);
+            }
         }
     }
 
@@ -1435,6 +1558,9 @@
         
         let isInitialLoad = !victoryAnimated && !standardAnimated;
         let needsStatsAnimation = (view === 'victory' && !victoryAnimated) || (view === 'standard' && !standardAnimated);
+        let currentWeekForReport = Math.floor((dayCount - 1) / 7) + 1;
+        let isFirstReport = (currentWeekForReport === 1 && view === 'standard');
+        let resumeBtn = document.querySelector('.resume-btn');
 
         if (isInitialLoad) {
             reportTitle.style.animation = 'none';
@@ -1445,6 +1571,16 @@
             docImg.style.left = '-132px';
             docBox.style.opacity = '0';
             docBox.style.transform = 'scale(0)';
+
+            if (isFirstReport) {
+                resumeBtn.style.opacity = '0.5';
+                resumeBtn.style.pointerEvents = 'none';
+                resumeBtn.style.transition = 'opacity 0.3s ease, transform 0.05s, box-shadow 0.05s';
+            } else {
+                resumeBtn.style.opacity = '1';
+                resumeBtn.style.pointerEvents = 'auto';
+                resumeBtn.style.transition = 'transform 0.05s, box-shadow 0.05s';
+            }
         }
 
         if (needsStatsAnimation) {
@@ -1465,13 +1601,18 @@
             const finalOz = Math.floor(totalOunces % 16);
             const gammaText = gammaCount === 0 ? '? ? ? ? Melvins' : 'Gamma Melvins';
             
+            const diffIconUrl = difficultyMode === 'easy' ? 'https://www.feedmelvin.com/easy_mode_icon_web.svg' : 'https://www.feedmelvin.com/normal_mode_icon_web.svg';
+            const gammaIconStr = gammaCount === 0 
+                ? '<span class="stat-bullet"><span style="color:#ffffff;font-size:2.5rem;display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;line-height:1;vertical-align:middle;">?</span></span>'
+                : '<img src="https://www.feedmelvin.com/gamma_icon_web.svg" class="stat-bullet" />';
+
             rowsData = [
-                { icon: bottleIcon, label: 'Difficulty Level: ', value: difficultyMode.toUpperCase() },
+                { icon: `<img src="${diffIconUrl}" class="stat-bullet" />`, label: 'Difficulty Level: ', value: difficultyMode.toUpperCase() },
                 { icon: scaleIcon, label: 'Final weight: ', value: finalLb + 'lb ' + finalOz + 'oz' },
-                { icon: scaleIcon, label: 'Best Daily Avg.: ', value: bestDailyAvg.toFixed(1) + ' oz' },
-                { icon: fullIcon, label: 'Super Melvins: ', value: superCount },
-                { icon: fullIcon, label: gammaText + ': ', value: gammaCount },
-                { icon: bottleIcon, label: 'Minutes Played: ', value: minsPlayed }
+                { icon: bottleIcon, label: 'Best Daily Avg.: ', value: bestDailyAvg.toFixed(1) + ' oz' },
+                { icon: '<img src="https://www.feedmelvin.com/super_icon_web.svg" class="stat-bullet" />', label: 'Super Melvins: ', value: superCount },
+                { icon: gammaIconStr, label: gammaText + ': ', value: gammaCount },
+                { icon: '<img src="https://www.feedmelvin.com/time_icon_web.svg" class="stat-bullet" />', label: 'Minutes Played: ', value: minsPlayed }
             ];
         } else {
             rowsData = [
@@ -1563,6 +1704,39 @@
             if (myRenderId !== currentRenderId) return;
             docBox.style.opacity = '1';
             docBox.style.transform = 'scale(1)';
+
+            if (isFirstReport) {
+                setTimeout(() => {
+                    if (myRenderId !== currentRenderId) return;
+                    resumeBtn.style.opacity = '1';
+                    resumeBtn.style.pointerEvents = 'auto';
+                }, 1300); // 300ms for box transition + 1000ms delay
+            }
+
+            // --- NEW: BMC Tooltip on Report Screen ---
+            const bmcBtn = document.getElementById('custom-bmc-btn');
+            if (bmcBtn && !bmcBtn.classList.contains('in-place')) {
+                bmcBtn.classList.add('in-place');
+            }
+            
+            setTimeout(() => {
+                if (myRenderId !== currentRenderId) return;
+                const tooltip = document.getElementById('bmc-tooltip');
+                if (tooltip && document.getElementById('checkup-screen').style.display !== 'none') {
+                    const msgs = [
+                        "Enjoying the game? Support Melvin!",
+                        "Click here to join team Melvin!"
+                    ];
+                    tooltip.innerText = msgs[Math.floor(Math.random() * msgs.length)];
+                    tooltip.classList.add('show');
+                    
+                    clearTimeout(tooltipHideTimer);
+                    tooltipHideTimer = setTimeout(() => {
+                        tooltip.classList.remove('show');
+                    }, 6000);
+                }
+            }, 1000);
+            // -----------------------------------------
         }
 
         if (view === 'victory') victoryAnimated = true;
@@ -1627,12 +1801,18 @@
                 classicSvg.style.opacity = '0'; classicFullSvg.style.opacity = '0';
                 const isFull = currentSessionOunces >= (ozLimit * 2 * capMult);
                 const showFull = isFull || isSuperSpittingUp;
+                if (isFull && !isSuperSpittingUp && superFullSvg.style.opacity === '0') {
+                    superFullSvg.setAttribute('viewBox', '0 0 48 48');
+                }
                 superSvg.style.opacity = showFull ? '0' : '1';
                 superFullSvg.style.opacity = showFull ? '1' : '0';
                 gammaSvg.style.opacity = '0';
             } else {
                 const isClassicFull = currentSessionOunces >= (ozLimit * capMult);
                 const showClassicFull = isClassicFull || isClassicSpittingUp;
+                if (isClassicFull && !isClassicSpittingUp && classicFullSvg.style.opacity === '0') {
+                    classicFullSvg.setAttribute('viewBox', '0 0 48 48');
+                }
                 classicSvg.style.opacity = showClassicFull ? '0' : '1';
                 classicFullSvg.style.opacity = showClassicFull ? '1' : '0';
                 superSvg.style.opacity = '0'; superFullSvg.style.opacity = '0'; gammaSvg.style.opacity = '0';
@@ -1692,6 +1872,29 @@
             }
         }
 
+        // Dr. Swadlzworth Instructions Screen Animation
+        let instrDrInner = document.getElementById('instructions-dr-swadlzworth-inner');
+        if (document.getElementById('splash-screen').style.display !== 'none' && instrDrInner) {
+            if (instrDrFrame === 0) {
+                if (instrDrTicks < instrDrHoldTicks) {
+                    instrDrTicks++;
+                } else {
+                    instrDrFrame = 1;
+                    instrDrTicks = 0;
+                    instrDrInner.style.transform = `translateX(-33.333%)`;
+                }
+            } else {
+                instrDrFrame++;
+                if (instrDrFrame >= 3) {
+                    instrDrFrame = 0;
+                    instrDrHoldTicks = Math.floor(Math.random() * 29) + 4; // Reset hold for 0.5-4 seconds
+                    instrDrInner.style.transform = `translateX(0%)`;
+                } else {
+                    instrDrInner.style.transform = `translateX(-${instrDrFrame * 33.333}%)`;
+                }
+            }
+        }
+
         // Dr. Swadlzworth Landing Screen Animation
         let landingDrInner = document.getElementById('landing-dr-swadlzworth-inner');
         if (document.getElementById('landing-screen').style.display !== 'none' && landingDrInner) {
@@ -1717,6 +1920,12 @@
 
         // Apply idle animation to landing screen Melvin if visible
         if (document.getElementById('landing-screen').style.display !== 'none') {
+            // ALWAYS UPDATE BASE IDLE FRAMES
+            let baseLandingSvg = document.getElementById('landing-melvin');
+            if (baseLandingSvg) baseLandingSvg.setAttribute('viewBox', offsetX + ' 0 48 48');
+            let baseLandingSuperSvg = document.getElementById('landing-super-melvin');
+            if (baseLandingSuperSvg) baseLandingSuperSvg.setAttribute('viewBox', offsetX + ' 0 48 48');
+
             if (isLandingClassicSpittingUp) {
                 let landingSvg = document.getElementById('landing-melvin-full');
                 if (landingSvg) landingSvg.setAttribute('viewBox', (landingClassicSpitUpFrame * 48) + ' 0 48 48');
@@ -1753,21 +1962,14 @@
                 }
             } else {
                 let isSuperFull = document.getElementById('landing-super-melvin-full') && document.getElementById('landing-super-melvin-full').style.opacity === '1';
-                let isSuper = document.getElementById('landing-super-melvin') && document.getElementById('landing-super-melvin').style.opacity === '1';
                 let isClassicFull = document.getElementById('landing-melvin-full').style.opacity === '1';
                 
                 if (isSuperFull) {
                     let landingSvg = document.getElementById('landing-super-melvin-full');
                     if (landingSvg) landingSvg.setAttribute('viewBox', '0 0 48 48'); // Freeze full
-                } else if (isSuper) {
-                    let landingSvg = document.getElementById('landing-super-melvin');
-                    if (landingSvg) landingSvg.setAttribute('viewBox', offsetX + ' 0 48 48');
                 } else if (isClassicFull) {
                     let landingSvg = document.getElementById('landing-melvin-full');
                     if (landingSvg) landingSvg.setAttribute('viewBox', '0 0 48 48'); // Freeze full
-                } else {
-                    let landingSvg = document.getElementById('landing-melvin');
-                    if (landingSvg) landingSvg.setAttribute('viewBox', offsetX + ' 0 48 48');
                 }
             }
         }
@@ -1780,14 +1982,22 @@
         const superLimit = ozLimit * 2 * capMult;
         let activeSvg;
 
+        // ALWAYS UPDATE BASE IDLE FRAMES so they are ready when we switch back
+        let baseGamma = petEl.querySelector('svg[data-gamma]');
+        if (baseGamma) baseGamma.setAttribute('viewBox', offsetX + ' 0 48 48');
+        let baseSuper = petEl.querySelector('svg[data-super]');
+        if (baseSuper) baseSuper.setAttribute('viewBox', offsetX + ' 0 48 48');
+        let baseClassic = petEl.querySelector('svg[data-classic]');
+        if (baseClassic) baseClassic.setAttribute('viewBox', offsetX + ' 0 48 48');
+
         if (gammaMelvinActive) {
-            activeSvg = petEl.querySelector('svg[data-gamma]');
-            if (activeSvg) activeSvg.setAttribute('viewBox', offsetX + ' 0 48 48');
+            // Already updated baseGamma above
         } else if (superMelvinActive) {
             if (isSuperSpittingUp) {
                 activeSvg = petEl.querySelector('svg[data-super-full]');
                 if (activeSvg) activeSvg.setAttribute('viewBox', (superSpitUpFrame * 48) + ' 0 48 48');
                 superSpitUpFrame++;
+                updateUI();
                 if (superSpitUpFrame >= 8) {
                     isSuperSpittingUp = false;
                     updateUI();
@@ -1797,9 +2007,6 @@
                 if (isSuperFull) {
                     activeSvg = petEl.querySelector('svg[data-super-full]');
                     if (activeSvg) activeSvg.setAttribute('viewBox', '0 0 48 48');
-                } else {
-                    activeSvg = petEl.querySelector('svg[data-super]');
-                    if (activeSvg) activeSvg.setAttribute('viewBox', offsetX + ' 0 48 48');
                 }
             }
         } else {
@@ -1814,13 +2021,9 @@
                 }
             } else {
                 const isClassicFull = currentSessionOunces >= (ozLimit * capMult);
-                activeSvg = isClassicFull ? petEl.querySelector('svg[data-classic-full]') : petEl.querySelector('svg[data-classic]');
-                if (activeSvg) {
-                    if (isClassicFull) {
-                        activeSvg.setAttribute('viewBox', '0 0 48 48');
-                    } else {
-                        activeSvg.setAttribute('viewBox', offsetX + ' 0 48 48');
-                    }
+                if (isClassicFull) {
+                    activeSvg = petEl.querySelector('svg[data-classic-full]');
+                    if (activeSvg) activeSvg.setAttribute('viewBox', '0 0 48 48');
                 }
             }
         }
@@ -1849,7 +2052,9 @@
             if (demoStep === 6) {
                 flood.setAttribute('flood-opacity', 0.75);
                 document.getElementById('landing-melvin').style.opacity = '0';
-                document.getElementById('landing-melvin-full').style.opacity = '1';
+                let lmf = document.getElementById('landing-melvin-full');
+                lmf.setAttribute('viewBox', '0 0 48 48');
+                lmf.style.opacity = '1';
             }
         } else if (demoStep === 16) {
             demoOunces -= 1; updateDemoWeight();
@@ -1895,7 +2100,9 @@
             if (demoStep === 27) {
                 flood.setAttribute('flood-opacity', 0.75);
                 document.getElementById('landing-melvin').style.opacity = '0';
-                document.getElementById('landing-melvin-full').style.opacity = '1';
+                let lmf = document.getElementById('landing-melvin-full');
+                lmf.setAttribute('viewBox', '0 0 48 48');
+                lmf.style.opacity = '1';
             }
         } else if (demoStep >= 29 && demoStep <= 36) {
             // First Burp Sequence (8 times)
@@ -1937,7 +2144,9 @@
             if (demoStep === 45) {
                 flood.setAttribute('flood-opacity', 0.75);
                 document.getElementById('landing-melvin').style.opacity = '0';
-                document.getElementById('landing-melvin-full').style.opacity = '1';
+                let lmf = document.getElementById('landing-melvin-full');
+                lmf.setAttribute('viewBox', '0 0 48 48');
+                lmf.style.opacity = '1';
             }
         } else if (demoStep >= 48 && demoStep <= 55) {
             // Second Burp Sequence (8 times)
@@ -1974,7 +2183,9 @@
             if (demoStep === 64) {
                 flood.setAttribute('flood-opacity', 0.75);
                 document.getElementById('landing-super-melvin').style.opacity = '0';
-                document.getElementById('landing-super-melvin-full').style.opacity = '1';
+                let lsmf = document.getElementById('landing-super-melvin-full');
+                lsmf.setAttribute('viewBox', '0 0 48 48');
+                lsmf.style.opacity = '1';
             }
         } else if (demoStep >= 67 && demoStep <= 68) {
             // Super Burp Sequence (2 burps reset)
@@ -2003,7 +2214,9 @@
             if (demoStep === 76) {
                 flood.setAttribute('flood-opacity', 0.75);
                 document.getElementById('landing-super-melvin').style.opacity = '0';
-                document.getElementById('landing-super-melvin-full').style.opacity = '1';
+                let lsmf = document.getElementById('landing-super-melvin-full');
+                lsmf.setAttribute('viewBox', '0 0 48 48');
+                lsmf.style.opacity = '1';
             }
         } else if (demoStep === 86) {
             demoOunces -= 1; updateDemoWeight();
@@ -2050,6 +2263,15 @@
         if (totalOunces >= 144 && nineLbDay === null) nineLbDay = dayCount;
 
         if (timeLeft <= 0) {
+            
+            // --- NEW: End of day ounces animation ---
+            let endOfDayText = document.createElement('div');
+            endOfDayText.className = 'day-end-ounces';
+            endOfDayText.innerText = foodStored.toFixed(1) + ' ounces';
+            document.getElementById('game-container').appendChild(endOfDayText);
+            setTimeout(() => { if (endOfDayText.parentNode) endOfDayText.parentNode.removeChild(endOfDayText); }, 4000);
+            // ----------------------------------------
+            
             let currentWeekForLoss = Math.floor((dayCount - 1) / 7) + 1;
             let dailyLoss = currentWeekForLoss === 1 ? 2.25 : 0.5;
             let gain = (foodStored * 0.25) - dailyLoss; 
@@ -2120,6 +2342,14 @@
                 musicPausedForReport = true;
                 clearTimeout(musicTimeoutId);
                 
+                if (activeMsgTimer) {
+                    activeMsgTimer.pause();
+                    activeMsgTimer = null;
+                }
+                document.getElementById('day2-msg-wrapper').style.display = 'none';
+                document.getElementById('frustrating-msg').classList.remove('show-msg');
+                document.getElementById('pause-overlay').style.display = 'none';
+                
                 let checkupScreen = document.getElementById('checkup-screen');
                 let congratsWrap = document.getElementById('congrats-text-wrap');
                 let resumeBtn = document.querySelector('.resume-btn');
@@ -2180,7 +2410,7 @@
                     pauseOverlay.style.display = 'flex';
 
                     let wrapper = document.getElementById('day2-msg-wrapper');
-                    wrapper.style.top = '190px';
+                    wrapper.style.top = '200px';
                     wrapper.style.left = '10px';
                     wrapper.style.right = '105px';
                     wrapper.style.width = 'auto';
@@ -2189,7 +2419,7 @@
                     let textMsgEl = document.getElementById('frustrating-msg');
                     textMsgEl.style.textAlign = 'left';
                     
-                    textMsgEl.innerHTML = '<span style="font-size: 1.4rem; white-space: nowrap;">As Melvin goes up levels he can<br>eat more without getting full&nbsp;<span class="big-arrow">→</span><br>but he will take longer to burp!</span>';
+                    textMsgEl.innerHTML = '<div style="display: flex; align-items: center; justify-content: flex-end; font-size: 1.7rem; width: 100%;"><div style="text-align: center; line-height: 1.1; margin-right: 15px; font-size: 1.45rem;">As Melvin goes up levels<br>he can eat more without<br>getting full, but he will<br>take longer to burp!</div><span class="big-arrow">→</span></div>';
 
                     wrapper.style.display = 'block';
                     textMsgEl.classList.add('show-msg');
@@ -2201,9 +2431,9 @@
                         
                         document.getElementById('pause-box').style.display = 'block';
                         pauseOverlay.style.display = 'none';
-
-                        textMsgEl.classList.remove('show-msg');
-                        wrapper.style.display = 'none';
+                        
+                        document.getElementById('day2-msg-wrapper').style.display = 'none';
+                        document.getElementById('frustrating-msg').classList.remove('show-msg');
 
                         document.getElementById('checkup-screen').style.display = 'flex';
                         renderStatsView(statsViewState); 
@@ -2228,17 +2458,17 @@
             let msgQueue = [];
 
             if (dayCount === 2) {
-                msgQueue.push({ html: '<span class="big-arrow">↑</span> Keep an eye on the daily weight gain.<br>Melvin is losing weight this week...', center: false });
+                msgQueue.push({ html: '<div style="display: flex; flex-direction: column; align-items: center;"><span class="big-arrow" style="align-self: flex-start; margin-left: 32%; line-height: 0.8; margin-bottom: 5px;">↑</span><div style="text-align: center; line-height: 1.2;">Keep an eye on the<br>daily average.<br>Melvin is losing<br>weight this week...</div></div>', center: false });
             } else if (dayCount === 4) {
-                msgQueue.push({ html: 'Just 3 more days <span class="big-arrow">↑</span><br>It gets easier after this week!', center: false });
+                msgQueue.push({ html: '<div style="position: relative; display: inline-block; text-align: center;"><span class="big-arrow" style="position: absolute; top: -38px; right: 63px; line-height: 1;">↑</span><div style="line-height: 1.2; padding-top: 10px;">Just 3 more days!<br>It gets easier after this week!</div></div>', alignTop: true });
             } else if (dayCount === 6) {
-                msgQueue.push({ html: '<span style="white-space: nowrap;">Keep an eye on Melvin\'s weight<br>and how much you are feeding him.<br><span class="big-arrow">↓</span></span>', center: true });
+                msgQueue.push({ html: '<div style="text-align: center; font-size: 1.6rem; margin-top: 20px; line-height: 1.2;">Keep an eye on Melvin\'s weight<br>and how much you are feeding him.<br><span class="big-arrow" style="display: block; margin-top: -5px;">↓</span></div>', alignScale: true });
             }
 
             let rAvg = parseFloat(lockedAvg.toFixed(1));
             if (rAvg >= 1.0 && superCooldownDays === 0 && !superMelvinActive && !gammaMelvinActive && !powerUpMsgShown) {
                 msgQueue.push({ 
-                    html: '<span style="font-size: 1.4rem; white-space: nowrap;">If Melvin reaches 1oz per day,<br>burping him when he\'s FULL<br>will unlock a counter&nbsp;<span class="big-arrow">→</span><br>Collect 4 counters<br>to POWER-UP!</span>', 
+                    html: '<div style="display: flex; align-items: center; justify-content: flex-end; font-size: 1.6rem; width: 100%;"><div style="text-align: center; line-height: 1.1; margin-right: 4px;">At 1oz per day, burping<br>Melvin when he\'s FULL<br>will unlock a token.<br>Collect 4 tokens to<br>POWER-UP!</div><span class="big-arrow">→</span></div>', 
                     alignPowerUp: true 
                 });
                 powerUpMsgShown = true;
@@ -2275,17 +2505,26 @@
                     wrapper.style.width = '90%';
                     
                     if (msg.alignPowerUp) {
-                        wrapper.style.top = '300px';
+                        wrapper.style.top = '280px';
                         wrapper.style.left = '10px';
-                        wrapper.style.right = '105px';
+                        wrapper.style.right = '90px';
                         wrapper.style.width = 'auto';
                         wrapper.style.transform = 'none';
-                        msgEl.style.textAlign = 'right';
                     } else if (msg.center) {
                         wrapper.style.top = 'calc(55% - 60px)';
                         wrapper.style.left = '50%';
                         wrapper.style.right = 'auto';
                         wrapper.style.transform = 'translate(-50%, -50%)';
+                    } else if (msg.alignScale) {
+                        wrapper.style.top = '336px';
+                        wrapper.style.left = '50%';
+                        wrapper.style.right = 'auto';
+                        wrapper.style.transform = 'translateX(-50%)';
+                    } else if (msg.alignTop) {
+                        wrapper.style.top = '134px';
+                        wrapper.style.left = '50%';
+                        wrapper.style.right = 'auto';
+                        wrapper.style.transform = 'translateX(-50%)';
                     } else {
                         wrapper.style.top = '130px';
                         wrapper.style.left = '50%';
@@ -2324,18 +2563,6 @@
                 console.log('ServiceWorker registration failed: ', err);
             });
         });
-    }
-
-    if (!window.matchMedia("(pointer: coarse)").matches) {
-        let instrBox = document.getElementById('instruction-box');
-        if (instrBox) {
-            instrBox.innerHTML = 
-                "Press the <strong>F</strong> key (or Tap FEED) to give Melvin 1/2 an ounce.<br><br>" +
-                "Melvin will start to turn green when he's getting full. Keep pressing the <strong>B</strong> key (or click the Hand button) to burp him.<br><br>" +
-                "Press the <strong>P</strong> key to Pause/Resume.<br><br>" +
-                "If you overfeed Melvin he will spit up and you will lose ounces!<br><br>" +
-                "<span style=\"color: var(--sparkle-gold);\">Help Melvin grow to 9lbs and you will make his Pediatrician (and you) proud!</span>";
-        }
     }
 
     document.addEventListener('keydown', function(event) {
