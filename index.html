@@ -48,7 +48,7 @@
         
         #instructions-white-box-bg { position: absolute; top: 129.6px; left: 57.4px; width: 325px; height: 450px; background-color: #ffffff; border: 4px solid #5ea1fd; box-shadow: -12px 12px 0 #fee5d4; box-sizing: border-box; z-index: 1; }
         #instructions-dr-swadlzworth-wrap { position: absolute; top: 439.1px; left: 330px; width: 91px; height: 136.5px; z-index: 2; pointer-events: none; filter: drop-shadow(-8px 0px 0px #fcb38b); display: flex; overflow: hidden; }
-        #instructions-dr-swadlzworth-inner { height: 100%; width: auto; max-width: none; flex-shrink: 0; }
+        #instructions-dr-swadlzworth-inner { height: 100%; width: auto; max-width: none; flex-shrink: 0; display: block; }
         #instructions-white-box { position: absolute; top: 129.6px; left: 57.4px; width: 325px; height: 450px; box-sizing: border-box; z-index: 3; color: #5ea1fd; overflow: hidden; pointer-events: auto; }
         
         #instructions-box-left { position: absolute; top: 611.7px; left: 57.4px; width: 120px; height: 50px; background-color: #5ea1fd; z-index: 4; border: 4px solid #326efc; box-shadow: -5px 5px 0 #326efc; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.3rem; font-style: italic; cursor: pointer; transition: transform 0.05s, box-shadow 0.05s; }
@@ -94,7 +94,7 @@
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-6px); }
         }
-        svg[data-super="true"], svg[data-super-full="true"] {
+        canvas.super-drift {
             animation: superDrift 3s ease-in-out infinite;
         }
 
@@ -172,7 +172,7 @@
         #dr-swadlzworth-msg { color: #5ea1fd; font-size: 1.2rem; text-align: center; line-height: 1; width: 100%; }
         
         #dr-swadlzworth-img { position: absolute; top: 410.6px; left: -132px; height: 196px; z-index: 10; pointer-events: none; filter: drop-shadow(7.6px 0 0 #fcb38b); transition: left 0.2s ease-out; display: flex; overflow: hidden; }
-        #dr-swadlzworth-inner { height: 100%; width: auto; max-width: none; flex-shrink: 0; }
+        #dr-swadlzworth-inner { height: 100%; width: auto; max-width: none; flex-shrink: 0; display: block; }
         
         .checkup-btn-row { position: relative; display: flex; justify-content: center; gap: 15px; width: 100%; margin-bottom: 10px; z-index: 2; }
         .resume-btn { position: relative; z-index: 2; background: #fff; border: 8.5px solid #5ea1fd; color: #326efc; padding: 7.5px 15px; width: fit-content; min-width: 96px; font-size: 2.64rem; cursor: pointer; box-shadow: 6px 6px 0 #fee5d4; transition: transform 0.05s, box-shadow 0.05s; }
@@ -200,7 +200,7 @@
         .toggle-arrow-btn svg { width: 45px; height: 45px; fill: white; filter: drop-shadow(1px 1px 0 #000); }
 
         #landing-dr-swadlzworth { position: absolute; width: 36%; max-width: 216px; z-index: 999; pointer-events: none; filter: drop-shadow(-4px 4px 0px #e59a72); top: -50%; left: -50%; display: flex; overflow: hidden; }
-        #landing-dr-swadlzworth-inner { width: 300%; height: auto; flex-shrink: 0; }
+        #landing-dr-swadlzworth-inner { width: 100%; height: auto; flex-shrink: 0; display: block; }
 
         @keyframes iconFadeIn { 0% { opacity: 0; transform: scale(0.5); } 100% { opacity: 1; transform: scale(1); } }
         .fade-in { animation: iconFadeIn 0.2s ease forwards; }
@@ -263,13 +263,13 @@
         <div id="landing-spitup-overlay"></div>
         
         <div id="landing-dr-swadlzworth">
-            <img id="landing-dr-swadlzworth-inner" src="https://www.feedmelvin.com/dr_swadlzworth_HAPPY_sprite_web.svg" alt="Dr Swadlzworth">
+            <canvas id="landing-dr-swadlzworth-inner"></canvas>
         </div>
 
         <button id="install-btn">INSTALL APP</button>
         
         <div id="landing-logo-container" style="position: absolute; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; width: 100%; z-index: 10; transition: top 0.5s cubic-bezier(0.25, 1, 0.5, 1), transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);">
-            <img src="https://www.feedmelvin.com/feed_melvin_logo_stacked_web.svg" alt="Feed Melvin" style="width: 76.5%; max-width: 360px; margin-bottom: 10px; filter: drop-shadow(-8px 8px 0px #e59a72); pointer-events: none;">
+            <img src="https://www.feedmelvin.com/feed_melvin_logo_stacked_web.png" alt="Feed Melvin" style="width: 76.5%; max-width: 360px; margin-bottom: 10px; filter: drop-shadow(-8px 8px 0px #e59a72); pointer-events: none;">
             
             <div style="text-align: center; width: 100%;">
                 <a href="https://www.pixel-mover.com" target="_blank" rel="noopener noreferrer" style="color: white; font-size: 1.8rem; line-height: 1.1; text-decoration: none; pointer-events: auto; display: inline-block;">Made By: pixel-mover.com</a>
@@ -288,22 +288,11 @@
                 
                 <div id="landing-shadow-wrap" style="display: flex; flex-direction: column; align-items: center; filter: drop-shadow(-8px 8px 0px #e59a72);">
                     <div id="landing-pet" style="width: 160px; height: 160px; display: block; transform-origin: bottom center; overflow: visible; filter: url(#green-tint); transition: filter 0.2s, transform 0.1s; position: relative; z-index: 10;">
-                        <svg id="landing-melvin" viewBox="0 0 48 48" style="width: 100%; height: 100%; position: absolute; top: 12px; left: 0; opacity: 1;">
-                            <image href="https://www.feedmelvin.com/classic_melvin_sprite_web.svg" width="384" height="48" />
-                        </svg>
-                        <svg id="landing-melvin-full" viewBox="0 0 48 48" style="width: 100%; height: 100%; position: absolute; top: 12px; left: 0; opacity: 0;">
-                            <image href="https://www.feedmelvin.com/classic_melvin_FULL_sprite_web.svg" width="384" height="48" />
-                        </svg>
-                        <svg id="landing-super-melvin" data-super="true" viewBox="0 0 48 48" style="width: 100%; height: 100%; position: absolute; top: 12px; left: 0; opacity: 0; pointer-events: none;">
-                            <image href="https://pxleight.github.io/feed-melvin-assets/super_levi_sprite_web.svg" width="384" height="48" />
-                        </svg>
-                        <svg id="landing-super-melvin-full" data-super-full="true" viewBox="0 0 48 48" style="width: 100%; height: 100%; position: absolute; top: 12px; left: 0; opacity: 0; pointer-events: none;">
-                            <image href="https://pxleight.github.io/feed-melvin-assets/super_levi_FULL_sprite_web.svg" width="384" height="48" />
-                        </svg>
+                        <canvas id="landing-melvin-canvas" width="48" height="48" style="width: 100%; height: 100%; position: absolute; top: 12px; left: 0; pointer-events: none;"></canvas>
                     </div>
                     
                     <div id="landing-scale" style="width: 240px; height: 80px; z-index: 5; position: relative; transform: scale(1.58); transform-origin: bottom center; top: 38px;">
-                        <img src="https://pxleight.github.io/feed-melvin-assets/levi_scale_sprite_web.svg" style="width: 100%; height: 100%; display: block;" />
+                        <img src="https://pxleight.github.io/feed-melvin-assets/levi_scale_sprite_web.png" style="width: 100%; height: 100%; display: block;" />
                         <div style="position: absolute; bottom: 21px; width: 100%; text-align: center; color: white; font-size: 1.8rem; font-weight: bold; text-shadow: 1px 1px 2px #000; pointer-events: none; mix-blend-mode: overlay;">6lb 8oz</div>
                     </div>
                 </div>
@@ -315,7 +304,7 @@
         <div id="landing-bmc-left" style="position: absolute; bottom: 26px; left: 18px; pointer-events: auto; transform: translateX(-200%); opacity: 0; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease;">
             <a id="left-story-btn" href="https://www.pixel-mover.com/blog" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; justify-content: center; background-color: #FB9052; color: white; text-decoration: none; font-size: 1.8rem; padding: 0 15px; height: 50px; box-sizing: border-box; box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: transform 0.05s, box-shadow 0.05s;">
                 <svg viewBox="0 0 48 48" style="width: 28px; height: 28px; margin-right: 8px;">
-                    <image href="https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.svg" width="192" height="48" />
+                    <image href="https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.png" width="192" height="48" />
                 </svg>
                 THE STORY
             </a>
@@ -324,14 +313,12 @@
 
     <div id="splash-screen" style="display: none;">
         
-        <svg id="instructions-logo" viewBox="0 0 288 48">
-            <image href="https://www.feedmelvin.com/feed_melvin_logo_sprite_web.svg" width="288" height="192" />
-        </svg>
+        <canvas id="instructions-logo" width="288" height="48"></canvas>
         
         <div id="instructions-white-box-bg"></div>
         
         <div id="instructions-dr-swadlzworth-wrap">
-            <img id="instructions-dr-swadlzworth-inner" src="https://www.feedmelvin.com/dr_swadlzworth_HAPPY_sprite_web.svg" alt="Dr Swadlzworth">
+            <canvas id="instructions-dr-swadlzworth-inner"></canvas>
         </div>
         
         <div id="instructions-white-box">
@@ -344,22 +331,22 @@
             
             <div style="font-size: 1.35rem; text-align: left; padding: 0 15px; line-height: 1.0;">
                 <div class="instr-row">
-                    <img src="https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.svg" class="instr-icon" style="margin-right: 18px;">
+                    <img src="https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.png" class="instr-icon" style="margin-right: 18px;">
                     <span class="mobile-text">Tap the BOTTLE to<br>feed Melvin a 1/2<br>ounce of formula.</span>
                     <span class="desktop-text">Tap the BOTTLE (f key)<br>to feed Melvin a 1/2<br>ounce of formula.</span>
                 </div>
                 <div class="instr-row">
-                    <img src="https://www.feedmelvin.com/full_icon_web.svg" class="instr-icon" style="margin-right: 18px; width: 44px; height: 44px;">
+                    <img src="https://www.feedmelvin.com/full_icon_web.png" class="instr-icon" style="margin-right: 18px; width: 44px; height: 44px;">
                     <span class="mobile-text">Melvin will start to<br>turn GREEN when<br>he's getting full.</span>
                     <span class="desktop-text">Melvin will start to<br>turn GREEN when<br>he's getting full.</span>
                 </div>
                 <div class="instr-row">
-                    <img src="https://pxleight.github.io/feed-melvin-assets/burp_hand_sprite_web.svg" class="instr-icon" style="margin-right: 18px;">
+                    <img src="https://pxleight.github.io/feed-melvin-assets/burp_hand_sprite_web.png" class="instr-icon" style="margin-right: 18px;">
                     <span class="mobile-text">Keep tapping the HAND<br>until Melvin burps.</span>
                     <span class="desktop-text">Tap the HAND (b key)<br>until Melvin burps.</span>
                 </div>
                 <div class="instr-row">
-                    <img src="https://www.feedmelvin.com/spit_up_icon_web.svg" class="instr-icon" style="margin-right: 18px; width: 44px; height: 44px;">
+                    <img src="https://www.feedmelvin.com/spit_up_icon_web.png" class="instr-icon" style="margin-right: 18px; width: 44px; height: 44px;">
                     <span class="mobile-text">If you overfeed Melvin<br>he will spit-up and you<br>will <span style="font-size: 1.2rem;">lose</span> ounces!</span>
                     <span class="desktop-text">If you overfeed Melvin<br>he will spit-up and you<br>will <span style="font-size: 1.2rem;">lose</span> ounces!</span>
                 </div>
@@ -402,7 +389,7 @@
         </div>
         
         <div id="dr-swadlzworth-img">
-            <img id="dr-swadlzworth-inner" src="https://www.feedmelvin.com/dr_swadlzworth_HAPPY_sprite_web.svg" alt="Dr Swadlzworth" />
+            <canvas id="dr-swadlzworth-inner"></canvas>
         </div>
         
         <div class="checkup-btn-row">
@@ -416,11 +403,11 @@
     
     <div id="game-container" style="display: none;">
         <svg class="game-bg-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" preserveAspectRatio="xMidYMid slice">
-            <image href="https://pxleight.github.io/feed-melvin-assets/Nursery_background_rev002.svg" width="1080" height="1920" preserveAspectRatio="xMidYMid slice" />
+            <image href="https://pxleight.github.io/feed-melvin-assets/Nursery_background_rev002.png" width="1080" height="1920" preserveAspectRatio="xMidYMid slice" />
         </svg>
         
         <div id="mobile-anim-container" style="position: absolute; top: 0; left: -7px; width: 100%; z-index: 1; pointer-events: auto; overflow: hidden; cursor: pointer; transform: scale(0.81); transform-origin: top center;" onclick="triggerMobileAnim()">
-            <img id="mobile-anim-img" src="https://www.feedmelvin.com/mobile_animation_web.svg" style="display: block; width: 1200%; max-width: none; image-rendering: pixelated; transform: translateX(0%); pointer-events: none;" />
+            <canvas id="mobile-anim-canvas" style="display: block; width: 100%; height: auto; image-rendering: pixelated; pointer-events: none;"></canvas>
         </div>
 
         <div id="pause-overlay">
@@ -432,9 +419,7 @@
         </div>
         <div id="spitup-overlay"></div>
         <h1 class="game-title">
-            <svg id="game-logo-svg" viewBox="0 0 288 48" style="width: 75%; max-width: 320px; display: inline-block; pointer-events: none;">
-                <image href="https://www.feedmelvin.com/feed_melvin_logo_sprite_web.svg" width="288" height="192" />
-            </svg>
+            <canvas id="game-logo-svg" width="288" height="48" style="width: 75%; max-width: 320px; display: inline-block; pointer-events: none;"></canvas>
         </h1>
         <div id="checkup-bar">
             OZ/DAY <span id="top-avg-val" class="top-ui-num">0.0</span> <div style="width: 3px; height: 22px; background-color: rgba(255, 255, 255, 0.25);"></div> Checkup in <span id="days-until-val" class="top-ui-num">6</span> days
@@ -497,7 +482,7 @@
             <div id="sparkle-wrap"></div>
             <div id="pet"></div>
             <div id="scale-graphic">
-                <img src="https://pxleight.github.io/feed-melvin-assets/levi_scale_sprite_web.svg" style="width: 100%; height: 100%; display: block;" />
+                <img src="https://pxleight.github.io/feed-melvin-assets/levi_scale_sprite_web.png" style="width: 100%; height: 100%; display: block;" />
                 <div id="weight-readout">6lb 8oz</div>
             </div>
         </div>
@@ -509,13 +494,13 @@
             <div class="btn-wrapper">
                 <button class="feed-btn" onclick="feed()"></button>
                 <svg class="btn-icon" viewBox="0 0 48 48">
-                    <image href="https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.svg" width="48" height="48" />
+                    <image href="https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.png" width="48" height="48" />
                 </svg>
             </div>
             <div class="btn-wrapper">
                 <button class="burp-btn" onclick="burp()"></button>
                 <svg class="btn-icon" viewBox="0 0 48 48">
-                    <image href="https://pxleight.github.io/feed-melvin-assets/burp_hand_sprite_web.svg" width="48" height="48" />
+                    <image href="https://pxleight.github.io/feed-melvin-assets/burp_hand_sprite_web.png" width="48" height="48" />
                 </svg>
             </div>
         </div>
@@ -527,22 +512,14 @@
     function resizeMasterContainer() {
         const master = document.getElementById('master-container');
         if (!master) return;
-        // Native Master Container Grid
-        const baseW = 439.875;
         const baseH = 782;
-        
-        // Measure exact 100svh height to account for dynamic mobile browser UI
         const winH = document.body.clientHeight;
-        
-        // Scale strictly based on height, dropping the width constraint 
         const scale = winH / baseH;
-        
         master.style.transform = `translate(-50%, -50%) scale(${scale})`;
     }
     window.addEventListener('resize', resizeMasterContainer);
     window.addEventListener('orientationchange', resizeMasterContainer);
-    resizeMasterContainer(); // Trigger on initial load
-    // -------------------------------------
+    resizeMasterContainer();
 
     document.addEventListener('contextmenu', event => event.preventDefault());
     document.addEventListener('gesturestart', function(e) { e.preventDefault(); });
@@ -566,56 +543,52 @@
     let isLandingSuperSpittingUp = false;
     let landingSuperSpitUpFrame = 0;
 
-    // Landing Dr Swadlzworth Timers & State
-    let drLandingTimer;
-    let drActionTimer;
-    let drSlideOutTimer;
-    let landingDrState = 'upset'; // Initial state set to upset so she is happy on the very first slide in
-    let landingDrFrame = 0;
-    let landingDrTicks = 0;
-    let landingDrHoldTicks = Math.floor(Math.random() * 29) + 4; // Random hold 0.5 to 4 seconds
-
-    // Checkup Screen Dr. Swadlzworth Sprite Logic
-    let drReportFrame = 0;
-    let drReportTicks = 0;
-    let drReportHoldTicks = Math.floor(Math.random() * 29) + 4; // Random hold 0.5 to 4 seconds
+    let drLandingTimer, drActionTimer, drSlideOutTimer;
+    let landingDrState = 'upset';
+    let landingDrFrame = 0, landingDrTicks = 0, landingDrHoldTicks = Math.floor(Math.random() * 29) + 4;
+    let drReportFrame = 0, drReportTicks = 0, drReportHoldTicks = Math.floor(Math.random() * 29) + 4;
+    let instrDrFrame = 0, instrDrTicks = 0, instrDrHoldTicks = Math.floor(Math.random() * 29) + 4;
     
-    // Instructions Screen Dr. Swadlzworth Sprite Logic
-    let instrDrFrame = 0;
-    let instrDrTicks = 0;
-    let instrDrHoldTicks = Math.floor(Math.random() * 29) + 4;
+    let currentDrReportState = "https://www.feedmelvin.com/dr_swadlzworth_HAPPY_sprite_web.png";
+    let landingDrUrl = "https://www.feedmelvin.com/dr_swadlzworth_UPSET_sprite_web.png";
+    const instrDrUrl = "https://www.feedmelvin.com/dr_swadlzworth_HAPPY_sprite_web.png";
+    let landingActiveSprite = "https://www.feedmelvin.com/classic_melvin_sprite_web.png";
+    let landingFreezeFrame = false;
 
-    function setDrSprite(state) {
-        let url;
-        if (state === 'happy') url = "https://www.feedmelvin.com/dr_swadlzworth_HAPPY_sprite_web.svg";
-        else if (state === 'upset') url = "https://www.feedmelvin.com/dr_swadlzworth_UPSET_sprite_web.svg";
-        else if (state === 'elated') url = "https://www.feedmelvin.com/dr_swadlzworth_ELATED_sprite_web.svg";
-        else url = "https://www.feedmelvin.com/dr_swadlzworth_HAPPY_sprite_web.svg";
+    // Global Image Cache for Canvas Drawing
+    const loadedImages = {};
 
-        const innerImg = document.getElementById('dr-swadlzworth-inner');
-        if (innerImg) {
-            innerImg.onload = function() {
-                if (this.naturalHeight > 0) {
-                    let frameAspect = (this.naturalWidth / 3) / this.naturalHeight;
-                    document.getElementById('dr-swadlzworth-img').style.aspectRatio = frameAspect;
-                }
-            };
-            
-            if (innerImg.getAttribute('src') !== url) {
-                innerImg.src = url;
-            } else if (innerImg.complete && innerImg.naturalHeight > 0) {
-                let frameAspect = (innerImg.naturalWidth / 3) / innerImg.naturalHeight;
-                document.getElementById('dr-swadlzworth-img').style.aspectRatio = frameAspect;
-            }
-            
-            drReportFrame = 0;
-            drReportTicks = 0;
-            drReportHoldTicks = Math.floor(Math.random() * 29) + 4;
-            innerImg.style.transform = `translateX(0%)`;
+    function renderCanvasSprite(canvasId, imgUrl, sx, sy, sw, sh, dw, dh) {
+        let cvs = document.getElementById(canvasId);
+        let img = loadedImages[imgUrl];
+        if (cvs && img && sw > 0 && sh > 0) {
+            if (cvs.width !== dw) cvs.width = dw;
+            if (cvs.height !== dh) cvs.height = dh;
+            let ctx = cvs.getContext('2d');
+            ctx.imageSmoothingEnabled = false;
+            ctx.clearRect(0, 0, dw, dh);
+            ctx.drawImage(img, sx, sy, sw, sh, 0, 0, dw, dh);
         }
     }
 
-    // Function to create sparkle pool
+    function setDrSprite(state) {
+        if (state === 'happy') currentDrReportState = "https://www.feedmelvin.com/dr_swadlzworth_HAPPY_sprite_web.png";
+        else if (state === 'upset') currentDrReportState = "https://www.feedmelvin.com/dr_swadlzworth_UPSET_sprite_web.png";
+        else if (state === 'elated') currentDrReportState = "https://www.feedmelvin.com/dr_swadlzworth_ELATED_sprite_web.png";
+        else currentDrReportState = "https://www.feedmelvin.com/dr_swadlzworth_HAPPY_sprite_web.png";
+
+        drReportFrame = 0;
+        drReportTicks = 0;
+        drReportHoldTicks = Math.floor(Math.random() * 29) + 4;
+        
+        let img = loadedImages[currentDrReportState];
+        if (img && img.naturalHeight > 0) {
+            let frameAspect = (img.naturalWidth / 3) / img.naturalHeight;
+            let wrap = document.getElementById('dr-swadlzworth-img');
+            if (wrap) wrap.style.aspectRatio = frameAspect;
+        }
+    }
+
     function createSparklePool(wrapId) {
         let wrap = document.getElementById(wrapId);
         if (!wrap) return;
@@ -635,22 +608,16 @@
     function scheduleNextDrSlide() {
         if(document.getElementById('landing-screen').style.display === 'none') return;
         
-        // Alternate Sprite State
         landingDrState = (landingDrState === 'happy') ? 'upset' : 'happy';
-        let url = (landingDrState === 'happy') 
-            ? 'https://www.feedmelvin.com/dr_swadlzworth_HAPPY_sprite_web.svg' 
-            : 'https://www.feedmelvin.com/dr_swadlzworth_UPSET_sprite_web.svg';
+        landingDrUrl = (landingDrState === 'happy') 
+            ? 'https://www.feedmelvin.com/dr_swadlzworth_HAPPY_sprite_web.png' 
+            : 'https://www.feedmelvin.com/dr_swadlzworth_UPSET_sprite_web.png';
             
-        let innerImg = document.getElementById('landing-dr-swadlzworth-inner');
-        if (innerImg) {
-            innerImg.src = url;
-            landingDrFrame = 0;
-            landingDrTicks = 0;
-            landingDrHoldTicks = Math.floor(Math.random() * 29) + 4;
-            innerImg.style.transform = `translateX(0%)`;
-        }
+        landingDrFrame = 0;
+        landingDrTicks = 0;
+        landingDrHoldTicks = Math.floor(Math.random() * 29) + 4;
 
-        let randomDelay = Math.random() * 4000 + 2000; // Random delay between 2 and 6 seconds
+        let randomDelay = Math.random() * 4000 + 2000;
         drLandingTimer = setTimeout(slideInDr, randomDelay);
     }
 
@@ -658,56 +625,48 @@
         if(document.getElementById('landing-screen').style.display === 'none') return;
         
         let drEl = document.getElementById('landing-dr-swadlzworth');
-        let side = Math.floor(Math.random() * 4); // 0: top, 1: right, 2: bottom, 3: left
-        let randomPos = Math.random() * 60 + 20; // keeps the doc somewhat centered on the cross axis
+        let side = Math.floor(Math.random() * 4);
+        let randomPos = Math.random() * 60 + 20; 
         
-        // Remove transitions so we can jump to starting pos instantly
         drEl.style.transition = 'none';
         
         let startLeft, startTop, endLeft, endTop, rotation;
         
-        if (side === 0) { // Top
+        if (side === 0) {
             startTop = '-100%'; startLeft = randomPos + '%';
             endTop = '-5%'; endLeft = randomPos + '%';
             rotation = 180;
-        } else if (side === 1) { // Right
+        } else if (side === 1) { 
             startTop = randomPos + '%'; startLeft = '150%';
             endTop = randomPos + '%'; endLeft = '75%';
             rotation = -90; 
-        } else if (side === 2) { // Bottom
+        } else if (side === 2) { 
             startTop = '150%'; startLeft = randomPos + '%';
             endTop = '80%'; endLeft = randomPos + '%';
             rotation = 0;
-        } else { // Left
+        } else { 
             startTop = randomPos + '%'; startLeft = '-100%';
             endTop = randomPos + '%'; endLeft = '-5%';
             rotation = 90;
         }
         
-        // Apply instant changes
         drEl.style.top = startTop;
         drEl.style.left = startLeft;
         drEl.style.transform = `rotate(${rotation}deg)`;
         
-        // Force Reflow
         void drEl.offsetWidth; 
         
-        // Add slide transition and animate IN
         drEl.style.transition = 'top 1.5s ease-in-out, left 1.5s ease-in-out';
         drEl.style.top = endTop;
         drEl.style.left = endLeft;
         
-        // Hang out for a few seconds, then animate OUT
         drActionTimer = setTimeout(() => {
             drEl.style.top = startTop;
             drEl.style.left = startLeft;
-            
-            // Wait for slide out to finish, then queue next loop
             drSlideOutTimer = setTimeout(scheduleNextDrSlide, 1500);
         }, 3000); 
     }
 
-    // Landing Page Transition
     document.getElementById('play-btn').addEventListener('click', function() {
         this.classList.add('pressed');
         setTimeout(() => {
@@ -715,17 +674,14 @@
             document.getElementById('landing-screen').style.display = 'none';
             document.getElementById('splash-screen').style.display = 'flex';
             
-            // Clear Dr Swadlzworth timers
             clearTimeout(drLandingTimer);
             clearTimeout(drActionTimer);
             clearTimeout(drSlideOutTimer);
 
-            // Reset landing styles to default in case they return
             document.getElementById('green-flood').setAttribute('flood-opacity', 0);
-            document.getElementById('landing-melvin').style.opacity = '1';
-            document.getElementById('landing-melvin-full').style.opacity = '0';
-            if (document.getElementById('landing-super-melvin')) document.getElementById('landing-super-melvin').style.opacity = '0';
-            if (document.getElementById('landing-super-melvin-full')) document.getElementById('landing-super-melvin-full').style.opacity = '0';
+            landingActiveSprite = "https://www.feedmelvin.com/classic_melvin_sprite_web.png";
+            landingFreezeFrame = false;
+            
             let ls = document.getElementById('landing-sparkle-wrap');
             if (ls) { ls.style.display = 'none'; ls.innerHTML = ''; }
             demoStep = -3;
@@ -737,7 +693,6 @@
             isLandingSuperSpittingUp = false;
             landingSuperSpitUpFrame = 0;
 
-            // Initialize sparkles on instruction screen
             createSparklePool('instr-powerup-sparkles');
         }, 150);
     });
@@ -777,34 +732,28 @@
         }
     });
 
-    // Listen for landscape orientation to trigger pause
     window.matchMedia("(orientation: landscape) and (pointer: coarse)").addEventListener("change", function(e) {
         if (e.matches) {
-            if (gameRunning && !isPaused) {
-                togglePause();
-            }
+            if (gameRunning && !isPaused) togglePause();
             if (activeMsgTimer) activeMsgTimer.pause();
         } else {
             if (activeMsgTimer) activeMsgTimer.resume();
         }
     });
 
-    // Listen for tab visibility changes (e.g., opening a new tab for BMC) to trigger pause
     document.addEventListener("visibilitychange", () => {
         isTabHidden = document.hidden;
         if (isTabHidden) {
             clearTimeout(musicTimeoutId);
-            if (masterGainNode) masterGainNode.gain.value = 0; // Instantly mute scheduled notes
-            if (audioCtx) audioCtx.suspend(); // Force suspend regardless of current state
+            if (masterGainNode) masterGainNode.gain.value = 0; 
+            if (audioCtx) audioCtx.suspend(); 
             if (gameRunning && !isPaused) togglePause();
             if (activeMsgTimer) activeMsgTimer.pause();
         } else {
-            if (masterGainNode) masterGainNode.gain.value = 1; // Restore volume
+            if (masterGainNode) masterGainNode.gain.value = 1; 
             if (audioCtx) {
                 audioCtx.resume().then(() => {
-                    if (musicStarted && !document.hidden && !musicPausedForReport) {
-                        scheduler();
-                    }
+                    if (musicStarted && !document.hidden && !musicPausedForReport) scheduler();
                 }).catch(e => console.log(e));
             }
             if (activeMsgTimer) activeMsgTimer.resume();
@@ -814,7 +763,7 @@
     window.addEventListener("pagehide", () => {
         isTabHidden = true;
         clearTimeout(musicTimeoutId);
-        if (audioCtx) audioCtx.suspend(); // Failsafe for iOS Safari & Android locking
+        if (audioCtx) audioCtx.suspend();
     });
 
     let isSuperModeGame = false;
@@ -837,7 +786,6 @@
     let isClassicSpittingUp = false;
     let classicSpitUpFrame = 0;
     
-    // Mobile Animation Specific State Variables
     let mobileAnimFrameIndex = 0;
     let isMobileAnimActive = false;
     let mobileFpsTransitionStart = 0;
@@ -845,7 +793,6 @@
     let mobileAnimTimeout = null;
     
     let difficultyMode = 'normal';
-
     let nineLbDay = null;
     let superCount = 0;
     let gammaCount = 0;
@@ -853,10 +800,10 @@
     let secondsPlayed = 0;
     let statsViewState = 'victory';
     let powerUpMsgShown = false; 
-    let currentRenderId = 0; // Tracks the current active animation block
+    let currentRenderId = 0; 
     let victoryAnimated = false;
     let standardAnimated = false;
-    let tooltipHideTimer = null; // Globally manage tooltip hide timing
+    let tooltipHideTimer = null; 
 
     const gameTips = [
         "Burping Melvin will make more room in his stomach. There's no harm in burping him before he's completely full!",
@@ -885,39 +832,32 @@
         "Sleep when the baby sleeps!"
     ];
 
-    const baseStyle = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; transition: opacity 0s; pointer-events: none;';
-    const classicMelvinSVG = `<svg data-classic="true" viewBox="0 0 48 48" style="${baseStyle} opacity: 1;"><image href="https://www.feedmelvin.com/classic_melvin_sprite_web.svg" width="384" height="48" /></svg>`;
-    const classicFullMelvinSVG = `<svg data-classic-full="true" viewBox="0 0 48 48" style="${baseStyle} opacity: 0;"><image href="https://www.feedmelvin.com/classic_melvin_FULL_sprite_web.svg" width="384" height="48" /></svg>`;
-    const superMelvinSVG = `<svg data-super="true" viewBox="0 0 48 48" style="${baseStyle} opacity: 0;"><image href="https://pxleight.github.io/feed-melvin-assets/super_levi_sprite_web.svg" width="384" height="48" /></svg>`;
-    const superFullMelvinSVG = `<svg data-super-full="true" viewBox="0 0 48 48" style="${baseStyle} opacity: 0;"><image href="https://pxleight.github.io/feed-melvin-assets/super_levi_FULL_sprite_web.svg" width="384" height="48" /></svg>`;
-    const gammaMelvinSVG = `<svg data-gamma="true" viewBox="0 0 48 48" style="${baseStyle} opacity: 0;"><image href="https://pxleight.github.io/feed-melvin-assets/gamma_levi_sprite_web.svg" width="384" height="48" /></svg>`;
-
     const assetUrls = [
-        "https://www.feedmelvin.com/feed_melvin_logo_stacked_web.svg",
-        "https://www.feedmelvin.com/feed_melvin_logo_sprite_web.svg",
-        "https://www.feedmelvin.com/classic_melvin_sprite_web.svg",
-        "https://www.feedmelvin.com/classic_melvin_FULL_sprite_web.svg",
-        "https://pxleight.github.io/feed-melvin-assets/super_levi_sprite_web.svg",
-        "https://pxleight.github.io/feed-melvin-assets/super_levi_FULL_sprite_web.svg",
-        "https://pxleight.github.io/feed-melvin-assets/gamma_levi_sprite_web.svg",
-        "https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.svg",
-        "https://pxleight.github.io/feed-melvin-assets/burp_hand_sprite_web.svg",
-        "https://pxleight.github.io/feed-melvin-assets/levi_scale_sprite_web.svg",
-        "https://www.feedmelvin.com/scale_icon_web.svg",
-        "https://www.feedmelvin.com/spit_up_icon_web.svg",
-        "https://www.feedmelvin.com/full_icon_web.svg",
-        "https://www.feedmelvin.com/dr_swadlzworth_sprite_web.svg",
-        "https://www.feedmelvin.com/dr_swadlzworth_HAPPY_sprite_web.svg",
-        "https://www.feedmelvin.com/dr_swadlzworth_UPSET_sprite_web.svg",
-        "https://www.feedmelvin.com/dr_swadlzworth_ELATED_sprite_web.svg",
-        "https://www.feedmelvin.com/mobile_animation_web.svg",
+        "https://www.feedmelvin.com/feed_melvin_logo_stacked_web.png",
+        "https://www.feedmelvin.com/feed_melvin_logo_sprite_web.png",
+        "https://www.feedmelvin.com/classic_melvin_sprite_web.png",
+        "https://www.feedmelvin.com/classic_melvin_FULL_sprite_web.png",
+        "https://pxleight.github.io/feed-melvin-assets/super_levi_sprite_web.png",
+        "https://pxleight.github.io/feed-melvin-assets/super_levi_FULL_sprite_web.png",
+        "https://pxleight.github.io/feed-melvin-assets/gamma_levi_sprite_web.png",
+        "https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.png",
+        "https://pxleight.github.io/feed-melvin-assets/burp_hand_sprite_web.png",
+        "https://pxleight.github.io/feed-melvin-assets/levi_scale_sprite_web.png",
+        "https://www.feedmelvin.com/scale_icon_web.png",
+        "https://www.feedmelvin.com/spit_up_icon_web.png",
+        "https://www.feedmelvin.com/full_icon_web.png",
+        "https://www.feedmelvin.com/dr_swadlzworth_sprite_web.png",
+        "https://www.feedmelvin.com/dr_swadlzworth_HAPPY_sprite_web.png",
+        "https://www.feedmelvin.com/dr_swadlzworth_UPSET_sprite_web.png",
+        "https://www.feedmelvin.com/dr_swadlzworth_ELATED_sprite_web.png",
+        "https://www.feedmelvin.com/mobile_animation_web.png",
         "https://pxleight.github.io/feed-melvin-assets/melvin_icon_web_app.png",
-        "https://www.feedmelvin.com/easy_mode_icon_web.svg",
-        "https://www.feedmelvin.com/normal_mode_icon_web.svg",
-        "https://www.feedmelvin.com/super_icon_web.svg",
-        "https://www.feedmelvin.com/gamma_icon_web.svg",
-        "https://www.feedmelvin.com/time_icon_web.svg",
-        "https://pxleight.github.io/feed-melvin-assets/Nursery_background_rev002.svg"
+        "https://www.feedmelvin.com/easy_mode_icon_web.png",
+        "https://www.feedmelvin.com/normal_mode_icon_web.png",
+        "https://www.feedmelvin.com/super_icon_web.png",
+        "https://www.feedmelvin.com/gamma_icon_web.png",
+        "https://www.feedmelvin.com/time_icon_web.png",
+        "https://pxleight.github.io/feed-melvin-assets/Nursery_background_rev002.png"
     ];
 
     let assetsLoaded = false;
@@ -931,6 +871,7 @@
             const img = new Image();
             img.src = url;
             img.onload = img.onerror = () => {
+                loadedImages[url] = img;
                 loadedCount++;
                 if (loadedCount === total) {
                     setTimeout(() => {
@@ -955,7 +896,7 @@
                             setTimeout(() => {
                                 let petWrap = document.getElementById('landing-pet-scale-wrap');
                                 petWrap.style.display = 'flex';
-                                void petWrap.offsetWidth; // Force reflow
+                                void petWrap.offsetWidth; 
                                 petWrap.style.top = '0';
                                 startLandingDrSwadlzworth();
                                 
@@ -966,7 +907,7 @@
                                     playBtn.style.display = 'block';
                                     playBtn.style.transform = 'scale(0)';
                                     playBtn.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-                                    void playBtn.offsetWidth; // Force reflow
+                                    void playBtn.offsetWidth; 
                                     playBtn.style.transform = 'scale(1)';
                                     
                                     setTimeout(() => {
@@ -1112,16 +1053,18 @@
 
     // --- MOBILE ANIMATION LOGIC ---
     function updateMobileAnim() {
-        let img = document.getElementById('mobile-anim-img');
-        if (img) {
+        let imgUrl = "https://www.feedmelvin.com/mobile_animation_web.png";
+        let img = loadedImages[imgUrl];
+        if (img && img.naturalWidth > 0) {
             mobileAnimFrameIndex = (mobileAnimFrameIndex + 1) % 12;
-            img.style.transform = `translateX(-${mobileAnimFrameIndex * (100 / 12)}%)`;
+            let fw = img.naturalWidth / 12;
+            let fh = img.naturalHeight;
+            renderCanvasSprite('mobile-anim-canvas', imgUrl, mobileAnimFrameIndex * fw, 0, fw, fh, fw, fh);
         }
         
         let now = performance.now();
         if (isMobileAnimActive) {
             let elapsed = now - mobileFpsTransitionStart;
-            // Ramp up for 1s, Hold for 3s, Ramp down for 1s (total effect duration 5s)
             if (elapsed < 1000) { 
                 mobileCurrentFps = 6 + (10 * (elapsed / 1000));
             } else if (elapsed < 4000) { 
@@ -1140,7 +1083,6 @@
         mobileAnimTimeout = setTimeout(updateMobileAnim, delay);
     }
     
-    // Kickoff the mobile anim loop right away
     updateMobileAnim();
 
     window.triggerMobileAnim = function() {
@@ -1159,13 +1101,8 @@
 
     function updateLogoSpritePosition() {
         const yOffset = currentLogoFrame * 48;
-        const viewBoxStr = `0 ${yOffset} 288 48`;
-        
-        let splashLogo = document.getElementById('instructions-logo');
-        if (splashLogo) splashLogo.setAttribute('viewBox', viewBoxStr);
-        
-        let gameLogo = document.getElementById('game-logo-svg');
-        if (gameLogo) gameLogo.setAttribute('viewBox', viewBoxStr);
+        renderCanvasSprite('instructions-logo', "https://www.feedmelvin.com/feed_melvin_logo_sprite_web.png", 0, yOffset, 288, 48, 288, 48);
+        renderCanvasSprite('game-logo-svg', "https://www.feedmelvin.com/feed_melvin_logo_sprite_web.png", 0, yOffset, 288, 48, 288, 48);
     }
 
     setInterval(() => {
@@ -1219,11 +1156,10 @@
             isPaused = true; 
             burpProgress = 0; 
             isBigBurpAnimating = false;
-            petEl.innerHTML = classicMelvinSVG + classicFullMelvinSVG + superMelvinSVG + superFullMelvinSVG + gammaMelvinSVG; 
+            petEl.innerHTML = '<canvas id="pet-canvas" width="48" height="48" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></canvas>'; 
             createSparklePool('sparkle-wrap');
             rollNewLimit(); 
             
-            // Clear any lingering spitup flags
             isClassicSpittingUp = false; classicSpitUpFrame = 0;
             isSuperSpittingUp = false; superSpitUpFrame = 0;
             
@@ -1259,7 +1195,6 @@
                 scheduler();
             }
 
-            // Check if Super Mode button was clicked
             if (btnEl && btnEl.classList.contains('super-mode')) {
                 btnEl.classList.remove('super-mode'); 
                 btnEl.innerText = 'RESUME';
@@ -1298,7 +1233,7 @@
                 isClassicSpittingUp = false; classicSpitUpFrame = 0;
                 isSuperSpittingUp = false; superSpitUpFrame = 0;
 
-                petEl.innerHTML = classicMelvinSVG + classicFullMelvinSVG + superMelvinSVG + superFullMelvinSVG + gammaMelvinSVG; 
+                petEl.innerHTML = '<canvas id="pet-canvas" width="48" height="48" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></canvas>'; 
                 createSparklePool('sparkle-wrap');
                 rollNewLimit();
                 
@@ -1315,10 +1250,8 @@
                 return;
             }
 
-            // Finalize the day transition that was paused for the report
             dayCount++; 
             
-            // If it's the start of a new week, reset the weekly metrics
             if (dayCount % 7 === 1) {
                 superCooldownDays = 0; 
                 gammaCooldownDays = 0;
@@ -1338,7 +1271,6 @@
                 lockedPowerUpTier = null; 
             }
 
-            // Reset the day's session tracking
             timeLeft = GROWTH_INTERVAL; 
             foodStored = 0; 
             currentSessionOunces = 0; 
@@ -1519,10 +1451,9 @@
         const docImg = document.getElementById('dr-swadlzworth-img');
         const docBox = document.getElementById('svg-reference-box-red');
 
-        // --- NEW AUDIO HELPERS FOR STATS VIEW ---
         const playCoin = (stepDown = false) => {
-            let f1 = stepDown ? 880 : 1109; // Changed 987 to 1109 (C#6)
-            let f2 = stepDown ? 1174 : 1480; // Changed 1318 to 1480 (F#6)
+            let f1 = stepDown ? 880 : 1109; 
+            let f2 = stepDown ? 1174 : 1480; 
             playSound(f1, 'square', 0.08, 0.035);
             setTimeout(() => playSound(f2, 'square', 0.1, 0.035), 80);
         };
@@ -1552,7 +1483,6 @@
             o.connect(g); g.connect(masterGainNode);
             o.start(); o.stop(audioCtx.currentTime + 0.2);
         };
-        // ----------------------------------------
 
         statsArea.innerHTML = '';
         
@@ -1588,10 +1518,10 @@
             document.getElementById('next-stats-btn').style.display = 'none';
         }
         
-        const bottleIcon = '<img src="https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.svg" class="stat-bullet" />';
-        const scaleIcon = '<img src="https://www.feedmelvin.com/scale_icon_web.svg" class="stat-bullet" />';
-        const spitUpIcon = '<img src="https://www.feedmelvin.com/spit_up_icon_web.svg" class="stat-bullet" />';
-        const fullIcon = '<img src="https://www.feedmelvin.com/full_icon_web.svg" class="stat-bullet" />';
+        const bottleIcon = '<img src="https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.png" class="stat-bullet" />';
+        const scaleIcon = '<img src="https://www.feedmelvin.com/scale_icon_web.png" class="stat-bullet" />';
+        const spitUpIcon = '<img src="https://www.feedmelvin.com/spit_up_icon_web.png" class="stat-bullet" />';
+        const fullIcon = '<img src="https://www.feedmelvin.com/full_icon_web.png" class="stat-bullet" />';
 
         let rowsData = [];
 
@@ -1601,18 +1531,18 @@
             const finalOz = Math.floor(totalOunces % 16);
             const gammaText = gammaCount === 0 ? '? ? ? ? Melvins' : 'Gamma Melvins';
             
-            const diffIconUrl = difficultyMode === 'easy' ? 'https://www.feedmelvin.com/easy_mode_icon_web.svg' : 'https://www.feedmelvin.com/normal_mode_icon_web.svg';
+            const diffIconUrl = difficultyMode === 'easy' ? 'https://www.feedmelvin.com/easy_mode_icon_web.png' : 'https://www.feedmelvin.com/normal_mode_icon_web.png';
             const gammaIconStr = gammaCount === 0 
                 ? '<span class="stat-bullet"><span style="color:#ffffff;font-size:2.5rem;display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;line-height:1;vertical-align:middle;">?</span></span>'
-                : '<img src="https://www.feedmelvin.com/gamma_icon_web.svg" class="stat-bullet" />';
+                : '<img src="https://www.feedmelvin.com/gamma_icon_web.png" class="stat-bullet" />';
 
             rowsData = [
                 { icon: `<img src="${diffIconUrl}" class="stat-bullet" />`, label: 'Difficulty Level: ', value: difficultyMode.toUpperCase() },
                 { icon: scaleIcon, label: 'Final weight: ', value: finalLb + 'lb ' + finalOz + 'oz' },
                 { icon: bottleIcon, label: 'Best Daily Avg.: ', value: bestDailyAvg.toFixed(1) + ' oz' },
-                { icon: '<img src="https://www.feedmelvin.com/super_icon_web.svg" class="stat-bullet" />', label: 'Super Melvins: ', value: superCount },
+                { icon: '<img src="https://www.feedmelvin.com/super_icon_web.png" class="stat-bullet" />', label: 'Super Melvins: ', value: superCount },
                 { icon: gammaIconStr, label: gammaText + ': ', value: gammaCount },
-                { icon: '<img src="https://www.feedmelvin.com/time_icon_web.svg" class="stat-bullet" />', label: 'Minutes Played: ', value: minsPlayed }
+                { icon: '<img src="https://www.feedmelvin.com/time_icon_web.png" class="stat-bullet" />', label: 'Minutes Played: ', value: minsPlayed }
             ];
         } else {
             rowsData = [
@@ -1624,20 +1554,17 @@
         }
 
         if (isInitialLoad) {
-            // 1. Report Title slides up
             await new Promise(r => setTimeout(r, 333));
             if (myRenderId !== currentRenderId) return;
-            playCoin(false); // Header text coin sound
+            playCoin(false); 
             reportTitle.style.animation = 'titleSlideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
             
-            // 2. Wait for first line to finish, then GREAT WORK scales up
             if (view === 'victory') {
                 await new Promise(r => setTimeout(r, 500));
                 if (myRenderId !== currentRenderId) return;
                 congratsWrap.style.animation = 'titleScaleUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
             }
             
-            // 3. Wait for header animations to finish
             await new Promise(r => setTimeout(r, 500));
             if (myRenderId !== currentRenderId) return;
         }
@@ -1657,7 +1584,7 @@
             statsArea.appendChild(rowDiv);
 
             if (needsStatsAnimation) {
-                playCoin(true); // Whole step down coin sound for icon appearing
+                playCoin(true); 
                 await new Promise(r => setTimeout(r, 333));
                 if (myRenderId !== currentRenderId) return;
 
@@ -1665,7 +1592,7 @@
                 for (let char of row.label) {
                     currentText += char;
                     textDiv.textContent = currentText;
-                    playSound(600, 'square', 0.02, 0.02); // Mid pitched typing beep
+                    playSound(600, 'square', 0.02, 0.02); 
                     await new Promise(r => setTimeout(r, 25));
                     if (myRenderId !== currentRenderId) return;
                 }
@@ -1678,7 +1605,6 @@
                 span.className = 'land-hard-anim';
                 textDiv.appendChild(span);
                 
-                // Low pitch sawtooth stomp after the 150ms land hard animation completes
                 setTimeout(() => {
                     if (myRenderId === currentRenderId) playSound(100, 'sawtooth', 0.3, 0.1);
                 }, 150);
@@ -1696,8 +1622,8 @@
         if (isInitialLoad) {
             await new Promise(r => setTimeout(r, 333));
             if (myRenderId !== currentRenderId) return;
-            playWoosh(); // Electronic woosh for slide animation
-            playMidSlide(); // Mid pitch sound for slide
+            playWoosh(); 
+            playMidSlide(); 
             docImg.style.left = '5.9px';
             
             await new Promise(r => setTimeout(r, 333));
@@ -1710,10 +1636,9 @@
                     if (myRenderId !== currentRenderId) return;
                     resumeBtn.style.opacity = '1';
                     resumeBtn.style.pointerEvents = 'auto';
-                }, 1300); // 300ms for box transition + 1000ms delay
+                }, 1300); 
             }
 
-            // --- NEW: BMC Tooltip on Report Screen ---
             const bmcBtn = document.getElementById('custom-bmc-btn');
             if (bmcBtn && !bmcBtn.classList.contains('in-place')) {
                 bmcBtn.classList.add('in-place');
@@ -1736,7 +1661,6 @@
                     }, 6000);
                 }
             }, 1000);
-            // -----------------------------------------
         }
 
         if (view === 'victory') victoryAnimated = true;
@@ -1789,34 +1713,10 @@
         else if (gammaMelvinActive) superLabel.innerText = "GAMMA";
         else superLabel.innerText = "SUPER";
         
-        const classicSvg = petEl.querySelector('svg[data-classic]');
-        const classicFullSvg = petEl.querySelector('svg[data-classic-full]');
-        const superSvg = petEl.querySelector('svg[data-super]');
-        const superFullSvg = petEl.querySelector('svg[data-super-full]');
-        const gammaSvg = petEl.querySelector('svg[data-gamma]');
-        if (classicSvg && classicFullSvg && superSvg && superFullSvg && gammaSvg) {
-            if (gammaMelvinActive) {
-                classicSvg.style.opacity = '0'; classicFullSvg.style.opacity = '0'; superSvg.style.opacity = '0'; superFullSvg.style.opacity = '0'; gammaSvg.style.opacity = '1';
-            } else if (superMelvinActive) {
-                classicSvg.style.opacity = '0'; classicFullSvg.style.opacity = '0';
-                const isFull = currentSessionOunces >= (ozLimit * 2 * capMult);
-                const showFull = isFull || isSuperSpittingUp;
-                if (isFull && !isSuperSpittingUp && superFullSvg.style.opacity === '0') {
-                    superFullSvg.setAttribute('viewBox', '0 0 48 48');
-                }
-                superSvg.style.opacity = showFull ? '0' : '1';
-                superFullSvg.style.opacity = showFull ? '1' : '0';
-                gammaSvg.style.opacity = '0';
-            } else {
-                const isClassicFull = currentSessionOunces >= (ozLimit * capMult);
-                const showClassicFull = isClassicFull || isClassicSpittingUp;
-                if (isClassicFull && !isClassicSpittingUp && classicFullSvg.style.opacity === '0') {
-                    classicFullSvg.setAttribute('viewBox', '0 0 48 48');
-                }
-                classicSvg.style.opacity = showClassicFull ? '0' : '1';
-                classicFullSvg.style.opacity = showClassicFull ? '1' : '0';
-                superSvg.style.opacity = '0'; superFullSvg.style.opacity = '0'; gammaSvg.style.opacity = '0';
-            }
+        let petCvs = document.getElementById('pet-canvas');
+        if (petCvs) {
+            if (superMelvinActive || gammaMelvinActive) petCvs.classList.add('super-drift');
+            else petCvs.classList.remove('super-drift');
         }
 
         const slot1 = document.getElementById('super-slot-1');
@@ -1824,7 +1724,6 @@
         const slot3 = document.getElementById('super-slot-3');
         const slot4 = document.getElementById('super-slot-4');
 
-        // Force opacity to 1.0 if in Super Mode game, otherwise use normal avg check
         let visualPanelActive = isSuperModeGame ? true : (roundedAvg >= 1.0 && isAvailable);
         document.querySelectorAll('.super-slots').forEach(slot => slot.style.opacity = visualPanelActive ? '1.0' : '0.25');
 
@@ -1845,91 +1744,60 @@
     }
 
     setInterval(() => {
-        // Increment and calculate frame for idle animations
+        if (!assetsLoaded) return;
         frameIndex = (frameIndex + 1) % 8;
-        let offsetX = frameIndex * 48;
 
-        // Dr. Swadlzworth Checkup Screen Animation
-        let drInner = document.getElementById('dr-swadlzworth-inner');
-        if (document.getElementById('checkup-screen').style.display !== 'none' && drInner) {
+        if (document.getElementById('checkup-screen').style.display !== 'none') {
             if (drReportFrame === 0) {
-                if (drReportTicks < drReportHoldTicks) {
-                    drReportTicks++;
-                } else {
-                    drReportFrame = 1;
-                    drReportTicks = 0;
-                    drInner.style.transform = `translateX(-33.333%)`;
-                }
+                if (drReportTicks < drReportHoldTicks) drReportTicks++;
+                else { drReportFrame = 1; drReportTicks = 0; }
             } else {
                 drReportFrame++;
-                if (drReportFrame >= 3) {
-                    drReportFrame = 0;
-                    drReportHoldTicks = Math.floor(Math.random() * 29) + 4; // Reset hold for 0.5-4 seconds
-                    drInner.style.transform = `translateX(0%)`;
-                } else {
-                    drInner.style.transform = `translateX(-${drReportFrame * 33.333}%)`;
-                }
+                if (drReportFrame >= 3) { drReportFrame = 0; drReportHoldTicks = Math.floor(Math.random() * 29) + 4; }
+            }
+            let img = loadedImages[currentDrReportState];
+            if (img && img.naturalWidth > 0) {
+                let fw = img.naturalWidth / 3, fh = img.naturalHeight;
+                renderCanvasSprite('dr-swadlzworth-inner', currentDrReportState, drReportFrame * fw, 0, fw, fh, fw, fh);
             }
         }
 
-        // Dr. Swadlzworth Instructions Screen Animation
-        let instrDrInner = document.getElementById('instructions-dr-swadlzworth-inner');
-        if (document.getElementById('splash-screen').style.display !== 'none' && instrDrInner) {
+        if (document.getElementById('splash-screen').style.display !== 'none') {
             if (instrDrFrame === 0) {
-                if (instrDrTicks < instrDrHoldTicks) {
-                    instrDrTicks++;
-                } else {
-                    instrDrFrame = 1;
-                    instrDrTicks = 0;
-                    instrDrInner.style.transform = `translateX(-33.333%)`;
-                }
+                if (instrDrTicks < instrDrHoldTicks) instrDrTicks++;
+                else { instrDrFrame = 1; instrDrTicks = 0; }
             } else {
                 instrDrFrame++;
-                if (instrDrFrame >= 3) {
-                    instrDrFrame = 0;
-                    instrDrHoldTicks = Math.floor(Math.random() * 29) + 4; // Reset hold for 0.5-4 seconds
-                    instrDrInner.style.transform = `translateX(0%)`;
-                } else {
-                    instrDrInner.style.transform = `translateX(-${instrDrFrame * 33.333}%)`;
-                }
+                if (instrDrFrame >= 3) { instrDrFrame = 0; instrDrHoldTicks = Math.floor(Math.random() * 29) + 4; }
+            }
+            let img = loadedImages[instrDrUrl];
+            if (img && img.naturalWidth > 0) {
+                let fw = img.naturalWidth / 3, fh = img.naturalHeight;
+                renderCanvasSprite('instructions-dr-swadlzworth-inner', instrDrUrl, instrDrFrame * fw, 0, fw, fh, fw, fh);
             }
         }
 
-        // Dr. Swadlzworth Landing Screen Animation
-        let landingDrInner = document.getElementById('landing-dr-swadlzworth-inner');
-        if (document.getElementById('landing-screen').style.display !== 'none' && landingDrInner) {
+        if (document.getElementById('landing-screen').style.display !== 'none') {
             if (landingDrFrame === 0) {
-                if (landingDrTicks < landingDrHoldTicks) {
-                    landingDrTicks++;
-                } else {
-                    landingDrFrame = 1;
-                    landingDrTicks = 0;
-                    landingDrInner.style.transform = `translateX(-33.333%)`;
-                }
+                if (landingDrTicks < landingDrHoldTicks) landingDrTicks++;
+                else { landingDrFrame = 1; landingDrTicks = 0; }
             } else {
                 landingDrFrame++;
-                if (landingDrFrame >= 3) {
-                    landingDrFrame = 0;
-                    landingDrHoldTicks = Math.floor(Math.random() * 29) + 4; // Reset hold for 0.5-4 seconds
-                    landingDrInner.style.transform = `translateX(0%)`;
-                } else {
-                    landingDrInner.style.transform = `translateX(-${landingDrFrame * 33.333}%)`;
-                }
+                if (landingDrFrame >= 3) { landingDrFrame = 0; landingDrHoldTicks = Math.floor(Math.random() * 29) + 4; }
+            }
+            let img = loadedImages[landingDrUrl];
+            if (img && img.naturalWidth > 0) {
+                let fw = img.naturalWidth / 3, fh = img.naturalHeight;
+                renderCanvasSprite('landing-dr-swadlzworth-inner', landingDrUrl, landingDrFrame * fw, 0, fw, fh, fw, fh);
             }
         }
 
-        // Apply idle animation to landing screen Melvin if visible
         if (document.getElementById('landing-screen').style.display !== 'none') {
-            // ALWAYS UPDATE BASE IDLE FRAMES
-            let baseLandingSvg = document.getElementById('landing-melvin');
-            if (baseLandingSvg) baseLandingSvg.setAttribute('viewBox', offsetX + ' 0 48 48');
-            let baseLandingSuperSvg = document.getElementById('landing-super-melvin');
-            if (baseLandingSuperSvg) baseLandingSuperSvg.setAttribute('viewBox', offsetX + ' 0 48 48');
+            let landingFrameX = landingFreezeFrame ? 0 : (frameIndex * 48);
 
             if (isLandingClassicSpittingUp) {
-                let landingSvg = document.getElementById('landing-melvin-full');
-                if (landingSvg) landingSvg.setAttribute('viewBox', (landingClassicSpitUpFrame * 48) + ' 0 48 48');
-                
+                landingActiveSprite = "https://www.feedmelvin.com/classic_melvin_FULL_sprite_web.png";
+                landingFrameX = landingClassicSpitUpFrame * 48;
                 let flood = document.getElementById('green-flood');
                 let tintOpacity = 0.75 * (1 - (landingClassicSpitUpFrame / 7));
                 if (tintOpacity < 0) tintOpacity = 0;
@@ -1938,14 +1806,13 @@
                 landingClassicSpitUpFrame++;
                 if (landingClassicSpitUpFrame >= 8) {
                     isLandingClassicSpittingUp = false;
-                    document.getElementById('landing-melvin').style.opacity = '1';
-                    document.getElementById('landing-melvin-full').style.opacity = '0';
                     flood.setAttribute('flood-opacity', 0);
+                    landingActiveSprite = "https://www.feedmelvin.com/classic_melvin_sprite_web.png";
+                    landingFreezeFrame = false;
                 }
             } else if (isLandingSuperSpittingUp) {
-                let landingSvg = document.getElementById('landing-super-melvin-full');
-                if (landingSvg) landingSvg.setAttribute('viewBox', (landingSuperSpitUpFrame * 48) + ' 0 48 48');
-                
+                landingActiveSprite = "https://pxleight.github.io/feed-melvin-assets/super_levi_FULL_sprite_web.png";
+                landingFrameX = landingSuperSpitUpFrame * 48;
                 let flood = document.getElementById('green-flood');
                 let tintOpacity = 0.75 * (1 - (landingSuperSpitUpFrame / 7));
                 if (tintOpacity < 0) tintOpacity = 0;
@@ -1954,82 +1821,63 @@
                 landingSuperSpitUpFrame++;
                 if (landingSuperSpitUpFrame >= 8) {
                     isLandingSuperSpittingUp = false;
-                    document.getElementById('landing-melvin').style.opacity = '1'; // Revert to classic Melvin
-                    document.getElementById('landing-melvin-full').style.opacity = '0';
-                    if (document.getElementById('landing-super-melvin')) document.getElementById('landing-super-melvin').style.opacity = '0';
-                    if (document.getElementById('landing-super-melvin-full')) document.getElementById('landing-super-melvin-full').style.opacity = '0';
                     flood.setAttribute('flood-opacity', 0);
-                }
-            } else {
-                let isSuperFull = document.getElementById('landing-super-melvin-full') && document.getElementById('landing-super-melvin-full').style.opacity === '1';
-                let isClassicFull = document.getElementById('landing-melvin-full').style.opacity === '1';
-                
-                if (isSuperFull) {
-                    let landingSvg = document.getElementById('landing-super-melvin-full');
-                    if (landingSvg) landingSvg.setAttribute('viewBox', '0 0 48 48'); // Freeze full
-                } else if (isClassicFull) {
-                    let landingSvg = document.getElementById('landing-melvin-full');
-                    if (landingSvg) landingSvg.setAttribute('viewBox', '0 0 48 48'); // Freeze full
+                    landingActiveSprite = "https://www.feedmelvin.com/classic_melvin_sprite_web.png";
+                    landingFreezeFrame = false;
                 }
             }
+
+            renderCanvasSprite('landing-melvin-canvas', landingActiveSprite, landingFrameX, 0, 48, 48, 48, 48);
         }
 
         if (!gameRunning || isPaused) return;
 
-        // Apply idle animation to active game Melvin
         let currentWeekForCap = Math.floor((dayCount - 1) / 7) + 1;
         let capMult = (difficultyMode === 'easy' && currentWeekForCap > 1) ? 2.0 : 1.0;
         const superLimit = ozLimit * 2 * capMult;
-        let activeSvg;
-
-        // ALWAYS UPDATE BASE IDLE FRAMES so they are ready when we switch back
-        let baseGamma = petEl.querySelector('svg[data-gamma]');
-        if (baseGamma) baseGamma.setAttribute('viewBox', offsetX + ' 0 48 48');
-        let baseSuper = petEl.querySelector('svg[data-super]');
-        if (baseSuper) baseSuper.setAttribute('viewBox', offsetX + ' 0 48 48');
-        let baseClassic = petEl.querySelector('svg[data-classic]');
-        if (baseClassic) baseClassic.setAttribute('viewBox', offsetX + ' 0 48 48');
+        let activeImgUrl = "https://www.feedmelvin.com/classic_melvin_sprite_web.png";
+        let activeFrameX = frameIndex * 48;
 
         if (gammaMelvinActive) {
-            // Already updated baseGamma above
+            activeImgUrl = "https://pxleight.github.io/feed-melvin-assets/gamma_levi_sprite_web.png";
         } else if (superMelvinActive) {
             if (isSuperSpittingUp) {
-                activeSvg = petEl.querySelector('svg[data-super-full]');
-                if (activeSvg) activeSvg.setAttribute('viewBox', (superSpitUpFrame * 48) + ' 0 48 48');
+                activeImgUrl = "https://pxleight.github.io/feed-melvin-assets/super_levi_FULL_sprite_web.png";
+                activeFrameX = superSpitUpFrame * 48;
                 superSpitUpFrame++;
                 updateUI();
-                if (superSpitUpFrame >= 8) {
-                    isSuperSpittingUp = false;
-                    updateUI();
-                }
+                if (superSpitUpFrame >= 8) { isSuperSpittingUp = false; updateUI(); }
             } else {
                 const isSuperFull = currentSessionOunces >= superLimit;
                 if (isSuperFull) {
-                    activeSvg = petEl.querySelector('svg[data-super-full]');
-                    if (activeSvg) activeSvg.setAttribute('viewBox', '0 0 48 48');
+                    activeImgUrl = "https://pxleight.github.io/feed-melvin-assets/super_levi_FULL_sprite_web.png";
+                    activeFrameX = 0;
+                } else {
+                    activeImgUrl = "https://pxleight.github.io/feed-melvin-assets/super_levi_sprite_web.png";
                 }
             }
         } else {
             if (isClassicSpittingUp) {
-                activeSvg = petEl.querySelector('svg[data-classic-full]');
-                if (activeSvg) activeSvg.setAttribute('viewBox', (classicSpitUpFrame * 48) + ' 0 48 48');
+                activeImgUrl = "https://www.feedmelvin.com/classic_melvin_FULL_sprite_web.png";
+                activeFrameX = classicSpitUpFrame * 48;
                 classicSpitUpFrame++;
                 updateUI();
-                if (classicSpitUpFrame >= 8) {
-                    isClassicSpittingUp = false;
-                    updateUI();
-                }
+                if (classicSpitUpFrame >= 8) { isClassicSpittingUp = false; updateUI(); }
             } else {
                 const isClassicFull = currentSessionOunces >= (ozLimit * capMult);
                 if (isClassicFull) {
-                    activeSvg = petEl.querySelector('svg[data-classic-full]');
-                    if (activeSvg) activeSvg.setAttribute('viewBox', '0 0 48 48');
+                    activeImgUrl = "https://www.feedmelvin.com/classic_melvin_FULL_sprite_web.png";
+                    activeFrameX = 0; 
+                } else {
+                    activeImgUrl = "https://www.feedmelvin.com/classic_melvin_sprite_web.png";
                 }
             }
         }
+
+        renderCanvasSprite('pet-canvas', activeImgUrl, activeFrameX, 0, 48, 48, 48, 48);
+
     }, 1000 / 8);
 
-    // Landing Screen Automated Demo Sequence
     let demoStep = -3; 
     setInterval(() => {
         if (!demoActive || !assetsLoaded || document.getElementById('landing-screen').style.display === 'none' || document.hidden) return;
@@ -2041,29 +1889,23 @@
         let landingSparkle = document.getElementById('landing-sparkle-wrap');
 
         if (demoStep >= 1 && demoStep <= 6) {
-            // First Feed Sequence
             landingPet.style.transform = 'scale(1.1)';
             playSound(800, 'square', 0.08, 0.00825);
             setTimeout(() => landingPet.style.transform = 'scale(1)', 100);
             
-            // Replicate game's green tint logic as he gets full
             if (demoStep === 4) flood.setAttribute('flood-opacity', 0);
             if (demoStep === 5) flood.setAttribute('flood-opacity', 0.375);
             if (demoStep === 6) {
                 flood.setAttribute('flood-opacity', 0.75);
-                document.getElementById('landing-melvin').style.opacity = '0';
-                let lmf = document.getElementById('landing-melvin-full');
-                lmf.setAttribute('viewBox', '0 0 48 48');
-                lmf.style.opacity = '1';
+                landingActiveSprite = "https://www.feedmelvin.com/classic_melvin_FULL_sprite_web.png";
+                landingFreezeFrame = true;
             }
         } else if (demoStep === 16) {
             demoOunces -= 1; updateDemoWeight();
-            // Overfeed bounce (delayed 10 steps = 2 full seconds)
             landingPet.style.transform = 'scale(1.1)';
             playSound(150, 'sawtooth', 0.4, 0.0335);
             setTimeout(() => landingPet.style.transform = 'scale(1)', 100);
             
-            // Trigger Spit-up Effect to exactly match gameplay
             landingSpitup.innerHTML = '';
             const svgNS = "http://www.w3.org/2000/svg";
             const svg = document.createElementNS(svgNS, "svg");
@@ -2085,40 +1927,31 @@
             void landingSpitup.offsetWidth; 
             landingSpitup.classList.add('show-spitup');
             
-            // Trigger animation in the 125ms interval loop
             isLandingClassicSpittingUp = true;
             landingClassicSpitUpFrame = 1;
         } else if (demoStep >= 22 && demoStep <= 27) {
-            // Second Feed Sequence
             landingPet.style.transform = 'scale(1.1)';
             playSound(800, 'square', 0.08, 0.00825);
             setTimeout(() => landingPet.style.transform = 'scale(1)', 100);
             
-            // Replicate game's green tint logic as he gets full again
             if (demoStep === 25) flood.setAttribute('flood-opacity', 0);
             if (demoStep === 26) flood.setAttribute('flood-opacity', 0.375);
             if (demoStep === 27) {
                 flood.setAttribute('flood-opacity', 0.75);
-                document.getElementById('landing-melvin').style.opacity = '0';
-                let lmf = document.getElementById('landing-melvin-full');
-                lmf.setAttribute('viewBox', '0 0 48 48');
-                lmf.style.opacity = '1';
+                landingActiveSprite = "https://www.feedmelvin.com/classic_melvin_FULL_sprite_web.png";
+                landingFreezeFrame = true;
             }
         } else if (demoStep >= 29 && demoStep <= 36) {
-            // First Burp Sequence (8 times)
             if (demoStep === 36) {
                 demoOunces += 1; updateDemoWeight();
-                // 8th burp triggers the big reset bounce
                 landingPet.style.transform = 'translateY(-5px) scale(1.3)';
                 playSound(120, 'sawtooth', 0.5, 0.03325);
                 setTimeout(() => landingPet.style.transform = 'scale(1)', 200);
                 
-                // Reset State
                 flood.setAttribute('flood-opacity', 0);
-                document.getElementById('landing-melvin').style.opacity = '1';
-                document.getElementById('landing-melvin-full').style.opacity = '0';
+                landingActiveSprite = "https://www.feedmelvin.com/classic_melvin_sprite_web.png";
+                landingFreezeFrame = false;
                 
-                // Trigger Sparkles
                 landingSparkle.innerHTML = '';
                 landingSparkle.style.display = 'block';
                 for(let i=0; i<15; i++) {
@@ -2128,13 +1961,11 @@
                     landingSparkle.appendChild(s);
                 }
             } else {
-                // Normal burp bounce
                 landingPet.style.transform = 'translateY(-5px)';
                 playSound(300, 'triangle', 0.08, 0.0665);
                 setTimeout(() => landingPet.style.transform = 'scale(1)', 100);
             }
         } else if (demoStep >= 40 && demoStep <= 45) {
-            // Third Feed Sequence (While sparkling)
             landingPet.style.transform = 'scale(1.1)';
             playSound(800, 'square', 0.08, 0.00825);
             setTimeout(() => landingPet.style.transform = 'scale(1)', 100);
@@ -2143,37 +1974,28 @@
             if (demoStep === 44) flood.setAttribute('flood-opacity', 0.375);
             if (demoStep === 45) {
                 flood.setAttribute('flood-opacity', 0.75);
-                document.getElementById('landing-melvin').style.opacity = '0';
-                let lmf = document.getElementById('landing-melvin-full');
-                lmf.setAttribute('viewBox', '0 0 48 48');
-                lmf.style.opacity = '1';
+                landingActiveSprite = "https://www.feedmelvin.com/classic_melvin_FULL_sprite_web.png";
+                landingFreezeFrame = true;
             }
         } else if (demoStep >= 48 && demoStep <= 55) {
-            // Second Burp Sequence (8 times)
             if (demoStep === 55) {
                 demoOunces += 1; updateDemoWeight();
-                // 8th burp triggers the big reset bounce to Super Melvin!
                 landingPet.style.transform = 'translateY(-5px) scale(1.3)';
                 playSound(120, 'sawtooth', 0.5, 0.03325);
                 setTimeout(() => landingPet.style.transform = 'scale(1)', 200);
                 
-                // Turn off flood tint and sparkles
                 flood.setAttribute('flood-opacity', 0);
                 landingSparkle.style.display = 'none';
                 landingSparkle.innerHTML = '';
                 
-                // Swap to Super Melvin
-                document.getElementById('landing-melvin').style.opacity = '0';
-                document.getElementById('landing-melvin-full').style.opacity = '0';
-                document.getElementById('landing-super-melvin').style.opacity = '1';
-                if (document.getElementById('landing-super-melvin-full')) document.getElementById('landing-super-melvin-full').style.opacity = '0';
+                landingActiveSprite = "https://pxleight.github.io/feed-melvin-assets/super_levi_sprite_web.png";
+                landingFreezeFrame = false;
             } else {
                 landingPet.style.transform = 'translateY(-5px)';
                 playSound(300, 'triangle', 0.08, 0.0665);
                 setTimeout(() => landingPet.style.transform = 'scale(1)', 100);
             }
         } else if (demoStep >= 59 && demoStep <= 64) {
-            // Fourth Feed Sequence (Super Melvin - 6 feeds)
             landingPet.style.transform = 'scale(1.1)';
             playSound(800, 'square', 0.08, 0.00825);
             setTimeout(() => landingPet.style.transform = 'scale(1)', 100);
@@ -2182,13 +2004,10 @@
             if (demoStep === 63) flood.setAttribute('flood-opacity', 0.375);
             if (demoStep === 64) {
                 flood.setAttribute('flood-opacity', 0.75);
-                document.getElementById('landing-super-melvin').style.opacity = '0';
-                let lsmf = document.getElementById('landing-super-melvin-full');
-                lsmf.setAttribute('viewBox', '0 0 48 48');
-                lsmf.style.opacity = '1';
+                landingActiveSprite = "https://pxleight.github.io/feed-melvin-assets/super_levi_FULL_sprite_web.png";
+                landingFreezeFrame = true;
             }
         } else if (demoStep >= 67 && demoStep <= 68) {
-            // Super Burp Sequence (2 burps reset)
             if (demoStep === 68) {
                 demoOunces += 1; updateDemoWeight();
                 landingPet.style.transform = 'translateY(-5px) scale(1.3)';
@@ -2196,15 +2015,14 @@
                 setTimeout(() => landingPet.style.transform = 'scale(1)', 200);
                 
                 flood.setAttribute('flood-opacity', 0);
-                document.getElementById('landing-super-melvin').style.opacity = '1';
-                document.getElementById('landing-super-melvin-full').style.opacity = '0';
+                landingActiveSprite = "https://pxleight.github.io/feed-melvin-assets/super_levi_sprite_web.png";
+                landingFreezeFrame = false;
             } else {
                 landingPet.style.transform = 'translateY(-5px)';
                 playSound(300, 'triangle', 0.08, 0.0665);
                 setTimeout(() => landingPet.style.transform = 'scale(1)', 100);
             }
         } else if (demoStep >= 71 && demoStep <= 76) {
-            // Fifth Feed Sequence (Super Melvin - 6 feeds)
             landingPet.style.transform = 'scale(1.1)';
             playSound(800, 'square', 0.08, 0.00825);
             setTimeout(() => landingPet.style.transform = 'scale(1)', 100);
@@ -2213,19 +2031,15 @@
             if (demoStep === 75) flood.setAttribute('flood-opacity', 0.375);
             if (demoStep === 76) {
                 flood.setAttribute('flood-opacity', 0.75);
-                document.getElementById('landing-super-melvin').style.opacity = '0';
-                let lsmf = document.getElementById('landing-super-melvin-full');
-                lsmf.setAttribute('viewBox', '0 0 48 48');
-                lsmf.style.opacity = '1';
+                landingActiveSprite = "https://pxleight.github.io/feed-melvin-assets/super_levi_FULL_sprite_web.png";
+                landingFreezeFrame = true;
             }
         } else if (demoStep === 86) {
             demoOunces -= 1; updateDemoWeight();
-            // 7th Super Feed / Overfeed bounce (delayed 10 steps = 2 full seconds)
             landingPet.style.transform = 'scale(1.1)';
             playSound(150, 'sawtooth', 0.4, 0.0335);
             setTimeout(() => landingPet.style.transform = 'scale(1)', 100);
             
-            // Trigger Spit-up Effect to exactly match gameplay
             landingSpitup.innerHTML = '';
             const svgNS = "http://www.w3.org/2000/svg";
             const svg = document.createElementNS(svgNS, "svg");
@@ -2247,12 +2061,10 @@
             void landingSpitup.offsetWidth; 
             landingSpitup.classList.add('show-spitup');
             
-            // Trigger animation in the 125ms interval loop
             isLandingSuperSpittingUp = true;
             landingSuperSpitUpFrame = 1;
         } else if (demoStep >= 94) {
             demoOunces = 104; updateDemoWeight();
-            // Pause before looping sequence again and clear state back to start
             demoStep = -3;
         }
     }, 200);
@@ -2264,13 +2076,11 @@
 
         if (timeLeft <= 0) {
             
-            // --- NEW: End of day ounces animation ---
             let endOfDayText = document.createElement('div');
             endOfDayText.className = 'day-end-ounces';
             endOfDayText.innerText = foodStored.toFixed(1) + ' ounces';
             document.getElementById('game-container').appendChild(endOfDayText);
             setTimeout(() => { if (endOfDayText.parentNode) endOfDayText.parentNode.removeChild(endOfDayText); }, 4000);
-            // ----------------------------------------
             
             let currentWeekForLoss = Math.floor((dayCount - 1) / 7) + 1;
             let dailyLoss = currentWeekForLoss === 1 ? 2.25 : 0.5;
@@ -2282,7 +2092,6 @@
             
             if (lockedAvg > bestDailyAvg) bestDailyAvg = lockedAvg;
             
-            // End of Day Super Mechanics
             if (isSuperModeGame) {
                 let wasGamma = gammaMelvinActive;
 
@@ -2336,7 +2145,6 @@
                 }
             }
 
-            // If the week is over, pause the game for the report
             if (dayCount % 7 === 0) {
                 gameRunning = false;
                 musicPausedForReport = true;
@@ -2363,7 +2171,7 @@
                     checkupScreen.classList.add('victory-layout');
                     congratsWrap.style.display = 'block'; 
                     statsViewState = 'victory'; 
-                    tipEl.style.display = 'none'; // Hide tip on victory screen
+                    tipEl.style.display = 'none'; 
                     setDrSprite('elated');
                     resumeBtn.innerText = "SUPER MODE";
                     resumeBtn.classList.add('super-mode');
@@ -2385,7 +2193,7 @@
                     resumeBtn.classList.remove('super-mode');
                     let randomTip = gameTips[Math.floor(Math.random() * gameTips.length)];
                     tipMsgEl.innerText = "TIP: " + randomTip;
-                    tipEl.style.display = 'flex'; // Show tip on standard checkup
+                    tipEl.style.display = 'flex'; 
                     
                     if (lockedAvg >= 1.0) setDrSprite('happy');
                     else setDrSprite('upset');
@@ -2449,7 +2257,6 @@
             
             dayCount++; 
             
-            // Reset daily tracking logic exactly as it was requested
             timeLeft = GROWTH_INTERVAL; foodStored = 0; currentSessionOunces = 0; burpProgress = 0; 
             isClassicSpittingUp = false; classicSpitUpFrame = 0;
             isSuperSpittingUp = false; superSpitUpFrame = 0;
