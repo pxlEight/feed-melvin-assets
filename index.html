@@ -64,7 +64,7 @@
         .share-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #000; }
         
         #game-container { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-wall); margin: 0; overflow: hidden; }
-        .game-bg-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+        .game-bg-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; object-fit: cover; object-position: center; }
         .game-title { position: absolute; top: 5px; width: 100%; text-align: center; font-size: 4rem; color: #293241; text-shadow: 2px 2px 0px #fff; z-index: 150; margin: 0; }
         #checkup-bar { position: absolute; top: 75px; left: 50%; transform: translateX(-50%); background: rgba(61, 90, 128, 0.7); padding: 8px 15px; z-index: 140; color: white; font-size: 1.6rem; text-align: center; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
         .top-ui-num { color: var(--sparkle-gold); font-size: 2.2rem; line-height: 1; }
@@ -389,9 +389,7 @@
     </div>
     
     <div id="game-container" style="display: none;">
-        <svg class="game-bg-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" preserveAspectRatio="xMidYMid slice">
-            <image href="https://pxleight.github.io/feed-melvin-assets/Nursery_background_rev002.png" width="1080" height="1920" preserveAspectRatio="xMidYMid slice" style="image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; image-rendering: pixelated;" />
-        </svg>
+        <img class="game-bg-svg" src="https://pxleight.github.io/feed-melvin-assets/Nursery_background_rev002.png" alt="Nursery Background" />
         
         <div id="mobile-anim-container" style="position: absolute; top: 0; left: -7px; width: 100%; z-index: 1; pointer-events: auto; overflow: hidden; cursor: pointer; transform: scale(0.81); transform-origin: top center;" onclick="triggerMobileAnim()">
             <canvas id="mobile-anim-canvas" style="display: block; width: 100%; height: auto; image-rendering: pixelated; pointer-events: none;"></canvas>
@@ -1202,6 +1200,7 @@
             isSuperSpittingUp = false; superSpitUpFrame = 0;
             
             updateUI();
+            updateAllCanvasSprites(); // Render frame 0 instantly beneath the overlay
             
             document.getElementById('pause-overlay').style.display = 'flex';
             document.getElementById('icon-pause').style.display = 'none';
@@ -1278,6 +1277,7 @@
                 gameRunning = true;
                 isPaused = true;
                 updateUI();
+                updateAllCanvasSprites(); // Render frame 0 instantly beneath the overlay
                 timerBar.style.height = '100%';
 
                 document.getElementById('pause-overlay').style.display = 'flex';
@@ -1319,6 +1319,7 @@
             
             gameRunning = true; 
             updateUI();
+            updateAllCanvasSprites(); // Force instantly on return
             timerBar.style.height = '100%';
         }, 150);
     }
@@ -1866,7 +1867,7 @@
             renderCanvasSprite('landing-melvin-canvas', landingActiveSprite, landingFrameX, 0, 48, 48, 48, 48);
         }
 
-        if (!gameRunning || isPaused) return;
+        if (!gameRunning) return; // Fix: Removed pause barrier so drawing continues while paused
 
         let currentWeekForCap = Math.floor((dayCount - 1) / 7) + 1;
         let capMult = (difficultyMode === 'easy' && currentWeekForCap > 1) ? 2.0 : 1.0;
@@ -1880,7 +1881,7 @@
             if (isSuperSpittingUp) {
                 activeImgUrl = "https://pxleight.github.io/feed-melvin-assets/super_levi_FULL_sprite_web.png";
                 activeFrameX = superSpitUpFrame * 48;
-                superSpitUpFrame++;
+                if (!isPaused) superSpitUpFrame++;
                 updateUI();
                 if (superSpitUpFrame >= 8) { isSuperSpittingUp = false; updateUI(); }
             } else {
@@ -1896,7 +1897,7 @@
             if (isClassicSpittingUp) {
                 activeImgUrl = "https://www.feedmelvin.com/classic_melvin_FULL_sprite_web.png";
                 activeFrameX = classicSpitUpFrame * 48;
-                classicSpitUpFrame++;
+                if (!isPaused) classicSpitUpFrame++;
                 updateUI();
                 if (classicSpitUpFrame >= 8) { isClassicSpittingUp = false; updateUI(); }
             } else {
@@ -1915,7 +1916,10 @@
 
     setInterval(() => {
         if (!assetsLoaded) return;
-        frameIndex = (frameIndex + 1) % 8;
+        // Fix: Only advance animation step if game is actively unpaused
+        if (gameRunning && !isPaused) {
+            frameIndex = (frameIndex + 1) % 8;
+        }
         updateAllCanvasSprites();
     }, 1000 / 8);
 
@@ -2315,7 +2319,7 @@
             let rAvg = parseFloat(lockedAvg.toFixed(1));
             if (rAvg >= 1.0 && superCooldownDays === 0 && !superMelvinActive && !gammaMelvinActive && !powerUpMsgShown) {
                 msgQueue.push({ 
-                    html: '<div style="display: flex; align-items: center; justify-content: flex-end; font-size: 1.6rem; width: 100%;"><div style="text-align: center; line-height: 1.1; margin-right: 4px;">At 1oz per day, burping<br>Melvin when he\'s FULL<br>will unlock a token.<br>Collect 4 tokens to<br>POWER-UP!</div><span class="big-arrow">→</span></div>', 
+                    html: '<div style="display: flex; align-items: center; justify-content: flex-end; font-size: 1.6rem; width: 100%;"><div style="text-align: center; line-flex: 1.1; margin-right: 4px;">At 1oz per day, burping<br>Melvin when he\'s FULL<br>will unlock a token.<br>Collect 4 tokens to<br>POWER-UP!</div><span class="big-arrow">→</span></div>', 
                     alignPowerUp: true 
                 });
                 powerUpMsgShown = true;
