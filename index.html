@@ -17,7 +17,7 @@
     <style>
         * { font-family: 'VT323', monospace !important; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; touch-action: none; }
         :root { --bg-wall: #aed9e0; --bg-floor: #d4a373; --ui-panel: #3d5a80; --ui-border: #293241; --sparkle-gold: #ffec51; }
-        body, html { margin: 0; padding: 0; height: 100svh; width: 100%; image-rendering: pixelated; overflow: hidden; user-select: none; -webkit-user-select: none; background-color: #fcb38b; touch-action: none; }
+        body, html { margin: 0; padding: 0; height: 100svh; width: 100%; image-rendering: pixelated; overflow: hidden; user-select: none; -webkit-user-select: none; background-color: #fcb38b; touch-action: none; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
         
         canvas, img, image { image-rendering: -webkit-optimize-contrast; image-rendering: -moz-crisp-edges; image-rendering: crisp-edges; image-rendering: pixelated; }
         
@@ -1952,7 +1952,7 @@
     setInterval(() => {
         if (!assetsLoaded) return;
         // Fix: Only advance animation step if game is actively unpaused
-        if (gameRunning && !isPaused) {
+        if (!gameRunning || (gameRunning && !isPaused)) {
             frameIndex = (frameIndex + 1) % 8;
         }
         updateAllCanvasSprites();
