@@ -15,7 +15,7 @@
     
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <style>
-        * { font-family: 'VT323', monospace !important; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
+        * { font-family: 'VT323', monospace !important; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; touch-action: none; }
         :root { --bg-wall: #aed9e0; --bg-floor: #d4a373; --ui-panel: #3d5a80; --ui-border: #293241; --sparkle-gold: #ffec51; }
         body, html { margin: 0; padding: 0; height: 100svh; width: 100%; image-rendering: pixelated; overflow: hidden; user-select: none; -webkit-user-select: none; background-color: #fcb38b; touch-action: none; }
         
@@ -51,15 +51,15 @@
         #instructions-dr-swadlzworth-inner { height: 100%; width: auto; max-width: none; flex-shrink: 0; display: block; }
         #instructions-white-box { position: absolute; top: 129.6px; left: 57.4px; width: 325px; height: 450px; box-sizing: border-box; z-index: 3; color: #5ea1fd; overflow: hidden; pointer-events: auto; }
         
-        #instructions-box-left { position: absolute; top: 611.7px; left: 57.4px; width: 120px; height: 50px; background-color: #5ea1fd; z-index: 4; border: 4px solid #326efc; box-shadow: -5px 5px 0 #326efc; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.3rem; font-style: italic; cursor: pointer; transition: transform 0.05s, box-shadow 0.05s; }
-        #instructions-box-right { position: absolute; top: 611.7px; left: 262.4px; width: 120px; height: 50px; background-color: #5ea1fd; z-index: 4; border: 4px solid #326efc; box-shadow: -5px 5px 0 #326efc; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.3rem; font-style: italic; cursor: pointer; transition: transform 0.05s, box-shadow 0.05s; }
+        #instructions-box-left { position: absolute; top: 611.7px; left: 57.4px; width: 120px; height: 50px; background-color: #5ea1fd; z-index: 4; border: 4px solid #326efc; box-shadow: -5px 5px 0 #326efc; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.3rem; font-style: italic; cursor: pointer; transition: transform 0.05s, box-shadow 0.05s; transform: translate(0px, 0px); }
+        #instructions-box-right { position: absolute; top: 611.7px; left: 262.4px; width: 120px; height: 50px; background-color: #5ea1fd; z-index: 4; border: 4px solid #326efc; box-shadow: -5px 5px 0 #326efc; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.3rem; font-style: italic; cursor: pointer; transition: transform 0.05s, box-shadow 0.05s; transform: translate(0px, 0px); }
         #instructions-box-left:active, #instructions-box-right:active, #instructions-box-left.pressed, #instructions-box-right.pressed { transform: translate(-5px, 5px); box-shadow: 0px 0px 0 #326efc; }
         
-        #instructions-box-super { position: absolute; top: 679.4px; left: 159.9px; width: 120px; height: 50px; background-color: #5ea1fd; z-index: 4; border: 4px solid #326efc; box-shadow: -5px 5px 0 #326efc; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.3rem; font-style: italic; cursor: pointer; transition: transform 0.05s, box-shadow 0.05s; }
+        #instructions-box-super { position: absolute; top: 679.4px; left: 159.9px; width: 120px; height: 50px; background-color: #5ea1fd; z-index: 4; border: 4px solid #326efc; box-shadow: -5px 5px 0 #326efc; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.3rem; font-style: italic; cursor: pointer; transition: transform 0.05s, box-shadow 0.05s; transform: translate(0px, 0px); }
         #instructions-box-super:active, #instructions-box-super.pressed { transform: translate(-5px, 5px); box-shadow: 0px 0px 0 #326efc; }
 
         .instr-row { display: flex; align-items: center; margin: 12px 0; font-size: 1.3rem; line-height: 1.05; padding: 0 10px; }
-        .instr-icon { width: 44px; height: 44px; flex-shrink: 0; filter: drop-shadow(-2px 2px 0 #fcb38b); }
+        .instr-icon { width: 44px; height: 44px; flex-shrink: 0; object-fit: cover; object-position: left center; filter: drop-shadow(-2px 2px 0 #fcb38b); }
 
         .share-btn { background: #e1306c; color: white; border: 6px solid var(--ui-border); padding: 8px 16px; width: fit-content; min-width: 100px; font-size: 2.5rem; cursor: pointer; margin-top: 10px; box-shadow: 0 6px 0 #000; }
         .share-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #000; }
@@ -82,7 +82,7 @@
         #pet-container { position: absolute; top: 508.3px; left: 50%; transform: translate(-50%, -100%); z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
         #scale-graphic { width: 240px; height: 80px; z-index: 5; position: relative; transform: scale(1.58); transform-origin: bottom center; top: 38px; }
         #weight-readout { position: absolute; bottom: 21px; width: 100%; text-align: center; color: white; font-size: 1.8rem; font-weight: bold; text-shadow: 1px 1px 2px #000; pointer-events: none; mix-blend-mode: overlay; }
-        #pet { width: 160px; height: 160px; display: flex; align-items: flex-end; justify-content: center; transition: transform 0.1s; transform-origin: bottom center; z-index: 10; overflow: visible; position: relative; will-change: transform; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+        #pet { width: 160px; height: 160px; display: flex; align-items: flex-end; justify-content: center; transition: transform 0.1s; transform-origin: bottom center; z-index: 10; overflow: visible; position: relative; will-change: transform; -webkit-backface-visibility: hidden; backface-visibility: hidden; transform: scale(1) translateZ(0); }
         #spitup-overlay, #landing-spitup-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000; display: none; opacity: 0; }
         .show-spitup { display: block !important; animation: spitupFadeTransparent 1.2s ease-out forwards; }
         @keyframes spitupFadeTransparent { 0% { opacity: 0; transform: translateY(-10px); } 15% { opacity: 0.7; transform: translateY(0); } 80% { opacity: 0.7; } 100% { opacity: 0; } }
@@ -100,7 +100,7 @@
 
         .action-btns { position: absolute; bottom: 93.8px; width: 100%; display: flex; justify-content: center; gap: 15px; padding: 0 15px; box-sizing: border-box; }
         .btn-wrapper { flex: 1; max-width: 170px; position: relative; }
-        .feed-btn, .burp-btn { width: 100%; height: 70px; margin: 0; padding: 0; border: none; border-radius: 0; cursor: pointer; box-shadow: 0 6px 0 rgba(0, 0, 0, 0.5); outline: none; position: relative; z-index: 120; display: block; }
+        .feed-btn, .burp-btn { width: 100%; height: 70px; margin: 0; padding: 0; border: none; border-radius: 0; cursor: pointer; box-shadow: 0 6px 0 rgba(0, 0, 0, 0.5); outline: none; position: relative; z-index: 120; display: block; transform: translateY(0px); }
         .feed-btn { background: #6cb0ff; }
         .burp-btn { background: #ff9b54; }
         .btn-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; pointer-events: none; z-index: 121; }
@@ -113,7 +113,7 @@
         #timer-bar { width: 100%; height: 100%; background: #ff9b54; }
         
         .stat-row { white-space: nowrap; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-        .stat-bullet { width: 30px; height: 30px; object-fit: contain; object-position: left center; filter: drop-shadow(2px 0 0 #fcb383) drop-shadow(-2px 0 0 #fcb383) drop-shadow(0 2px 0 #fcb383) drop-shadow(0 -2px 0 #fcb383); }
+        .stat-bullet { width: 30px; height: 30px; object-fit: cover; object-position: left center; filter: drop-shadow(2px 0 0 #fcb383) drop-shadow(-2px 0 0 #fcb383) drop-shadow(0 2px 0 #fcb383) drop-shadow(0 -2px 0 #fcb383); }
 
         #pause-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 155; display: none; align-items: center; justify-content: center; pointer-events: auto; }
         #pause-box { background: rgba(61, 90, 128, 0.7); padding: 18px; width: 60%; max-width: 255px; text-align: center; box-shadow: 0 6px 0 #000; }
@@ -135,7 +135,7 @@
         @keyframes phoneTilt { 0%, 100% { transform: rotate(-90deg); } 50% { transform: rotate(0deg); } }
 
         #landing-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #fcb38b; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; justify-content: center; z-index: 300; }
-        .play-btn { background: #5ea1fd; border: 6px solid #326efc; padding: 0px 18px; font-size: 4.5rem; cursor: pointer; box-shadow: -8px 8px 0 #326efc; color: var(--sparkle-gold); margin-top: 40px; text-shadow: 4px 4px 0 #234de2; transition: transform 0.05s, box-shadow 0.05s; }
+        .play-btn { background: #5ea1fd; border: 6px solid #326efc; padding: 0px 18px; font-size: 4.5rem; cursor: pointer; box-shadow: -8px 8px 0 #326efc; color: var(--sparkle-gold); margin-top: 40px; text-shadow: 4px 4px 0 #234de2; transition: transform 0.05s, box-shadow 0.05s; transform: translate(0px, 0px); }
         .play-btn:active, .play-btn.pressed { transform: translate(-8px, 8px); box-shadow: 0px 0px 0 #326efc; }
 
         #ios-install-instructions { display: none; position: fixed; top: 0; bottom: 0; left: 0; width: 100%; background: rgba(0, 0, 0, 0.8); z-index: 999999; align-items: flex-end; justify-content: center; }
@@ -175,7 +175,7 @@
         #dr-swadlzworth-inner { height: 100%; width: auto; max-width: none; flex-shrink: 0; display: block; }
         
         .checkup-btn-row { position: relative; display: flex; justify-content: center; gap: 15px; width: 100%; margin-bottom: 10px; z-index: 2; }
-        .resume-btn { position: relative; z-index: 2; background: #fff; border: 8.5px solid #5ea1fd; color: #326efc; padding: 7.5px 15px; width: fit-content; min-width: 96px; font-size: 2.64rem; cursor: pointer; box-shadow: 6px 6px 0 #fee5d4; transition: transform 0.05s, box-shadow 0.05s; }
+        .resume-btn { position: relative; z-index: 2; background: #fff; border: 8.5px solid #5ea1fd; color: #326efc; padding: 7.5px 15px; width: fit-content; min-width: 96px; font-size: 2.64rem; cursor: pointer; box-shadow: 6px 6px 0 #fee5d4; transition: transform 0.05s, box-shadow 0.05s; transform: translate(0px, 0px); }
         .resume-btn:active { transform: translate(6px, 6px); box-shadow: 0px 0px 0 #fee5d4; }
 
         /* Victory Mode Overrides (Applied when game is won) */
@@ -276,7 +276,7 @@
                 <div id="landing-sparkle-wrap" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 160px; height: 160px; pointer-events: none; z-index: 12; display: none;"></div>
                 
                 <div id="landing-shadow-wrap" style="display: flex; flex-direction: column; align-items: center; filter: drop-shadow(-8px 8px 0px #e59a72);">
-                    <div id="landing-pet" style="width: 160px; height: 160px; display: block; transform-origin: bottom center; overflow: visible; transition: transform 0.1s; position: relative; z-index: 10; will-change: transform; -webkit-backface-visibility: hidden; backface-visibility: hidden;">
+                    <div id="landing-pet" style="width: 160px; height: 160px; display: block; transform-origin: bottom center; overflow: visible; transition: transform 0.1s; position: relative; z-index: 10; will-change: transform; -webkit-backface-visibility: hidden; backface-visibility: hidden; transform: scale(1) translateZ(0);">
                         <canvas id="landing-melvin-canvas" width="48" height="48" style="width: 100%; height: 100%; position: absolute; top: 12px; left: 0; pointer-events: none;"></canvas>
                     </div>
                     
@@ -554,16 +554,18 @@
         let cvs = document.getElementById(canvasId);
         let img = loadedImages[imgUrl];
         if (cvs && img && sw > 0 && sh > 0) {
-            if (cvs.width !== dw) cvs.width = dw;
-            if (cvs.height !== dh) cvs.height = dh;
+            let targetWidth = Math.floor(dw);
+            let targetHeight = Math.floor(dh);
+            if (cvs.width !== targetWidth) cvs.width = targetWidth;
+            if (cvs.height !== targetHeight) cvs.height = targetHeight;
             let ctx = cvs.getContext('2d');
             ctx.imageSmoothingEnabled = false;
             
             // Clear previous frame
-            ctx.clearRect(0, 0, dw, dh);
+            ctx.clearRect(0, 0, targetWidth, targetHeight);
             
             // 1. Draw the base sprite
-            ctx.drawImage(img, sx, sy, sw, sh, 0, 0, dw, dh);
+            ctx.drawImage(img, Math.floor(sx), Math.floor(sy), Math.floor(sw), Math.floor(sh), 0, 0, targetWidth, targetHeight);
             
             // Determine active opacity
             let tintOpacity = 0;
@@ -574,11 +576,11 @@
                 // 2. Apply the 'hue' blend mode to match the original SVG filter
                 ctx.globalCompositeOperation = 'hue'; 
                 ctx.fillStyle = `rgba(0, 204, 0, ${tintOpacity})`;
-                ctx.fillRect(0, 0, dw, dh);
+                ctx.fillRect(0, 0, targetWidth, targetHeight);
                 
                 // 3. Mask the color fill strictly to the sprite's alpha channel
                 ctx.globalCompositeOperation = 'destination-in';
-                ctx.drawImage(img, sx, sy, sw, sh, 0, 0, dw, dh);
+                ctx.drawImage(img, Math.floor(sx), Math.floor(sy), Math.floor(sw), Math.floor(sh), 0, 0, targetWidth, targetHeight);
                 
                 // 4. Restore default composite operation
                 ctx.globalCompositeOperation = 'source-over';
@@ -882,87 +884,98 @@
         let loadedCount = 0;
         const total = assetUrls.length;
         
+        function handleAssetLoaded(img, url) {
+            loadedImages[url] = img;
+            loadedCount++;
+            if (loadedCount === total) {
+                setTimeout(() => {
+                    let tapMsg = document.getElementById('tap-anywhere');
+                    tapMsg.style.transform = 'scale(1)';
+
+                    let landingScreen = document.getElementById('landing-screen');
+                    let hasTapped = false;
+                    
+                    function handleTap(e) {
+                        initGlobalMusic();
+
+                        if (hasTapped) return;
+                        hasTapped = true;
+
+                        tapMsg.style.transform = 'scale(0)';
+                        
+                        let logo = document.getElementById('landing-logo-container');
+                        logo.style.top = '36.3px';
+                        logo.style.transform = 'translateY(0)';
+                        
+                        setTimeout(() => {
+                            let petWrap = document.getElementById('landing-pet-scale-wrap');
+                            petWrap.style.display = 'flex';
+                            void petWrap.offsetWidth; 
+                            petWrap.style.top = '0';
+                            startLandingDrSwadlzworth();
+                            
+                            demoActive = true; 
+                            
+                            setTimeout(() => {
+                                let playBtn = document.getElementById('play-btn');
+                                playBtn.style.display = 'block';
+                                playBtn.style.transform = 'scale(0)';
+                                playBtn.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                                void playBtn.offsetWidth; 
+                                playBtn.style.transform = 'scale(1)';
+                                
+                                setTimeout(() => {
+                                    playBtn.style.transition = 'transform 0.05s, box-shadow 0.05s';
+                                    playBtn.style.transform = '';
+                                }, 400);
+
+                                setTimeout(() => {
+                                    let leftBtn = document.getElementById('landing-bmc-left');
+                                    if (leftBtn) {
+                                        leftBtn.style.transform = 'translateX(0)';
+                                        leftBtn.style.opacity = '1';
+                                    }
+                                    let rightBtn = document.getElementById('custom-bmc-btn');
+                                    if (rightBtn) {
+                                        rightBtn.classList.add('in-place');
+                                        setTimeout(() => {
+                                            const tooltip = document.getElementById('bmc-tooltip');
+                                            if (tooltip) {
+                                                tooltip.classList.add('show');
+                                                clearTimeout(tooltipHideTimer);
+                                                tooltipHideTimer = setTimeout(() => {
+                                                    tooltip.classList.remove('show');
+                                                }, 3000);
+                                            }
+                                        }, 2500); 
+                                    }
+                                }, 400); 
+                            }, 333);
+                        }, 333);
+                    }
+
+                    landingScreen.addEventListener('pointerdown', handleTap);
+                    landingScreen.addEventListener('mousedown', handleTap);
+                    landingScreen.addEventListener('touchend', handleTap);
+
+                    assetsLoaded = true;
+                }, 600);
+            }
+        }
+
         assetUrls.forEach(url => {
             const img = new Image();
             img.src = url;
-            img.onload = img.onerror = () => {
-                loadedImages[url] = img;
-                loadedCount++;
-                if (loadedCount === total) {
-                    setTimeout(() => {
-                        let tapMsg = document.getElementById('tap-anywhere');
-                        tapMsg.style.transform = 'scale(1)';
-
-                        let landingScreen = document.getElementById('landing-screen');
-                        let hasTapped = false;
-                        
-                        function handleTap(e) {
-                            initGlobalMusic();
-
-                            if (hasTapped) return;
-                            hasTapped = true;
-
-                            tapMsg.style.transform = 'scale(0)';
-                            
-                            let logo = document.getElementById('landing-logo-container');
-                            logo.style.top = '36.3px';
-                            logo.style.transform = 'translateY(0)';
-                            
-                            setTimeout(() => {
-                                let petWrap = document.getElementById('landing-pet-scale-wrap');
-                                petWrap.style.display = 'flex';
-                                void petWrap.offsetWidth; 
-                                petWrap.style.top = '0';
-                                startLandingDrSwadlzworth();
-                                
-                                demoActive = true; 
-                                
-                                setTimeout(() => {
-                                    let playBtn = document.getElementById('play-btn');
-                                    playBtn.style.display = 'block';
-                                    playBtn.style.transform = 'scale(0)';
-                                    playBtn.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-                                    void playBtn.offsetWidth; 
-                                    playBtn.style.transform = 'scale(1)';
-                                    
-                                    setTimeout(() => {
-                                        playBtn.style.transition = 'transform 0.05s, box-shadow 0.05s';
-                                        playBtn.style.transform = '';
-                                    }, 400);
-
-                                    setTimeout(() => {
-                                        let leftBtn = document.getElementById('landing-bmc-left');
-                                        if (leftBtn) {
-                                            leftBtn.style.transform = 'translateX(0)';
-                                            leftBtn.style.opacity = '1';
-                                        }
-                                        let rightBtn = document.getElementById('custom-bmc-btn');
-                                        if (rightBtn) {
-                                            rightBtn.classList.add('in-place');
-                                            setTimeout(() => {
-                                                const tooltip = document.getElementById('bmc-tooltip');
-                                                if (tooltip) {
-                                                    tooltip.classList.add('show');
-                                                    clearTimeout(tooltipHideTimer);
-                                                    tooltipHideTimer = setTimeout(() => {
-                                                        tooltip.classList.remove('show');
-                                                    }, 3000);
-                                                }
-                                            }, 2500); 
-                                        }
-                                    }, 400); 
-                                }, 333);
-                            }, 333);
-                        }
-
-                        landingScreen.addEventListener('pointerdown', handleTap);
-                        landingScreen.addEventListener('mousedown', handleTap);
-                        landingScreen.addEventListener('touchend', handleTap);
-
-                        assetsLoaded = true;
-                    }, 600);
-                }
-            };
+            if (typeof img.decode === 'function') {
+                img.decode().then(() => {
+                    handleAssetLoaded(img, url);
+                }).catch(() => {
+                    // Fallback to load events if decode throws an structural error
+                    img.onload = img.onerror = () => handleAssetLoaded(img, url);
+                });
+            } else {
+                img.onload = img.onerror = () => handleAssetLoaded(img, url);
+            }
         });
     }
     window.onload = preloadAssets;
@@ -1775,7 +1788,7 @@
             }
             let img = loadedImages[currentDrReportState];
             if (img && img.naturalWidth > 0) {
-                let fw = img.naturalWidth / 3, fh = img.naturalHeight;
+                let fw = Math.floor(img.naturalWidth / 3), fh = img.naturalHeight;
                 renderCanvasSprite('dr-swadlzworth-inner', currentDrReportState, drReportFrame * fw, 0, fw, fh, fw, fh);
             }
         }
@@ -1790,7 +1803,7 @@
             }
             let img = loadedImages[instrDrUrl];
             if (img && img.naturalWidth > 0) {
-                let fw = img.naturalWidth / 3, fh = img.naturalHeight;
+                let fw = Math.floor(img.naturalWidth / 3), fh = img.naturalHeight;
                 renderCanvasSprite('instructions-dr-swadlzworth-inner', instrDrUrl, instrDrFrame * fw, 0, fw, fh, fw, fh);
             }
         }
@@ -1805,7 +1818,7 @@
             }
             let img = loadedImages[landingDrUrl];
             if (img && img.naturalWidth > 0) {
-                let fw = img.naturalWidth / 3, fh = img.naturalHeight;
+                let fw = Math.floor(img.naturalWidth / 3), fh = img.naturalHeight;
                 renderCanvasSprite('landing-dr-swadlzworth-inner', landingDrUrl, landingDrFrame * fw, 0, fw, fh, fw, fh);
             }
         }
