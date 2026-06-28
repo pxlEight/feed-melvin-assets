@@ -477,13 +477,13 @@
         
         <div class="action-btns">
             <div class="btn-wrapper">
-                <button class="feed-btn" onclick="feed()"></button>
+                <button class="feed-btn" onpointerdown="feed()" ontouchstart=""></button>
                 <svg class="btn-icon" viewBox="0 0 48 48">
                     <image href="https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.png" width="48" height="48" />
                 </svg>
             </div>
             <div class="btn-wrapper">
-                <button class="burp-btn" onclick="burp()"></button>
+                <button class="burp-btn" onpointerdown="burp()" ontouchstart=""></button>
                 <svg class="btn-icon" viewBox="0 0 48 48">
                     <image href="https://pxleight.github.io/feed-melvin-assets/burp_hand_sprite_web.png" width="48" height="48" />
                 </svg>
@@ -880,94 +880,130 @@
         let loadedCount = 0;
         const total = assetUrls.length;
         
+        const gpuCacheBin = document.createElement('div');
+        gpuCacheBin.style.position = 'absolute';
+        gpuCacheBin.style.width = '1px';
+        gpuCacheBin.style.height = '1px';
+        gpuCacheBin.style.overflow = 'hidden';
+        gpuCacheBin.style.opacity = '0.01'; 
+        gpuCacheBin.style.pointerEvents = 'none';
+        gpuCacheBin.style.zIndex = '-9999';
+        document.body.appendChild(gpuCacheBin);
+        
         function handleAssetLoaded(img, url) {
             loadedImages[url] = img;
+            gpuCacheBin.appendChild(img); 
+            
             loadedCount++;
             if (loadedCount === total) {
-                // Pre-draw to force GPU cache on mobile Safari
-                let warmupCanvas = document.createElement('canvas');
-                warmupCanvas.width = 1; warmupCanvas.height = 1;
-                let wCtx = warmupCanvas.getContext('2d');
-                assetUrls.forEach(u => {
-                    if (loadedImages[u]) wCtx.drawImage(loadedImages[u], 0, 0, 1, 1);
-                });
-
-                setTimeout(() => {
-                    let tapMsg = document.getElementById('tap-anywhere');
-                    tapMsg.style.transform = 'scale(1)';
-
-                    let landingScreen = document.getElementById('landing-screen');
-                    let hasTapped = false;
+                
+                const finalizePreload = () => {
+                    let warmupCanvas = document.createElement('canvas');
+                    warmupCanvas.width = 256; 
+                    warmupCanvas.height = 256;
+                    let wCtx = warmupCanvas.getContext('2d', { willReadFrequently: true });
                     
-                    function handleTap(e) {
-                        initGlobalMusic();
+                    assetUrls.forEach(u => {
+                        if (loadedImages[u] && loadedImages[u].naturalWidth > 0) {
+                            wCtx.clearRect(0, 0, 256, 256);
+                            wCtx.drawImage(loadedImages[u], 0, 0, loadedImages[u].naturalWidth, loadedImages[u].naturalHeight, 0, 0, 256, 256);
+                            try { wCtx.getImageData(0, 0, 1, 1); } catch(e) {} // Force pipeline flush
+                        }
+                    });
 
-                        if (hasTapped) return;
-                        hasTapped = true;
+                    setTimeout(() => {
+                        let tapMsg = document.getElementById('tap-anywhere');
+                        tapMsg.style.transform = 'scale(1)';
 
-                        tapMsg.style.transform = 'scale(0)';
+                        let landingScreen = document.getElementById('landing-screen');
+                        let hasTapped = false;
                         
-                        let logo = document.getElementById('landing-logo-container');
-                        logo.style.top = '36.3px';
-                        logo.style.transform = 'translateY(0)';
-                        
-                        setTimeout(() => {
-                            let petWrap = document.getElementById('landing-pet-scale-wrap');
-                            petWrap.style.display = 'flex';
-                            void petWrap.offsetWidth; 
-                            petWrap.style.top = '0';
-                            startLandingDrSwadlzworth();
+                        function handleTap(e) {
+                            initGlobalMusic();
+
+                            if (hasTapped) return;
+                            hasTapped = true;
+
+                            tapMsg.style.transform = 'scale(0)';
                             
-                            demoActive = true; 
+                            let logo = document.getElementById('landing-logo-container');
+                            logo.style.top = '36.3px';
+                            logo.style.transform = 'translateY(0)';
                             
                             setTimeout(() => {
-                                let playBtn = document.getElementById('play-btn');
-                                playBtn.style.display = 'block';
-                                playBtn.style.transform = 'scale(0)';
-                                playBtn.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-                                void playBtn.offsetWidth; 
-                                playBtn.style.transform = 'scale(1)';
+                                let petWrap = document.getElementById('landing-pet-scale-wrap');
+                                petWrap.style.display = 'flex';
+                                void petWrap.offsetWidth; 
+                                petWrap.style.top = '0';
+                                startLandingDrSwadlzworth();
+                                
+                                demoActive = true; 
                                 
                                 setTimeout(() => {
-                                    playBtn.style.transition = 'transform 0.05s, box-shadow 0.05s';
-                                    playBtn.style.transform = '';
-                                }, 400);
+                                    let playBtn = document.getElementById('play-btn');
+                                    playBtn.style.display = 'block';
+                                    playBtn.style.transform = 'scale(0)';
+                                    playBtn.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                                    void playBtn.offsetWidth; 
+                                    playBtn.style.transform = 'scale(1)';
+                                    
+                                    setTimeout(() => {
+                                        playBtn.style.transition = 'transform 0.05s, box-shadow 0.05s';
+                                        playBtn.style.transform = '';
+                                    }, 400);
 
-                                setTimeout(() => {
-                                    let leftBtn = document.getElementById('landing-bmc-left');
-                                    if (leftBtn) {
-                                        leftBtn.style.transform = 'translateX(0)';
-                                        leftBtn.style.opacity = '1';
-                                    }
-                                    let rightBtn = document.getElementById('custom-bmc-btn');
-                                    if (rightBtn) {
-                                        rightBtn.classList.add('in-place');
-                                        setTimeout(() => {
-                                            const tooltip = document.getElementById('bmc-tooltip');
-                                            if (tooltip) {
-                                                tooltip.classList.add('show');
-                                                clearTimeout(tooltipHideTimer);
-                                                tooltipHideTimer = setTimeout(() => {
-                                                    tooltip.classList.remove('show');
-                                                }, 3000);
-                                            }
-                                        }, 2500); 
-                                    }
-                                }, 400); 
+                                    setTimeout(() => {
+                                        let leftBtn = document.getElementById('landing-bmc-left');
+                                        if (leftBtn) {
+                                            leftBtn.style.transform = 'translateX(0)';
+                                            leftBtn.style.opacity = '1';
+                                        }
+                                        let rightBtn = document.getElementById('custom-bmc-btn');
+                                        if (rightBtn) {
+                                            rightBtn.classList.add('in-place');
+                                            setTimeout(() => {
+                                                const tooltip = document.getElementById('bmc-tooltip');
+                                                if (tooltip) {
+                                                    tooltip.classList.add('show');
+                                                    clearTimeout(tooltipHideTimer);
+                                                    tooltipHideTimer = setTimeout(() => {
+                                                        tooltip.classList.remove('show');
+                                                    }, 3000);
+                                                }
+                                            }, 2500); 
+                                        }
+                                    }, 400); 
+                                }, 333);
                             }, 333);
-                        }, 333);
+                        }
+
+                        landingScreen.addEventListener('pointerdown', handleTap);
+                        landingScreen.addEventListener('mousedown', handleTap);
+                        landingScreen.addEventListener('touchend', handleTap);
+
+                        assetsLoaded = true;
+                        updateLogoSpritePosition();
+                        if(typeof updateAllCanvasSprites === 'function') updateAllCanvasSprites();
+
+                    }, 600);
+                };
+
+                // Explicitly await font loading to prevent text reflow stutters delaying the UI thread
+                document.fonts.ready.then(() => {
+                    // Force background bitmap decoding for Chrome/Android Skia engine
+                    if (window.createImageBitmap) {
+                        const bitmapPromises = assetUrls.map(u => {
+                            let img = loadedImages[u];
+                            if (img && img.naturalWidth > 0) {
+                                return createImageBitmap(img).catch(() => {});
+                            }
+                            return Promise.resolve();
+                        });
+                        Promise.all(bitmapPromises).then(finalizePreload).catch(finalizePreload);
+                    } else {
+                        finalizePreload();
                     }
-
-                    landingScreen.addEventListener('pointerdown', handleTap);
-                    landingScreen.addEventListener('mousedown', handleTap);
-                    landingScreen.addEventListener('touchend', handleTap);
-
-                    assetsLoaded = true;
-                    // Force an immediate frame draw to prevent the 125ms delay pop-in
-                    updateLogoSpritePosition();
-                    if(typeof updateAllCanvasSprites === 'function') updateAllCanvasSprites();
-
-                }, 600);
+                });
             }
         }
 
@@ -978,7 +1014,6 @@
                 img.decode().then(() => {
                     handleAssetLoaded(img, url);
                 }).catch(() => {
-                    // Fallback to load events if decode throws an structural error
                     img.onload = img.onerror = () => handleAssetLoaded(img, url);
                 });
             } else {
