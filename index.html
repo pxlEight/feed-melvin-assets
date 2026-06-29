@@ -43,7 +43,7 @@
         }
 
         #splash-screen, #checkup-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #fcb38b; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; z-index: 200; padding-top: 40px; box-sizing: border-box; }
-        #checkup-screen { display: none; z-index: 210; }
+        #checkup-screen { display: none; z-index: 210; -webkit-backface-visibility: hidden; backface-visibility: hidden; transform: translateZ(0); }
         .instruction-box { background: rgba(0, 0, 0, 0.4); border: 3px solid #fff; padding: 15px; color: white; font-size: 1.4rem; max-width: 80%; text-align: center; margin: 20px 0; line-height: 1.2; }
         
         #instructions-logo { position: absolute; top: 37.5px; left: 31.4px; width: 377.1px; height: auto; z-index: 2; pointer-events: none; filter: drop-shadow(-8px 8px 0px #e59a72); overflow: hidden; }
@@ -81,7 +81,7 @@
         #pet-container { position: absolute; top: 508.3px; left: 50%; transform: translate(-50%, -100%); z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
         #scale-graphic { width: 240px; height: 80px; z-index: 5; position: relative; transform: scale(1.58); transform-origin: bottom center; top: 38px; }
         #weight-readout { position: absolute; bottom: 21px; width: 100%; text-align: center; color: white; font-size: 1.8rem; font-weight: bold; text-shadow: 1px 1px 2px #000; pointer-events: none; mix-blend-mode: overlay; }
-        #pet { width: 160px; height: 160px; display: flex; align-items: flex-end; justify-content: center; transition: transform 0.1s; transform-origin: bottom center; z-index: 10; overflow: visible; position: relative; will-change: transform; -webkit-backface-visibility: hidden; backface-visibility: hidden; transform: scale(1) translateZ(0); }
+        #pet { width: 160px; height: 160px; display: flex; align-items: flex-end; justify-content: center; transition: transform 0.07s ease-out; transform-origin: bottom center; z-index: 10; overflow: visible; position: relative; transform-style: preserve-3d; -webkit-transform-style: preserve-3d; -webkit-backface-visibility: hidden; backface-visibility: hidden; transform: scale(1) translateZ(0); }
         #spitup-overlay, #landing-spitup-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000; display: none; opacity: 0; }
         .show-spitup { display: block !important; animation: spitupFadeTransparent 1.2s ease-out forwards; }
         @keyframes spitupFadeTransparent { 0% { opacity: 0; transform: translateY(-10px); } 15% { opacity: 0.7; transform: translateY(0); } 80% { opacity: 0.7; } 100% { opacity: 0; } }
@@ -112,7 +112,7 @@
         #timer-bar { width: 100%; height: 100%; background: #ff9b54; }
         
         .stat-row { white-space: nowrap; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-        .stat-bullet { width: 30px; height: 30px; object-fit: cover; object-position: left center; filter: drop-shadow(2px 0 0 #fcb383) drop-shadow(-2px 0 0 #fcb383) drop-shadow(0 2px 0 #fcb383) drop-shadow(0 -2px 0 #fcb383); }
+        .stat-bullet { width: 30px; height: 30px; object-fit: cover; object-position: left center; filter: drop-shadow(2px 0 0 #fcb383) drop-shadow(-2px 0 0 #fcb383) drop-shadow(0 2px 0 #fcb383) drop-shadow(0 -2px 0 #fcb383); -webkit-backface-visibility: hidden; backface-visibility: hidden; transform: translateZ(0); }
 
         #pause-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 155; display: none; align-items: center; justify-content: center; pointer-events: auto; }
         #pause-box { background: rgba(61, 90, 128, 0.7); padding: 18px; width: 60%; max-width: 255px; text-align: center; box-shadow: 0 6px 0 #000; }
@@ -146,36 +146,37 @@
 
         #global-ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999999; }
         
-        #custom-bmc-btn { position: absolute; bottom: 26px; right: 18px; width: 50px; height: 50px; background-color: #FB9052; border-radius: 0; display: flex; align-items: center; justify-content: center; font-size: 28px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.3); pointer-events: auto; cursor: pointer; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease, box-shadow 0.1s; transform: translateX(200%); opacity: 0; }
-        #custom-bmc-btn.in-place { transform: translateX(0); opacity: 1; }
-        #custom-bmc-btn.in-place:active { transform: translateY(2px); box-shadow: 0 2px 3px rgba(0,0,0,0.3); transition: transform 0.05s, box-shadow 0.05s; }
+        #custom-bmc-btn { position: absolute; bottom: 26px; right: 18px; width: 50px; height: 50px; background-color: #FB9052; border-radius: 0; display: flex; align-items: center; justify-content: center; font-size: 28px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.3); pointer-events: auto; cursor: pointer; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease, box-shadow 0.1s; transform: translateX(200%) translateZ(0); opacity: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+        #custom-bmc-btn.in-place { transform: translateX(0) translateZ(0); opacity: 1; }
+        #custom-bmc-btn.in-place:active { transform: translateY(2px) translateZ(0); box-shadow: 0 2px 3px rgba(0,0,0,0.3); transition: transform 0.05s, box-shadow 0.05s; }
 
-        #left-story-btn:active { transform: translateY(2px); box-shadow: 0 2px 3px rgba(0,0,0,0.3); }
+        #landing-bmc-left { position: absolute; bottom: 26px; left: 18px; pointer-events: auto; transform: translateX(-200%) translateZ(0); opacity: 0; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+        #left-story-btn:active { transform: translateY(2px) translateZ(0); box-shadow: 0 2px 3px rgba(0,0,0,0.3); }
 
         #bmc-tooltip { position: absolute; bottom: 22px; right: 75px; background: #fff; color: #3d5a80; padding: 4px 8px; border: none; box-shadow: none; font-size: 1.4rem; line-height: 1.0; width: 170px; text-align: center; pointer-events: none; transform-origin: right center; transform: scale(0); opacity: 0; visibility: hidden; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease, visibility 0.4s; }
         #bmc-tooltip.show { transform: scale(1); opacity: 1; visibility: visible; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease, visibility 0s; }
 
         /* Integrated Checkup UI CSS - Base Styles for Standard Weekly Report */
         #checkup-title-container { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #326efc; border: 8.5px solid #5ea1fd; padding: 5px 30px; margin-bottom: 20px; box-shadow: 12px 12px 0 #fee5d4; width: fit-content; text-align: center; overflow: hidden; }
-        #checkup-title { margin: 0; transform: translateY(250%); }
-        #congrats-text-wrap { position: relative; margin: 0; display: none; transform: scale(0); }
+        #checkup-title { margin: 0; transform: translateY(250%) translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+        #congrats-text-wrap { position: relative; margin: 0; display: none; transform: scale(0) translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden; }
         #congrats-title { color: var(--sparkle-gold); font-size: 4.0rem; font-weight: normal; font-style: italic; text-shadow: 6px 6px 0 #234de2; margin: 0; line-height: 0.9; position: relative; z-index: 2; }
         #checkup-title { color: white; font-size: 3.5rem; font-weight: normal; text-shadow: 6px 6px 0 #234de2; line-height: 1; margin-top: 0; }
         #congrats-sparkles { position: absolute; top: -10%; left: -5%; width: 110%; height: 120%; pointer-events: none; z-index: 1; }
 
-        #svg-reference-box { position: absolute; top: 234.8px; left: 53px; width: 333.7px; height: 347.3px; background-color: #fee5d4; border: 4px solid #ffffff; box-sizing: border-box; z-index: 0; display: flex; flex-direction: column; justify-content: flex-start; padding: calc(8px + 3%) 12px 8px 12px; color: #326efc; font-size: 1.6rem; line-height: 1.1; }
+        #svg-reference-box { position: absolute; top: 234.8px; left: 53px; width: 333.7px; height: 347.3px; background-color: #fee5d4; border: 4px solid #ffffff; box-sizing: border-box; z-index: 0; display: flex; flex-direction: column; justify-content: flex-start; padding: calc(8px + 3%) 12px 8px 12px; color: #326efc; font-size: 1.6rem; line-height: 1.1; -webkit-backface-visibility: hidden; backface-visibility: hidden; transform: translateZ(0); }
         #stats-area { text-align: left; width: 100%; }
         #stats-area span { color: #5ea1fd; } 
 
-        #svg-reference-box-red { position: absolute; top: 418.4px; left: 129.7px; width: 235.5px; height: auto; background-color: #ffffff; border: 4px solid #5ea1fd; box-shadow: 9px 9px 0 #fcb383; box-sizing: border-box; z-index: 1; display: flex; align-items: center; justify-content: center; padding: 6px 4px; opacity: 0; transform: scale(0); transition: opacity 0.3s, transform 0.3s; }
+        #svg-reference-box-red { position: absolute; top: 418.4px; left: 129.7px; width: 235.5px; height: auto; background-color: #ffffff; border: 4px solid #5ea1fd; box-shadow: 9px 9px 0 #fcb383; box-sizing: border-box; z-index: 1; display: flex; align-items: center; justify-content: center; padding: 6px 4px; opacity: 0; transform: scale(0) translateZ(0); transition: opacity 0.3s, transform 0.3s; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
         #dr-swadlzworth-msg { color: #5ea1fd; font-size: 1.2rem; text-align: center; line-height: 1; width: 100%; }
         
-        #dr-swadlzworth-img { position: absolute; top: 410.6px; left: -132px; height: 196px; z-index: 10; pointer-events: none; filter: drop-shadow(7.6px 0 0 #fcb38b); transition: left 0.2s ease-out; display: flex; overflow: hidden; }
+        #dr-swadlzworth-img { position: absolute; top: 410.6px; left: -132px; height: 196px; z-index: 10; pointer-events: none; filter: drop-shadow(7.6px 0 0 #fcb38b); transition: left 0.2s ease-out; display: flex; overflow: hidden; -webkit-backface-visibility: hidden; backface-visibility: hidden; transform: translateZ(0); }
         #dr-swadlzworth-inner { height: 100%; width: auto; max-width: none; flex-shrink: 0; display: block; }
         
         .checkup-btn-row { position: relative; display: flex; justify-content: center; gap: 15px; width: 100%; margin-bottom: 10px; z-index: 2; }
-        .resume-btn { position: relative; z-index: 2; background: #fff; border: 8.5px solid #5ea1fd; color: #326efc; padding: 7.5px 15px; width: fit-content; min-width: 96px; font-size: 2.64rem; cursor: pointer; box-shadow: 6px 6px 0 #fee5d4; transition: transform 0.05s, box-shadow 0.05s; transform: translate(0px, 0px); }
-        .resume-btn.pressed { transform: translate(6px, 6px); box-shadow: 0px 0px 0 #fee5d4; }
+        .resume-btn { position: relative; z-index: 2; background: #fff; border: 8.5px solid #5ea1fd; color: #326efc; padding: 7.5px 15px; width: fit-content; min-width: 96px; font-size: 2.64rem; cursor: pointer; box-shadow: 6px 6px 0 #fee5d4; transition: transform 0.05s, box-shadow 0.05s; transform: translate(0px, 0px) translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+        .resume-btn.pressed { transform: translate(6px, 6px) translateZ(0); box-shadow: 0px 0px 0 #fee5d4; }
 
         /* Victory Mode Overrides (Applied when game is won) */
         #checkup-screen.victory-layout #checkup-title-container { padding: 10px 30px; margin-bottom: 10px; }
@@ -190,7 +191,7 @@
             50%, 100% { color: var(--sparkle-gold); text-shadow: none; }
         }
         .resume-btn.super-mode { background: #5ea1fd; border: 8.5px solid #326efc; color: #fff; box-shadow: 6px 6px 0 #326efc; animation: superFlash 0.5s infinite; }
-        .resume-btn.super-mode.pressed { transform: translate(6px, 6px); box-shadow: 0px 0px 0 #326efc; }
+        .resume-btn.super-mode.pressed { transform: translate(6px, 6px) translateZ(0); box-shadow: 0px 0px 0 #326efc; }
 
         .toggle-arrow-btn { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center; z-index: 10; transition: transform 0.05s; }
         .toggle-arrow-btn:active { transform: translateY(-50%) scale(0.9); }
@@ -201,12 +202,12 @@
         #landing-dr-swadlzworth { position: absolute; width: 36%; max-width: 216px; z-index: 999; pointer-events: none; filter: drop-shadow(-4px 4px 0px #e59a72); top: -50%; left: -50%; display: flex; overflow: hidden; }
         #landing-dr-swadlzworth-inner { width: 100%; height: auto; flex-shrink: 0; display: block; }
 
-        @keyframes iconFadeIn { 0% { opacity: 0; transform: scale(0.5); } 100% { opacity: 1; transform: scale(1); } }
-        .fade-in { animation: iconFadeIn 0.2s ease forwards; }
-        @keyframes landHardAnim { 0% { transform: scale(4); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
-        .land-hard-anim { display: inline-block; animation: landHardAnim 0.15s ease-in forwards; transform-origin: center; opacity: 1; }
-        @keyframes titleSlideUp { 0% { transform: translateY(250%); } 100% { transform: translateY(0); } }
-        @keyframes titleScaleUp { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+        @keyframes iconFadeIn { 0% { opacity: 0; transform: scale(0.5) translateZ(0); } 100% { opacity: 1; transform: scale(1) translateZ(0); } }
+        .fade-in { animation: iconFadeIn 0.2s ease forwards; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+        @keyframes landHardAnim { 0% { transform: scale(4) translateZ(0); opacity: 1; } 100% { transform: scale(1) translateZ(0); opacity: 1; } }
+        .land-hard-anim { display: inline-block; animation: landHardAnim 0.15s ease-in forwards; transform-origin: center; opacity: 1; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+        @keyframes titleSlideUp { 0% { transform: translateY(250%) translateZ(0); } 100% { transform: translateY(0) translateZ(0); } }
+        @keyframes titleScaleUp { 0% { transform: scale(0) translateZ(0); } 100% { transform: scale(1) translateZ(0); } }
 
         @keyframes dayEndOuncesAnim {
             0% { transform: translateY(0) scale(1); opacity: 1; }
@@ -230,7 +231,7 @@
     <div>Please rotate your device<br>back to portrait mode<br>to play Feed Melvin.</div>
 </div>
 
-<div id="ios-install-instructions" onclick="this.style.display='none'">
+<div id="ios-install-instructions" onpointerdown="this.style.display='none'">
     <div class="ios-instruction-box">
         <p>To install Feed Melvin on your iPhone:</p>
         <p>1. If three dots are present on the right click them (If not skip to step 2).</p>
@@ -275,8 +276,8 @@
                 <div id="landing-sparkle-wrap" style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 160px; height: 160px; pointer-events: none; z-index: 12; display: none;"></div>
                 
                 <div id="landing-shadow-wrap" style="display: flex; flex-direction: column; align-items: center; filter: drop-shadow(-8px 8px 0px #e59a72);">
-                    <div id="landing-pet" style="width: 160px; height: 160px; display: block; transform-origin: bottom center; overflow: visible; transition: transform 0.1s; position: relative; z-index: 10; will-change: transform; -webkit-backface-visibility: hidden; backface-visibility: hidden; transform: scale(1) translateZ(0);">
-                        <canvas id="landing-melvin-canvas" width="48" height="48" style="width: 100%; height: 100%; position: absolute; top: 12px; left: 0; pointer-events: none;"></canvas>
+                    <div id="landing-pet" style="width: 160px; height: 160px; display: block; transform-origin: bottom center; overflow: visible; transition: transform 0.07s ease-out; position: relative; z-index: 10; transform-style: preserve-3d; -webkit-transform-style: preserve-3d; -webkit-backface-visibility: hidden; backface-visibility: hidden; transform: scale(1) translateZ(0);">
+                        <canvas id="landing-melvin-canvas" width="48" height="48" style="width: 100%; height: 100%; position: absolute; top: 12px; left: 0; pointer-events: none; transform: translateZ(0); -webkit-transform: translateZ(0);"></canvas>
                     </div>
                     
                     <div id="landing-scale" style="width: 240px; height: 80px; z-index: 5; position: relative; transform: scale(1.58); transform-origin: bottom center; top: 38px;">
@@ -347,8 +348,8 @@
             </div>
         </div>
         
-        <div id="instructions-box-left" onclick="startGame('easy', this)">EASY</div>
-        <div id="instructions-box-right" onclick="startGame('normal', this)">NORMAL</div>
+        <div id="instructions-box-left" onpointerdown="startGame('easy', this)">EASY</div>
+        <div id="instructions-box-right" onpointerdown="startGame('normal', this)">NORMAL</div>
     </div>
 
     <div id="checkup-screen" style="display: none;">
@@ -362,11 +363,11 @@
         </div>
 
         <div id="svg-reference-box">
-            <button id="prev-stats-btn" class="toggle-arrow-btn" onclick="toggleStatsView()">
+            <button id="prev-stats-btn" class="toggle-arrow-btn" onpointerdown="toggleStatsView()">
                 <svg viewBox="0 0 24 24"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>
             </button>
             <div id="stats-area"></div>
-            <button id="next-stats-btn" class="toggle-arrow-btn" onclick="toggleStatsView()">
+            <button id="next-stats-btn" class="toggle-arrow-btn" onpointerdown="toggleStatsView()">
                 <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
             </button>
         </div>
@@ -380,7 +381,7 @@
         </div>
         
         <div class="checkup-btn-row">
-            <button class="resume-btn" onclick="resumeGame(this)">RESUME</button>
+            <button class="resume-btn" onpointerdown="resumeGame(this)">RESUME</button>
         </div>
             
         <div id="random-tip-msg-container">
@@ -391,7 +392,7 @@
     <div id="game-container" style="display: none;">
         <img class="game-bg-svg" src="https://pxleight.github.io/feed-melvin-assets/Nursery_background_rev002.png" alt="Nursery Background" />
         
-        <div id="mobile-anim-container" style="position: absolute; top: 0; left: -7px; width: 100%; z-index: 1; pointer-events: auto; overflow: hidden; cursor: pointer; transform: scale(0.81); transform-origin: top center;" onclick="triggerMobileAnim()">
+        <div id="mobile-anim-container" style="position: absolute; top: 0; left: -7px; width: 100%; z-index: 1; pointer-events: auto; overflow: hidden; cursor: pointer; transform: scale(0.81); transform-origin: top center;" onpointerdown="triggerMobileAnim()">
             <canvas id="mobile-anim-canvas" style="display: block; width: 100%; height: auto; image-rendering: pixelated; pointer-events: none;"></canvas>
         </div>
 
@@ -399,7 +400,7 @@
             <div id="pause-box">
                 <h2 style="color: rgba(255, 255, 255, 0.7); font-size: 2.5rem; text-shadow: none; margin-top: 0; margin-bottom: 10px;">PAUSED</h2>
                 <div id="pause-tip" style="color: #aed9e0; font-size: 1.6rem; line-height: 1.3;"></div>
-                <div class="pause-start-over-btn" onclick="location.reload()">START OVER</div>
+                <div class="pause-start-over-btn" onpointerdown="location.reload()">START OVER</div>
             </div>
         </div>
         <div id="spitup-overlay"></div>
@@ -454,7 +455,7 @@
                 </svg>
             </div>
         </div>
-        <button id="pause-toggle-btn" onclick="togglePause()">
+        <button id="pause-toggle-btn" onpointerdown="togglePause()">
             <svg id="icon-pause" width="38" height="38" viewBox="0 0 24 24">
                 <rect x="6" y="4" width="4" height="16" />
                 <rect x="14" y="4" width="4" height="16" />
@@ -477,13 +478,13 @@
         
         <div class="action-btns">
             <div class="btn-wrapper">
-                <button class="feed-btn" onpointerdown="feed()" ontouchstart=""></button>
+                <button class="feed-btn" onpointerdown="feed(event)"></button>
                 <svg class="btn-icon" viewBox="0 0 48 48">
                     <image href="https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.png" width="48" height="48" />
                 </svg>
             </div>
             <div class="btn-wrapper">
-                <button class="burp-btn" onpointerdown="burp()" ontouchstart=""></button>
+                <button class="burp-btn" onpointerdown="burp(event)"></button>
                 <svg class="btn-icon" viewBox="0 0 48 48">
                     <image href="https://pxleight.github.io/feed-melvin-assets/burp_hand_sprite_web.png" width="48" height="48" />
                 </svg>
@@ -506,6 +507,7 @@
     window.addEventListener('orientationchange', resizeMasterContainer);
     resizeMasterContainer();
 
+    // --- UNIVERSAL TOUCH HANDLING ---
     document.addEventListener('contextmenu', event => event.preventDefault());
     document.addEventListener('gesturestart', function(e) { e.preventDefault(); });
     
@@ -516,18 +518,17 @@
         }
     }, { passive: false });
 
-    let lastTouchEnd = 0;
+    // Globally prevent double-tap zoom across the entire screen
+    let lastTouchTime = 0;
     document.addEventListener('touchend', function(event) {
-        let now = (new Date()).getTime();
-        if (now - lastTouchEnd <= 300) { 
-            // Bulletproof double-tap zoom prevention.
-            // Explicitly running preventDefault on buttons (like feed/burp) stops iOS zoom.
+        let now = Date.now();
+        if (now - lastTouchTime <= 300) { 
             // Exclude only anchor <a> tags so external links still work if double-tapped.
             if (!event.target.closest('a')) { 
                 event.preventDefault(); 
             } 
         }
-        lastTouchEnd = now;
+        lastTouchTime = now;
     }, { passive: false });
 
     let demoOunces = 104;
@@ -942,6 +943,12 @@
                             if (hasTapped) return;
                             hasTapped = true;
 
+                            let instBtn = document.getElementById('install-btn');
+                            if (instBtn) instBtn.style.display = 'none';
+                            
+                            let iosInst = document.getElementById('ios-install-instructions');
+                            if (iosInst) iosInst.style.display = 'none';
+
                             tapMsg.style.transform = 'scale(0)';
                             
                             let logo = document.getElementById('landing-logo-container');
@@ -973,7 +980,7 @@
                                     setTimeout(() => {
                                         let leftBtn = document.getElementById('landing-bmc-left');
                                         if (leftBtn) {
-                                            leftBtn.style.transform = 'translateX(0)';
+                                            leftBtn.style.transform = 'translateX(0) translateZ(0)';
                                             leftBtn.style.opacity = '1';
                                         }
                                         let rightBtn = document.getElementById('custom-bmc-btn');
@@ -1253,7 +1260,7 @@
             isPaused = true; 
             burpProgress = 0; 
             isBigBurpAnimating = false;
-            petEl.innerHTML = '<canvas id="pet-canvas" width="48" height="48" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></canvas>'; 
+            petEl.innerHTML = '<canvas id="pet-canvas" width="48" height="48" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; transform: translateZ(0); -webkit-transform: translateZ(0);"></canvas>'; 
             createSparklePool('sparkle-wrap');
             rollNewLimit(); 
             
@@ -1334,7 +1341,7 @@
                 isClassicSpittingUp = false; classicSpitUpFrame = 0;
                 isSuperSpittingUp = false; superSpitUpFrame = 0;
 
-                petEl.innerHTML = '<canvas id="pet-canvas" width="48" height="48" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></canvas>'; 
+                petEl.innerHTML = '<canvas id="pet-canvas" width="48" height="48" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; transform: translateZ(0); -webkit-transform: translateZ(0);"></canvas>'; 
                 createSparklePool('sparkle-wrap');
                 rollNewLimit();
                 
@@ -1440,7 +1447,8 @@
         overlay.appendChild(svg); overlay.classList.remove('show-spitup'); void overlay.offsetWidth; overlay.classList.add('show-spitup');
     }
     
-    function feed() {
+    function feed(e) {
+        if (e) e.preventDefault();
         if (!gameRunning || isPaused) return; 
         totalBottles++; 
         
@@ -1485,7 +1493,8 @@
         updateUI();
     }
     
-    function burp() {
+    function burp(e) {
+        if (e) e.preventDefault();
         if (!gameRunning || isPaused) return; 
         totalBurpClicks++; burpProgress++; 
 
@@ -1608,12 +1617,12 @@
         if (isInitialLoad) {
             reportTitle.style.animation = 'none';
             congratsWrap.style.animation = 'none';
-            reportTitle.style.transform = 'translateY(250%)';
-            congratsWrap.style.transform = 'scale(0)';
+            reportTitle.style.transform = 'translateY(250%) translateZ(0)';
+            congratsWrap.style.transform = 'scale(0) translateZ(0)';
             
             docImg.style.left = '-132px';
             docBox.style.opacity = '0';
-            docBox.style.transform = 'scale(0)';
+            docBox.style.transform = 'scale(0) translateZ(0)';
 
             if (isFirstReport) {
                 resumeBtn.style.opacity = '0.5';
@@ -1742,7 +1751,7 @@
             await new Promise(r => setTimeout(r, 333));
             if (myRenderId !== currentRenderId) return;
             docBox.style.opacity = '1';
-            docBox.style.transform = 'scale(1)';
+            docBox.style.transform = 'scale(1) translateZ(0)';
 
             if (isFirstReport) {
                 setTimeout(() => {
