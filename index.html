@@ -520,25 +520,14 @@
         }
         
         let now = Date.now();
+        // If this touch is within 300ms of the previous touch, it's a double tap
         if (now - lastTouchTime <= 300) {
-            // Exclude ONLY anchor <a> tags so external links still work.
-            // Buttons rely on pointerdown natively, so they do NOT need a simulated click fallback.
+            // Exclude anchor <a> tags so external links still work
             if (!event.target.closest('a')) {
                 event.preventDefault();
             }
         }
         lastTouchTime = now;
-    }, { passive: false });
-
-    // Maintain global touchend prevention as a fallback
-    document.addEventListener('touchend', function(event) {
-        let now = Date.now();
-        if (now - lastTouchTime <= 300) { 
-            if (!event.target.closest('a')) { 
-                event.preventDefault(); 
-            } 
-        }
-        // Timing cadence is handled by touchstart now
     }, { passive: false });
 
     let demoOunces = 104;
@@ -948,6 +937,12 @@
                         let hasTapped = false;
                         
                         function handleTap(e) {
+                            // --- iOS SILENT AUDIO BYPASS ---
+                            // Play a fraction of silent HTML5 audio to force Web Audio to the media channel
+                            let silentAudio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA');
+                            silentAudio.play().catch(err => console.log("Silent audio trick failed:", err));
+                            // -------------------------------
+
                             initGlobalMusic();
 
                             if (hasTapped) return;
