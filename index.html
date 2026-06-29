@@ -257,7 +257,7 @@
         <button id="install-btn">INSTALL APP</button>
         
         <div id="landing-logo-container" style="position: absolute; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; width: 100%; z-index: 10; transition: top 0.5s cubic-bezier(0.25, 1, 0.5, 1), transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);">
-            <img src="https://www.feedmelvin.com/feed_melvin_logo_stacked_web.png" alt="Feed Melvin" style="width: 76.5%; max-width: 360px; margin-bottom: 10px; filter: drop-shadow(-8px 8px 0px #e59a72); pointer-events: none;">
+            <canvas id="landing-logo-canvas" width="288" height="96" style="width: 76.5%; max-width: 360px; margin-bottom: 10px; filter: drop-shadow(-8px 8px 0px #e59a72); pointer-events: none;"></canvas>
             
             <div style="text-align: center; width: 100%;">
                 <a href="https://www.pixel-mover.com" target="_blank" rel="noopener noreferrer" style="color: white; font-size: 1.8rem; line-height: 1.1; text-decoration: none; pointer-events: auto; display: inline-block;">Made By: pixel-mover.com</a>
@@ -321,7 +321,7 @@
                 <div class="instr-row">
                     <img src="https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.png" class="instr-icon" style="margin-right: 18px;">
                     <span class="mobile-text">Tap the BOTTLE to<br>feed Melvin a 1/2<br>ounce of formula.</span>
-                    <span class="desktop-text">Tap the BOTTLE (f key)<br>to feed Melvin a 1/2<br>ounce of formula.</span>
+                    <span class="desktop-text">Tap the BOTTLE (F key)<br>to feed Melvin a 1/2<br>ounce of formula.</span>
                 </div>
                 <div class="instr-row">
                     <img src="https://www.feedmelvin.com/full_icon_web.png" class="instr-icon" style="margin-right: 18px; width: 44px; height: 44px;">
@@ -331,17 +331,17 @@
                 <div class="instr-row">
                     <img src="https://pxleight.github.io/feed-melvin-assets/burp_hand_sprite_web.png" class="instr-icon" style="margin-right: 18px;">
                     <span class="mobile-text">Keep tapping the HAND<br>until Melvin burps.</span>
-                    <span class="desktop-text">Tap the HAND (b key)<br>until Melvin burps.</span>
+                    <span class="desktop-text">Tap the HAND (B key)<br>until Melvin burps.</span>
                 </div>
                 <div class="instr-row">
                     <img src="https://www.feedmelvin.com/spit_up_icon_web.png" class="instr-icon" style="margin-right: 18px; width: 44px; height: 44px;">
-                    <span class="mobile-text">If you overfeed Melvin<br>he will spit-up and you<br>will <span style="font-size: 1.2rem;">lose</span> ounces!</span>
-                    <span class="desktop-text">If you overfeed Melvin<br>he will spit-up and you<br>will <span style="font-size: 1.2rem;">lose</span> ounces!</span>
+                    <span class="mobile-text">If you overfeed Melvin,<br>he will spit up and you<br>will <span style="font-size: 1.2rem;">lose</span> ounces!</span>
+                    <span class="desktop-text">If you overfeed Melvin,<br>he will spit up and you<br>will <span style="font-size: 1.2rem;">lose</span> ounces!</span>
                 </div>
                 <div id="instr-powerup-wrap" style="position: relative; text-align: center; width: 100%; margin-top: 15px; box-sizing: border-box; z-index: 2;">
                     <div id="instr-powerup-sparkles" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3;"></div>
                     <div style="position: relative; color: #326efc; font-size: 1.35rem; line-height: 1.1; margin-bottom: 10px; z-index: 2;">
-                        Help Melvin grow to 9lbs to<br>make Dr Swadlzworth proud!
+                        Help Melvin grow to 9 lbs to<br>make Dr. Swadlzworth proud!
                     </div>
                 </div>
             </div>
@@ -508,10 +508,25 @@
 
     document.addEventListener('contextmenu', event => event.preventDefault());
     document.addEventListener('gesturestart', function(e) { e.preventDefault(); });
+    
+    // Prevent multi-touch pinch zoom
+    document.addEventListener('touchstart', function(event) {
+        if (event.touches.length > 1) {
+            event.preventDefault();
+        }
+    }, { passive: false });
+
     let lastTouchEnd = 0;
     document.addEventListener('touchend', function(event) {
         let now = (new Date()).getTime();
-        if (now - lastTouchEnd <= 300) { if (!event.target.closest('button') && !event.target.closest('a') && !event.target.closest('#instructions-box-left') && !event.target.closest('#instructions-box-right')) { event.preventDefault(); } }
+        if (now - lastTouchEnd <= 300) { 
+            // Bulletproof double-tap zoom prevention.
+            // Explicitly running preventDefault on buttons (like feed/burp) stops iOS zoom.
+            // Exclude only anchor <a> tags so external links still work if double-tapped.
+            if (!event.target.closest('a')) { 
+                event.preventDefault(); 
+            } 
+        }
         lastTouchEnd = now;
     }, { passive: false });
 
@@ -687,6 +702,10 @@
             document.getElementById('landing-screen').style.display = 'none';
             document.getElementById('splash-screen').style.display = 'flex';
             
+            // Synchronously force redraw layout and character graphics on visibility change
+            updateAllCanvasSprites(); 
+            updateLogoSpritePosition();
+            
             clearTimeout(drLandingTimer);
             clearTimeout(drActionTimer);
             clearTimeout(drSlideOutTimer);
@@ -820,25 +839,24 @@
 
     const gameTips = [
         "Burping Melvin will make more room in his stomach. There's no harm in burping him before he's completely full!",
-        "Low doses of a certain kind of radiation have been found in formula. Feeding Melvin a large number of ounces per day produce surprising results!",
-        "When Melvin has gained a good average weight the prior day he will sparkle. If you burp him enough when he's completely full you could unlock something SUPER.",
-        "Melvin will show signs of getting full before he can't take anymore. Sharp eyes and reflexes help when trying to feed him the maximum amount in a day.",
-        "Off to a rough start? Hit START OVER for a fresh start and try again!",
+        "Low doses of a certain kind of radiation have been found in formula. Feeding Melvin a large number of ounces per day may produce surprising results!",
+        "When Melvin has gained a good average weight the prior day, he will sparkle. If you burp him enough when he's completely full, you could unlock something SUPER.",
+        "Melvin will show signs of getting full before he can't take any more. Sharp eyes and reflexes help when trying to feed him the maximum amount in a day.",
+        "Off to a rough start? Hit START OVER to try again!",
         "Super Melvin has double stomach capacity and burps more readily. Take advantage of these perks while you can!",
-        "Each week the daily average is reset. If you have a bad week this makes it easier to get back on track!",
-        "Melvin goes up a level every 8 ounces. His stomach capacity grows with every level but he may take longer to burp."
+        "Each week the daily average is reset. If you have a bad week, this makes it easier to get back on track!",
+        "Melvin goes up a level every 8 ounces. His stomach capacity grows with every level, but he may take longer to burp."
     ];
 
     const drRandomMsgs = [
-        "Does he have a head turn preference?",
+        "Does he have a head-turn preference?",
         "How many poo diapers and how many pee diapers a day?",
         "How's tummy time going?",
         "Make sure he's getting vitamin D supplements.",
-        "How's tummy time going?",
         "What does his wake window look like?",
         "Make sure he's sleeping on his back.",
-        "I don't hear hear any clicking but let's get an ultrasound of his hips.",
-        "is he always this sleepy?",
+        "I don't hear any clicking, but let's get an ultrasound of his hips.",
+        "Is he always this sleepy?",
         "I don't see any jaundice.",
         "Keep the bottle level so he doesn't prefer it over breastfeeding.",
         "It's okay to sleep just 2 hours every night. It's only for 2 months!",
@@ -846,7 +864,7 @@
     ];
 
     const assetUrls = [
-        "https://www.feedmelvin.com/feed_melvin_logo_stacked_web.png",
+        "https://www.feedmelvin.com/feed_melvin_logo_stacked_sprite_web.png",
         "https://www.feedmelvin.com/feed_melvin_logo_sprite_web.png",
         "https://www.feedmelvin.com/classic_melvin_sprite_web.png",
         "https://www.feedmelvin.com/classic_melvin_FULL_sprite_web.png",
@@ -1174,6 +1192,14 @@
         const yOffset = currentLogoFrame * 48;
         renderCanvasSprite('instructions-logo', "https://www.feedmelvin.com/feed_melvin_logo_sprite_web.png", 0, yOffset, 288, 48, 288, 48);
         renderCanvasSprite('game-logo-svg', "https://www.feedmelvin.com/feed_melvin_logo_sprite_web.png", 0, yOffset, 288, 48, 288, 48);
+
+        const stackedUrl = "https://www.feedmelvin.com/feed_melvin_logo_stacked_sprite_web.png";
+        const stackedImg = loadedImages[stackedUrl];
+        if (stackedImg && stackedImg.naturalWidth > 0) {
+            const sw = stackedImg.naturalWidth;
+            const stackedYOffset = currentLogoFrame * 96;
+            renderCanvasSprite('landing-logo-canvas', stackedUrl, 0, stackedYOffset, sw, 96, sw, 96);
+        }
     }
 
     setInterval(() => {
@@ -1235,7 +1261,10 @@
             isSuperSpittingUp = false; superSpitUpFrame = 0;
             
             updateUI();
-            updateAllCanvasSprites(); // Render frame 0 instantly beneath the overlay
+            
+            // Synchronously force redraw layout and character graphics on visibility change
+            updateAllCanvasSprites(); 
+            updateLogoSpritePosition();
             
             document.getElementById('pause-overlay').style.display = 'flex';
             document.getElementById('icon-pause').style.display = 'none';
@@ -1312,7 +1341,11 @@
                 gameRunning = true;
                 isPaused = true;
                 updateUI();
-                updateAllCanvasSprites(); // Render frame 0 instantly beneath the overlay
+                
+                // Synchronously force redraw layout and character graphics on visibility change
+                updateAllCanvasSprites(); 
+                updateLogoSpritePosition();
+                
                 timerBar.style.height = '100%';
 
                 document.getElementById('pause-overlay').style.display = 'flex';
@@ -1354,7 +1387,11 @@
             
             gameRunning = true; 
             updateUI();
-            updateAllCanvasSprites(); // Force instantly on return
+            
+            // Synchronously force redraw layout and character graphics on visibility change
+            updateAllCanvasSprites(); 
+            updateLogoSpritePosition();
+            
             timerBar.style.height = '100%';
         }, 150);
     }
@@ -1614,7 +1651,7 @@
 
             rowsData = [
                 { icon: `<img src="${diffIconUrl}" class="stat-bullet" />`, label: 'Difficulty Level: ', value: difficultyMode.toUpperCase() },
-                { icon: scaleIcon, label: 'Final weight: ', value: finalLb + 'lb ' + finalOz + 'oz' },
+                { icon: scaleIcon, label: 'Final Weight: ', value: finalLb + 'lb ' + finalOz + 'oz' },
                 { icon: bottleIcon, label: 'Best Daily Avg.: ', value: bestDailyAvg.toFixed(1) + ' oz' },
                 { icon: '<img src="https://www.feedmelvin.com/super_icon_web.png" class="stat-bullet" />', label: 'Super Melvins: ', value: superCount },
                 { icon: gammaIconStr, label: gammaText + ': ', value: gammaCount },
@@ -2283,9 +2320,10 @@
                 
                 let msgEl = document.getElementById('dr-swadlzworth-msg');
                 let extraDrMsg = " " + drRandomMsgs[Math.floor(Math.random() * drRandomMsgs.length)];
-                if (totalOunces >= 144) msgEl.innerText = 'Dr. Swadlzworth says "At 9 lbs you can start letting him sleep through the night. You don\'t need to schedule another appointment for 2 months. Get some rest!"';
-                else if (currentWeek === 1 && lockedAvg < 1.0) msgEl.innerText = 'Dr. Swadlzworth says "Don\'t worry, it\'s normal for Melvin to lose weight at this stage.' + extraDrMsg + '"';
-                else msgEl.innerText = ((lockedAvg >= 1.0) ? 'Dr Swadlzworth says "Great work keep it up!' : 'Dr Swadlzworth is disappointed "Pick up the pace!') + extraDrMsg + '"';
+                if (totalOunces >= 144) msgEl.innerText = 'Dr. Swadlzworth says, "At 9 lbs, you can start letting him sleep through the night. You don\'t need to schedule another appointment for 2 months. Get some rest!"';
+                else if (currentWeek === 1 && lockedAvg >= 1.0) msgEl.innerText = 'Dr. Swadlzworth says, "I\'m impressed! You somehow managed to get Melvin to gain weight in the first week!"' + extraDrMsg;
+                else if (currentWeek === 1 && lockedAvg < 1.0) msgEl.innerText = 'Dr. Swadlzworth says, "Don\'t worry, it\'s normal for Melvin to lose weight at this stage.' + extraDrMsg + '"';
+                else msgEl.innerText = ((lockedAvg >= 1.0) ? 'Dr. Swadlzworth says, "Great work, keep it up!' : 'Dr. Swadlzworth is disappointed. "Pick up the pace!') + extraDrMsg + '"';
 
                 if (dayCount === 7) {
                     document.getElementById('pause-toggle-btn').style.display = 'none';
@@ -2306,7 +2344,7 @@
                     let textMsgEl = document.getElementById('frustrating-msg');
                     textMsgEl.style.textAlign = 'left';
                     
-                    textMsgEl.innerHTML = '<div style="display: flex; align-items: center; justify-content: flex-end; font-size: 1.7rem; width: 100%;"><div style="text-align: center; line-height: 1.1; margin-right: 15px; font-size: 1.45rem;">As Melvin goes up levels<br>he can eat more without<br>getting full, but he will<br>take longer to burp!</div><span class="big-arrow">→</span></div>';
+                    textMsgEl.innerHTML = '<div style="display: flex; align-items: center; justify-content: flex-end; font-size: 1.7rem; width: 100%;"><div style="text-align: center; line-height: 1.1; margin-right: 15px; font-size: 1.45rem;">As Melvin goes up levels,<br>he can eat more without<br>getting full, but he will<br>take longer to burp!</div><span class="big-arrow">→</span></div>';
 
                     wrapper.style.display = 'block';
                     textMsgEl.classList.add('show-msg');
@@ -2323,11 +2361,21 @@
                         document.getElementById('frustrating-msg').classList.remove('show-msg');
 
                         document.getElementById('checkup-screen').style.display = 'flex';
+                        
+                        // Synchronously force redraw layout and character graphics on visibility change
+                        updateAllCanvasSprites(); 
+                        updateLogoSpritePosition();
+                        
                         renderStatsView(statsViewState); 
                         activeMsgTimer = null;
                     }, 5000);
                 } else {
                     document.getElementById('checkup-screen').style.display = 'flex';
+                    
+                    // Synchronously force redraw layout and character graphics on visibility change
+                    updateAllCanvasSprites(); 
+                    updateLogoSpritePosition();
+                    
                     renderStatsView(statsViewState); 
                 }
 
@@ -2354,7 +2402,7 @@
             let rAvg = parseFloat(lockedAvg.toFixed(1));
             if (rAvg >= 1.0 && superCooldownDays === 0 && !superMelvinActive && !gammaMelvinActive && !powerUpMsgShown) {
                 msgQueue.push({ 
-                    html: '<div style="display: flex; align-items: center; justify-content: flex-end; font-size: 1.6rem; width: 100%;"><div style="text-align: center; line-flex: 1.1; margin-right: 4px;">At 1oz per day, burping<br>Melvin when he\'s FULL<br>will unlock a token.<br>Collect 4 tokens to<br>POWER-UP!</div><span class="big-arrow">→</span></div>', 
+                    html: '<div style="display: flex; align-items: center; justify-content: flex-end; font-size: 1.6rem; width: 100%;"><div style="text-align: center; line-height: 1.1; margin-right: 4px;">If Melvin reaches 1 oz<br>per day, burping him<br>when he\'s FULL will<br>unlock a counter.<br>Collect 4 counters<br>to POWER-UP!</div><span class="big-arrow">→</span></div>', 
                     alignPowerUp: true 
                 });
                 powerUpMsgShown = true;
