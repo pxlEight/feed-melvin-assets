@@ -99,12 +99,13 @@
 
         .action-btns { position: absolute; bottom: 73.8px; width: 100%; display: flex; justify-content: center; gap: 15px; padding: 0 15px; box-sizing: border-box; touch-action: manipulation; }
         .btn-wrapper { flex: 1; max-width: 170px; position: relative; }
-        .feed-btn, .burp-btn { width: 100%; height: 90px; margin: 0; padding: 0; border: none; border-radius: 0; cursor: pointer; box-shadow: 0 6px 0 rgba(0, 0, 0, 0.5); outline: none; position: relative; z-index: 120; display: block; transform: translateY(0px); touch-action: manipulation; }
-        .feed-btn { background: #6cb0ff; }
-        .burp-btn { background: #ff9b54; }
+        .feed-btn, .burp-btn { width: 100%; height: 90px; margin: 0; padding: 0; border: none; border-radius: 0; cursor: pointer; outline: none; position: relative; z-index: 120; display: block; transform: translateY(0px); touch-action: manipulation; }
+        .feed-btn { background: #326efc; box-shadow: 0 6px 0 #234de2; }
+        .burp-btn { background: #5ea1fd; box-shadow: 0 6px 0 #326efc; }
         .btn-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; pointer-events: none; z-index: 121; }
         
-        .feed-btn:active, .burp-btn:active, .feed-btn.key-pressed, .burp-btn.key-pressed { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0, 0, 0, 0.5); }
+        .feed-btn:active, .feed-btn.key-pressed { transform: translateY(4px); box-shadow: 0 2px 0 #234de2; }
+        .burp-btn:active, .burp-btn.key-pressed { transform: translateY(4px); box-shadow: 0 2px 0 #326efc; }
         .feed-btn:active + .btn-icon, .burp-btn:active + .btn-icon, .feed-btn.key-pressed + .btn-icon, .burp-btn.key-pressed + .btn-icon { margin-top: 4px; }
         
         .left-column { position: absolute; top: 135px; left: 20px; bottom: 168.8px; display: flex; flex-direction: column; align-items: center; width: 50px; z-index: 110; }
@@ -146,11 +147,11 @@
 
         #global-ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999999; }
         
-        #custom-bmc-btn { position: absolute; bottom: 26px; right: 18px; width: 50px; height: 50px; background-color: #FB9052; border-radius: 0; display: flex; align-items: center; justify-content: center; font-size: 28px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.3); pointer-events: auto; cursor: pointer; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease, box-shadow 0.1s; transform: translateX(200%) translateZ(0); opacity: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+        #custom-bmc-btn { position: absolute; bottom: 26px; right: 0; width: 68px; height: 50px; padding-right: 18px; box-sizing: border-box; background-color: #FB9052; border-radius: 0; display: flex; align-items: center; justify-content: center; font-size: 28px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.3); pointer-events: auto; cursor: pointer; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease, box-shadow 0.1s; transform: translateX(200%) translateZ(0); opacity: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
         #custom-bmc-btn.in-place { transform: translateX(0) translateZ(0); opacity: 1; }
         #custom-bmc-btn.in-place:active { transform: translateY(2px) translateZ(0); box-shadow: 0 2px 3px rgba(0,0,0,0.3); transition: transform 0.05s, box-shadow 0.05s; }
 
-        #landing-bmc-left { position: absolute; bottom: 26px; left: 18px; pointer-events: auto; transform: translateX(-200%) translateZ(0); opacity: 0; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+        #landing-bmc-left { position: absolute; bottom: 26px; left: 0; pointer-events: auto; transform: translateX(-200%) translateZ(0); opacity: 0; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
         #left-story-btn:active { transform: translateY(2px) translateZ(0); box-shadow: 0 2px 3px rgba(0,0,0,0.3); }
 
         #bmc-tooltip { position: absolute; bottom: 22px; right: 75px; background: #fff; color: #3d5a80; padding: 4px 8px; border: none; box-shadow: none; font-size: 1.4rem; line-height: 1.0; width: 170px; text-align: center; pointer-events: none; transform-origin: right center; transform: scale(0); opacity: 0; visibility: hidden; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease, visibility 0.4s; }
@@ -290,8 +291,8 @@
 
         <button id="play-btn" class="play-btn" style="position: absolute; bottom: 142.8px; margin: 0; display: none; transform: scale(0); z-index: 20; pointer-events: auto;">PLAY!</button>
 
-        <div id="landing-bmc-left" style="position: absolute; bottom: 26px; left: 18px; pointer-events: auto; transform: translateX(-200%); opacity: 0; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease;">
-            <a id="left-story-btn" href="https://www.pixel-mover.com/blog" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; justify-content: center; background-color: #FB9052; color: white; text-decoration: none; font-size: 1.8rem; padding: 0 15px; height: 50px; box-sizing: border-box; box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: transform 0.05s, box-shadow 0.05s;">
+        <div id="landing-bmc-left" style="position: absolute; bottom: 26px; left: 0; pointer-events: auto; transform: translateX(-200%); opacity: 0; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease;">
+            <a id="left-story-btn" href="https://www.pixel-mover.com/blog" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; justify-content: center; background-color: #FB9052; color: white; text-decoration: none; font-size: 1.8rem; padding: 0 15px 0 33px; height: 50px; box-sizing: border-box; box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: transform 0.05s, box-shadow 0.05s;">
                 <svg viewBox="0 0 48 48" style="width: 28px; height: 28px; margin-right: 8px;">
                     <image href="https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.png" width="192" height="48" />
                 </svg>
@@ -937,14 +938,11 @@
                         let hasTapped = false;
                         
                         function handleTap(e) {
-                            // --- iOS SILENT AUDIO BYPASS (V2: PERSISTENT LOOP) ---
-                            if (!window.iosSilentAudio) {
-                                window.iosSilentAudio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA');
-                                window.iosSilentAudio.loop = true;
-                                window.iosSilentAudio.setAttribute('playsinline', 'true');
-                                window.iosSilentAudio.play().catch(err => console.log("Silent audio trick failed:", err));
+                            // --- iOS AUDIO BYPASS (W3C AUDIO SESSION API) ---
+                            if ('audioSession' in navigator) {
+                                navigator.audioSession.type = 'playback';
                             }
-                            // -----------------------------------------------------
+                            // ------------------------------------------------
 
                             initGlobalMusic();
 
