@@ -937,11 +937,14 @@
                         let hasTapped = false;
                         
                         function handleTap(e) {
-                            // --- iOS SILENT AUDIO BYPASS ---
-                            // Play a fraction of silent HTML5 audio to force Web Audio to the media channel
-                            let silentAudio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA');
-                            silentAudio.play().catch(err => console.log("Silent audio trick failed:", err));
-                            // -------------------------------
+                            // --- iOS SILENT AUDIO BYPASS (V2: PERSISTENT LOOP) ---
+                            if (!window.iosSilentAudio) {
+                                window.iosSilentAudio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA');
+                                window.iosSilentAudio.loop = true;
+                                window.iosSilentAudio.setAttribute('playsinline', 'true');
+                                window.iosSilentAudio.play().catch(err => console.log("Silent audio trick failed:", err));
+                            }
+                            // -----------------------------------------------------
 
                             initGlobalMusic();
 
