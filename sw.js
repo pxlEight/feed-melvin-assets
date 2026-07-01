@@ -28,8 +28,8 @@ self.addEventListener('install', event => {
 
 // Fetch Event: Serve from cache if available, otherwise fetch from network
 self.addEventListener('fetch', event => {
-    // If the request is for the synth folder, let the synth's own SW handle it
-    if (event.request.url.includes('/synth/')) {
+    // If the request is for the earworm folder, let earworm's own SW handle it
+    if (event.request.url.includes('/earworm/')) {
         return;
     }
 
