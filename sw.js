@@ -28,6 +28,11 @@ self.addEventListener('install', event => {
 
 // Fetch Event: Serve from cache if available, otherwise fetch from network
 self.addEventListener('fetch', event => {
+    // If the request is for the synth folder, let the synth's own SW handle it
+    if (event.request.url.includes('/synth/')) {
+        return;
+    }
+
     event.respondWith(
         caches.match(event.request).then(response => {
             return response || fetch(event.request);
