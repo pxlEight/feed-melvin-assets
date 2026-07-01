@@ -1,0 +1,2590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Audio API Oscillator Synthesizer</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2a2a35">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e24;
+            color: #fff;
+            margin: 0;
+            height: 100vh;
+            overflow: hidden; 
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none; 
+        }
+
+        textarea, input {
+            user-select: text;
+            -webkit-user-select: text;
+        }
+
+        .main-viewport {
+            width: 100vw;
+            height: 100vh;
+            overflow: auto;
+            display: flex;
+            box-sizing: border-box;
+            padding: 40px 20px;
+            scrollbar-width: none; 
+        }
+
+        .main-viewport::-webkit-scrollbar {
+            display: none;
+        }
+
+        .synth-container {
+            background-color: #2a2a35;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            text-align: center;
+            width: 100%;
+            max-width: 850px; 
+            margin: auto; 
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 24px;
+            letter-spacing: 1px;
+            color: #4ed9ff;
+        }
+
+        .project-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .export-option:hover {
+            background-color: #444455;
+            color: #4ed9ff;
+        }
+
+        label {
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            color: #bbb;
+        }
+
+        select, input[type="range"] {
+            background-color: #444455;
+            color: white;
+            border: 1px solid #555566;
+            padding: 6px 10px;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+        }
+        
+        input[type="number"]::-webkit-outer-spin-button, 
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        .keyboard {
+            display: flex;
+            justify-content: center;
+            position: relative;
+            height: 100px; 
+            padding: 10px;
+            background-color: #111;
+            border-radius: 6px;
+        }
+
+        .key {
+            position: relative;
+            background-color: white;
+            color: black;
+            border: 1px solid #ccc;
+            flex: 1 1 0;
+            height: 100%;
+            border-radius: 0 0 4px 4px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding-bottom: 10px;
+            box-sizing: border-box;
+            font-weight: bold;
+            font-size: 12px;
+            transition: background-color 0.1s ease;
+        }
+
+        .key:active, .key.active {
+            background-color: #ddd;
+            height: 98%;
+        }
+
+        .key.black {
+            background-color: black;
+            color: white;
+            border: 1px solid #000;
+            width: 45px; 
+            flex: 0 0 45px;
+            height: 60%;
+            margin-left: -22.5px;
+            margin-right: -22.5px;
+            z-index: 2;
+            border-radius: 0 0 3px 3px;
+        }
+
+        .key.black:active, .key.black.active {
+            background-color: #333;
+            height: 59%;
+        }
+
+        .recording-section {
+            margin-top: 10px;
+            background-color: #333344;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .btn {
+            background-color: #4ed9ff;
+            color: #1e1e24;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #7adaff;
+        }
+
+        .btn:disabled {
+            background-color: #555;
+            color: #888;
+            cursor: not-allowed;
+        }
+
+        .btn.recording {
+            background-color: #ff4e4e;
+            color: white;
+        }
+
+        .btn.recording:hover {
+            background-color: #ff6b6b;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            background-color: #111;
+            color: #4ed9ff;
+            border: 1px solid #555;
+            border-radius: 4px;
+            padding: 8px;
+            font-family: monospace;
+            font-size: 11px;
+            resize: none;
+            box-sizing: border-box;
+        }
+
+        .editor-section {
+            background-color: #333344;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 5px; 
+            width: 100%;
+            box-sizing: border-box;
+            text-align: left;
+            display: flex;
+            gap: 15px;
+            align-items: stretch;
+        }
+
+        .timeline-wrapper {
+            position: relative;
+            width: 100%;
+            height: 140px; 
+            background-color: #1a1a24;
+            border: 1px solid #555566;
+            border-radius: 4px;
+            overflow: auto; 
+            margin-top: 10px;
+            padding: 0 15px; 
+            box-sizing: border-box;
+        }
+
+        .timeline-inner {
+            position: relative;
+            min-width: 100%;
+            height: 250px; 
+            min-height: 100%;
+        }
+
+        .note-block {
+            position: absolute;
+            height: 12px;
+            border-radius: 2px;
+            cursor: ew-resize;
+            box-sizing: border-box;
+            z-index: 5;
+            touch-action: none; 
+            transition: opacity 0.2s ease;
+        }
+
+        .note-block.selected {
+            background-color: #ff4e4e !important;
+            border: 1px solid #fff !important;
+            z-index: 10;
+            height: 24px;
+            margin-top: -6px;
+        }
+
+        .note-track-1 { background-color: rgba(78, 217, 255, 1); border: 1px solid #4ed9ff; }
+        .note-track-2 { background-color: rgba(255, 184, 77, 1); border: 1px solid #ffb84d; }
+
+        .selection-box {
+            position: absolute;
+            border: 1px dashed #4ed9ff;
+            background-color: rgba(78, 217, 255, 0.2);
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .loop-handle {
+            position: absolute;
+            top: 4px;
+            width: 12px;
+            height: 12px;
+            background-color: #4ed9ff;
+            border-radius: 50%;
+            cursor: ew-resize;
+            transform: translateX(-50%);
+            z-index: 18;
+            border: 2px solid #1e1e24;
+            box-sizing: border-box;
+        }
+
+        .mute-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: #555;
+            cursor: pointer;
+            border: 2px solid #333344;
+            transition: background-color 0.2s;
+        }
+
+        .mute-dot.active {
+            background-color: #4ed9ff;
+            border: 2px solid #2a2a35;
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-viewport" id="mainViewport">
+    <div class="synth-container">
+        <h1>Oscillator Synthesizer</h1>
+
+        <div class="project-controls">
+            <label for="fileInput" class="btn" style="background-color: #ffb84d; color: #1e1e24; display: inline-flex; align-items: center; justify-content: center; margin: 0; cursor: pointer;">Open Project</label>
+            <button id="saveProjectBtn" class="btn">Save Project</button>
+            <div style="position: relative; display: inline-block;">
+                <button id="exportDropdownBtn" class="btn" style="width: 110px;">Export ▾</button>
+                <div id="exportDropdownMenu" style="display: none; position: absolute; top: 100%; left: 0; background-color: #2a2a35; border: 1px solid #555566; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 100; flex-direction: column; min-width: 110px; margin-top: 5px; overflow: hidden; text-align: left;">
+                    <div class="export-option" data-type="wav" style="padding: 10px; font-size: 12px; cursor: pointer; border-bottom: 1px solid #444455; color: white;">.WAV</div>
+                    <div class="export-option" data-type="ogg" style="padding: 10px; font-size: 12px; cursor: pointer; border-bottom: 1px solid #444455; color: white;">.OGG</div>
+                    <div class="export-option" data-type="mp4" style="padding: 10px; font-size: 12px; cursor: pointer; color: white;">.MP4</div>
+                </div>
+            </div>
+            <input type="file" id="fileInput" accept=".json" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;">
+        </div>
+
+        <div class="editor-section">
+            
+            <div style="display: flex; flex-direction: column; justify-content: flex-end; gap: 15px; width: 48px; flex-shrink: 0; border-right: 1px solid #555566; padding-right: 15px; padding-bottom: 28px;">
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 10px;">
+                    <label style="font-size: 10px; color: #bbb; text-transform: uppercase;">Mute</label>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
+                        <span style="font-size: 11px; color: #bbb; font-weight: bold;">1:</span>
+                        <div id="mute1" class="mute-dot active"></div>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
+                        <span style="font-size: 11px; color: #bbb; font-weight: bold;">2:</span>
+                        <div id="mute2" class="mute-dot active"></div>
+                    </div>
+                </div>
+                <button id="clearBtn" class="btn" disabled style="padding: 0; font-size: 10px; width: 48px; height: 48px; border-radius: 8px; line-height: 1.2;">Clear<br>Track</button>
+            </div>
+
+            <div style="flex: 1; display: flex; flex-direction: column; min-width: 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <label for="bpmInput" style="margin: 0; color: #bbb; font-size: 11px;">Tempo:</label>
+                        <input id="bpmInput" type="range" min="40" max="240" value="120" style="width: 80px; height: 6px; padding: 0;">
+                        <input type="number" id="bpmDisplay" value="120" min="40" max="240" style="width: 40px; padding: 2px; font-size: 12px; background-color: #444455; color: #4ed9ff; border: 1px solid #555566; border-radius: 3px; font-weight: bold; text-align: center;">
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <label for="metronomeVolume" style="margin: 0; color: #bbb; font-size: 11px;">Click Vol:</label>
+                        <input id="metronomeVolume" type="range" min="0" max="1" step="0.01" value="0.5" style="width: 60px; height: 6px; padding: 0;">
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 5px;">
+                        <button id="metronomeBtn" class="btn" style="padding: 4px 8px; font-size: 11px;">Click: OFF</button>
+                        <button id="countInBtn" class="btn" style="padding: 4px 8px; font-size: 11px; background-color: #555; color: #888;">Count-in: OFF</button>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; border-left: 1px solid #555566; padding-left: 10px;">
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <label for="measuresInput" style="margin: 0; color: #bbb; font-size: 11px;">Measures:</label>
+                            <input type="number" id="measuresInput" value="1" min="1" max="32" style="width: 40px; padding: 2px; font-size: 12px; background-color: #444455; color: white; border: 1px solid #555566; border-radius: 3px; text-align: center;">
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <label for="trackSelect" style="margin: 0; color: #bbb; font-size: 11px;">Track:</label>
+                            <select id="trackSelect" style="padding: 2px; font-size: 12px; background-color: #444455; color: white; border: 1px solid #555566; border-radius: 3px;">
+                                <option value="1" selected>1</option>
+                                <option value="2">2</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <label for="quantizeSelect" style="margin: 0; color: #bbb; font-size: 11px;">Quantize:</label>
+                            <select id="quantizeSelect" style="padding: 2px; font-size: 12px; background-color: #444455; color: white; border: 1px solid #555566; border-radius: 3px;">
+                                <option value="none">None</option>
+                                <option value="4">1/4 Note</option>
+                                <option value="8">1/8 Note</option>
+                                <option value="16" selected>1/16 Note</option>
+                                <option value="32">1/32 Note</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-wrapper">
+                    <div class="timeline-inner" id="timelineInner">
+                        <div id="timelineGrid" style="position: absolute; width: 100%; height: 100%; pointer-events: none; opacity: 0.6;"></div>
+                        <div id="loopRegionOverlay" style="position: absolute; top: 20px; bottom: 0; background-color: rgba(78, 217, 255, 0.05); border-left: 1px dashed rgba(78, 217, 255, 0.5); border-right: 1px dashed rgba(78, 217, 255, 0.5); pointer-events: none; z-index: 2;"></div>
+                        
+                        <div id="timelineRuler" style="position: sticky; top: 0; width: 100%; height: 20px; border-bottom: 1px solid #555566; background-color: #2a2a35; z-index: 30; cursor: text;">
+                            <div id="loopRegionHighlight" style="position: absolute; top: 0; height: 100%; background-color: rgba(78, 217, 255, 0.2); pointer-events: none;"></div>
+                            <div id="loopHandleLeft" class="loop-handle" style="left: 0%;"></div>
+                            <div id="loopHandleRight" class="loop-handle" style="left: 100%;"></div>
+
+                            <div id="playheadHandle" style="position: absolute; top: 0; width: 30px; height: 20px; cursor: ew-resize; transform: translateX(-50%); z-index: 20; left: 0%; display: flex; justify-content: center;">
+                                <div style="width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 12px solid #ff4e4e; pointer-events: none;"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="playhead" id="playhead" style="position: absolute; top: 20px; bottom: 0; width: 2px; background-color: #ff4e4e; left: 0%; z-index: 10; pointer-events: none;"></div>
+                        <div class="notes-container" id="notesContainer" style="position: absolute; top: 20px; bottom: 0; width: 100%;"></div>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button id="placeToggleBtn" class="btn" style="padding: 4px 8px; font-size: 11px; background-color: #555; color: #888;">Place: OFF</button>
+                        <div style="font-size: 11px; color: #888;">Pinch/Ctrl+Scroll to Zoom. Drag to adjust. Long press for selection.</div>
+                    </div>
+                    <div style="display: flex; gap: 5px;">
+                        <button id="copyNotesBtn" class="btn" style="display: none; padding: 4px 8px; font-size: 11px; background-color: #ffb84d; color: #1e1e24;">Copy</button>
+                        <button id="pasteNotesBtn" class="btn" style="display: none; padding: 4px 8px; font-size: 11px; background-color: #4ed9ff; color: #1e1e24;">Paste</button>
+                        <button id="deleteNoteBtn" class="btn" style="display: none; padding: 4px 8px; font-size: 11px; background-color: #ff4e4e; color: white;">Delete</button>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; justify-content: flex-end; gap: 15px; width: 48px; flex-shrink: 0; border-left: 1px solid #555566; padding-left: 15px; padding-bottom: 28px;">
+                <button id="playLoopBtn" class="btn" style="padding: 0; font-size: 11px; width: 48px; height: 48px; border-radius: 8px;">Play</button>
+                <button id="recordBtn" class="btn" style="padding: 0; font-size: 10px; width: 48px; height: 48px; border-radius: 8px;">Record</button>
+            </div>
+            
+        </div>
+
+        <div class="keyboard" id="keyboard" style="width: 100%; box-sizing: border-box; margin-bottom: 10px;">
+            <div class="key" data-note="C4" data-key="a">A</div>
+            <div class="key black" data-note="C#4" data-key="w">W</div>
+            <div class="key" data-note="D4" data-key="s">S</div>
+            <div class="key black" data-note="D#4" data-key="e">E</div>
+            <div class="key" data-note="E4" data-key="d">D</div>
+            <div class="key" data-note="F4" data-key="f">F</div>
+            <div class="key black" data-note="F#4" data-key="t">T</div>
+            <div class="key" data-note="G4" data-key="g">G</div>
+            <div class="key black" data-note="G#4" data-key="y">Y</div>
+            <div class="key" data-note="A4" data-key="h">H</div>
+            <div class="key black" data-note="A#4" data-key="u">U</div>
+            <div class="key" data-note="B4" data-key="j">J</div>
+            <div class="key" data-note="C5" data-key="k">K</div>
+        </div>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; background-color: #333344; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+            <div style="display: flex; gap: 20px; align-items: center; flex: 1;">
+                <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                    <label for="instrumentSelect" style="font-size: 10px; margin-bottom: 4px;">Instrument</label>
+                    <select id="instrumentSelect" style="font-size: 11px; padding: 4px; width: 100px;">
+                        <option value="synth" selected>Synth</option>
+                        <option value="drums">Drums</option>
+                    </select>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                    <label for="waveform" style="font-size: 10px; margin-bottom: 4px;">Synth Wave</label>
+                    <select id="waveform" style="font-size: 11px; padding: 4px; width: 100px;">
+                        <option value="sine">Sine</option>
+                        <option value="square" selected>Square</option>
+                        <option value="sawtooth">Sawtooth</option>
+                        <option value="triangle">Triangle</option>
+                    </select>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: flex-start; flex: 1; max-width: 200px;">
+                    <label for="volume" style="font-size: 10px; margin-bottom: 4px;">Play Vol</label>
+                    <input id="volume" type="range" min="0" max="0.5" step="0.01" value="0.2" style="width: 100%; height: 6px; padding: 0;">
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 15px; border-left: 1px solid #555566; padding-left: 20px;">
+                <button id="octaveDownBtn" class="btn" style="padding: 6px 12px; font-size: 12px; background-color: #555566; color: #fff;">Octave -</button>
+                <div id="octaveDisplay" style="display: flex; flex-direction: column; align-items: center; min-width: 40px;">
+                    <span style="font-size: 10px; color: #bbb; text-transform: uppercase;">Octave</span>
+                    <span style="font-size: 20px; font-weight: bold; color: #4ed9ff;">4</span>
+                </div>
+                <button id="octaveUpBtn" class="btn" style="padding: 6px 12px; font-size: 12px; background-color: #555566; color: #fff;">Octave +</button>
+            </div>
+        </div>
+
+        <div class="recording-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <strong style="color: #4ed9ff; font-size: 14px;">Track Data Export</strong>
+            </div>
+
+            <div id="track1Container" style="display: flex; flex-direction: column;">
+                <textarea id="outputData1" placeholder="Track 1 sequence data..."></textarea>
+                <div style="display: flex; gap: 5px; margin-top: 5px;">
+                    <button id="exportBtn1" class="btn" style="padding: 4px 8px; font-size: 11px; width: 100%; background-color: #ffb84d; color: #1e1e24;">COPY</button>
+                </div>
+            </div>
+
+            <div id="track2Container" style="display: none; flex-direction: column;">
+                <textarea id="outputData2" placeholder="Track 2 sequence data..."></textarea>
+                <div style="display: flex; gap: 5px; margin-top: 5px;">
+                    <button id="exportBtn2" class="btn" style="padding: 4px 8px; font-size: 11px; width: 100%; background-color: #ffb84d; color: #1e1e24;">COPY</button>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<script>
+    const noteFrequencies = {
+        "C2": 65.41, "C#2": 69.30, "D2": 73.42, "D#2": 77.78, "E2": 82.41, "F2": 87.31, "F#2": 92.50, "G2": 98.00, "G#2": 103.83, "A2": 110.00, "A#2": 116.54, "B2": 123.47,
+        "C3": 130.81, "C#3": 138.59, "D3": 146.83, "D#3": 155.56, "E3": 164.81, "F3": 174.61, "F#3": 185.00, "G3": 196.00, "G#3": 207.65, "A3": 220.00, "A#3": 233.08, "B3": 246.94,
+        "C4": 261.63, "C#4": 277.18, "D4": 293.66, "D#4": 311.13, "E4": 329.63, "F4": 349.23, "F#4": 369.99, "G4": 392.00, "G#4": 415.30, "A4": 440.00, "A#4": 466.16, "B4": 493.88,
+        "C5": 523.25, "C#5": 554.37, "D5": 587.33, "D#5": 622.25, "E5": 659.25, "F5": 698.46, "F#5": 739.99, "G5": 783.99, "G#5": 830.61, "A5": 880.00, "A#5": 932.33, "B5": 987.77,
+        "C6": 1046.50, "C#6": 1108.73, "D6": 1174.66, "D#6": 1244.51, "E6": 1318.51, "F6": 1396.91, "F#6": 1479.98, "G6": 1567.98, "G#6": 1661.22, "A6": 1760.00, "A#6": 1864.66, "B6": 1975.53,
+        "C7": 2093.00
+    };
+
+    const keyMap = {
+        'a': 'C4', 'w': 'C#4', 's': 'D4', 'e': 'D#4', 'd': 'E4',
+        'f': 'F4', 't': 'F#4', 'g': 'G4', 'y': 'G#4', 'h': 'A4',
+        'u': 'A#4', 'j': 'B4', 'k': 'C5'
+    };
+
+    let trackSettings = {
+        '1': { instrument: 'synth', waveform: 'square', volume: 0.2, quantize: '16' },
+        '2': { instrument: 'synth', waveform: 'square', volume: 0.2, quantize: '16' }
+    };
+
+    let trackMutes = {
+        '1': false,
+        '2': false
+    };
+
+    let audioCtx = null;
+    const activeOscillators = {};
+
+    let isRecording = false;
+    let recordedSequence = [];
+    let noteStartTimes = {};
+
+    let isSustainActive = false;
+    const physicallyHeldKeys = new Set();
+    const pendingSustainReleases = new Set();
+    let currentPitchBend = 0; 
+    let lastModPressTime = 0; 
+
+    let isWaitingForDownbeat = false;
+    let pendingAction = null; 
+    let isCountInEnabled = false;
+
+    let isMetronomeArmed = false;
+    let isSchedulerRunning = false;
+    let countInBeats = 0;
+    
+    let metronomeTimerID;
+    let metronomeBPM = 120;
+    let nextClickTime = 0;
+    let beatCount = 0;
+
+    let isLoopPlaying = false;
+    let loopTimeoutIDs = [];
+    let loopIntervalID = null;
+    let activePlaybackNodes = [];
+
+    let loopStartSystemTime = 0;
+    let playheadAnimId = null;
+    let manualPlayheadTime = 0;
+    let savedPlayheadTime = 0;
+    let isDraggingPlayhead = false;
+    
+    let loopStartMs = 0;
+    let loopEndMs = 2000;
+    let isDraggingLoopLeft = false;
+    let isDraggingLoopRight = false;
+
+    let zoomLevel = 1;
+    const MIN_ZOOM = 0.2;
+    const MAX_ZOOM = 10;
+
+    let selectedNotes = []; 
+    let clipboardNotes = [];
+
+    let longPressTimeout = null;
+    let isSelecting = false;
+    let selectionBoxEl = null;
+    let selStartX = 0, selStartY = 0;
+
+    const instrumentSelect = document.getElementById('instrumentSelect');
+    const waveformSelect = document.getElementById('waveform');
+    const volumeSlider = document.getElementById('volume');
+    const quantizeSelect = document.getElementById('quantizeSelect');
+    const keys = document.querySelectorAll('.key');
+
+    const recordBtn = document.getElementById('recordBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const playLoopBtn = document.getElementById('playLoopBtn'); 
+    const deleteNoteBtn = document.getElementById('deleteNoteBtn'); 
+    const copyNotesBtn = document.getElementById('copyNotesBtn');
+    const pasteNotesBtn = document.getElementById('pasteNotesBtn');
+    const countInBtn = document.getElementById('countInBtn');
+    
+    const exportBtn1 = document.getElementById('exportBtn1');
+    const exportBtn2 = document.getElementById('exportBtn2');
+    const exportDropdownBtn = document.getElementById('exportDropdownBtn');
+    const exportDropdownMenu = document.getElementById('exportDropdownMenu');
+    
+    const trackSelect = document.getElementById('trackSelect');
+    const track1Container = document.getElementById('track1Container');
+    const track2Container = document.getElementById('track2Container');
+    
+    const outputData1 = document.getElementById('outputData1');
+    const outputData2 = document.getElementById('outputData2');
+
+    const bpmInput = document.getElementById('bpmInput');
+    const bpmDisplay = document.getElementById('bpmDisplay');
+    const metronomeBtn = document.getElementById('metronomeBtn');
+    const metronomeVolumeSlider = document.getElementById('metronomeVolume');
+
+    // === Project Save / Open Setup ===
+    const saveProjectBtn = document.getElementById('saveProjectBtn');
+    const fileInput = document.getElementById('fileInput');
+
+    saveProjectBtn.addEventListener('click', () => {
+        let defaultName = `synth_project_${new Date().getTime()}`;
+        let fileName = prompt("Name your project file:", defaultName);
+        
+        if (fileName === null) return; 
+        if (fileName.trim() === "") fileName = defaultName;
+        if (!fileName.endsWith('.json')) fileName += '.json';
+
+        const projectData = {
+            isProject: true,
+            tempo: parseInt(bpmInput.value, 10),
+            measures: parseInt(document.getElementById('measuresInput').value, 10) || 1,
+            track1: {
+                instrument: trackSettings['1'].instrument,
+                waveform: trackSettings['1'].waveform,
+                volume: trackSettings['1'].volume,
+                quantize: trackSettings['1'].quantize,
+                notes: getNotesFromTextarea(outputData1)
+            },
+            track2: {
+                instrument: trackSettings['2'].instrument,
+                waveform: trackSettings['2'].waveform,
+                volume: trackSettings['2'].volume,
+                quantize: trackSettings['2'].quantize,
+                notes: getNotesFromTextarea(outputData2)
+            }
+        };
+
+        const dataStr = JSON.stringify(projectData, null, 2);
+        const blob = new Blob([dataStr], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const data = JSON.parse(event.target.result);
+                if (data.isProject) {
+                    if (isLoopPlaying) {
+                        stopLoopPlayback();
+                    }
+
+                    if (data.tempo) {
+                        bpmInput.value = data.tempo;
+                        bpmDisplay.value = data.tempo;
+                        metronomeBPM = data.tempo;
+                    }
+                    if (data.measures) document.getElementById('measuresInput').value = data.measures;
+                    
+                    if (data.track1) {
+                        if (data.track1.instrument) trackSettings['1'].instrument = data.track1.instrument;
+                        if (data.track1.waveform) trackSettings['1'].waveform = data.track1.waveform;
+                        if (data.track1.volume !== undefined) trackSettings['1'].volume = data.track1.volume;
+                        if (data.track1.quantize) trackSettings['1'].quantize = data.track1.quantize;
+                        writeTrackData('1', data.track1.notes || []);
+                    }
+                    
+                    if (data.track2) {
+                        if (data.track2.instrument) trackSettings['2'].instrument = data.track2.instrument;
+                        if (data.track2.waveform) trackSettings['2'].waveform = data.track2.waveform;
+                        if (data.track2.volume !== undefined) trackSettings['2'].volume = data.track2.volume;
+                        if (data.track2.quantize) trackSettings['2'].quantize = data.track2.quantize;
+                        writeTrackData('2', data.track2.notes || []);
+                    }
+
+                    const currentTrack = trackSelect.value;
+                    instrumentSelect.value = trackSettings[currentTrack].instrument;
+                    waveformSelect.value = trackSettings[currentTrack].waveform;
+                    volumeSlider.value = trackSettings[currentTrack].volume;
+                    quantizeSelect.value = trackSettings[currentTrack].quantize;
+
+                    loopStartMs = 0;
+                    loopEndMs = getMeasureDurationMs();
+                    manualPlayheadTime = 0;
+                    savedPlayheadTime = 0;
+
+                    updateTimelineWidth();
+                    updateGrid();
+                    updateLoopRegionUI();
+                    updateUIStates();
+                    renderTimeline();
+                    updatePlayhead();
+                } else {
+                    alert("Invalid project file.");
+                }
+            } catch (err) {
+                alert("Error parsing JSON file.");
+            }
+            fileInput.value = ""; 
+        };
+        reader.readAsText(file);
+    });
+
+    trackSelect.addEventListener('change', (e) => {
+        const newTrack = e.target.value;
+        const settings = trackSettings[newTrack];
+
+        instrumentSelect.value = settings.instrument;
+        waveformSelect.value = settings.waveform;
+        volumeSlider.value = settings.volume;
+        quantizeSelect.value = settings.quantize;
+
+        if (newTrack === '1') {
+            track1Container.style.display = 'flex';
+            track2Container.style.display = 'none';
+        } else {
+            track1Container.style.display = 'none';
+            track2Container.style.display = 'flex';
+        }
+
+        updateUIStates();
+        renderTimeline(); 
+    });
+
+    // === Helpers for JSON Export Format ===
+    function getNotesFromTextarea(textarea) {
+        if (!textarea.value) return [];
+        try {
+            const data = JSON.parse(textarea.value);
+            if (Array.isArray(data)) return data;
+            if (data && Array.isArray(data.notes)) return data.notes;
+        } catch(e) {}
+        return [];
+    }
+
+    function writeTrackData(trackNum, notes) {
+        const textarea = trackNum === '1' ? outputData1 : outputData2;
+        if (!notes || notes.length === 0) {
+            textarea.value = "";
+            return;
+        }
+        const settings = trackSettings[trackNum];
+        const data = {
+            tempo: parseInt(bpmInput.value, 10),
+            instrument: settings.instrument,
+            waveform: settings.waveform,
+            volume: settings.volume,
+            notes: notes
+        };
+        textarea.value = JSON.stringify(data);
+    }
+
+    function saveTrackSetting(key, value) {
+        const track = trackSelect.value;
+        trackSettings[track][key] = value;
+        
+        let textarea = track === '1' ? outputData1 : outputData2;
+        let notes = getNotesFromTextarea(textarea);
+        if (notes.length > 0) {
+            notes = notes.map(note => {
+                note[key] = value;
+                return note;
+            });
+            writeTrackData(track, notes);
+        }
+    }
+
+    instrumentSelect.addEventListener('change', (e) => saveTrackSetting('instrument', e.target.value));
+    quantizeSelect.addEventListener('change', (e) => saveTrackSetting('quantize', e.target.value));
+
+    waveformSelect.addEventListener('change', (e) => {
+        const wave = e.target.value;
+        saveTrackSetting('waveform', wave);
+        const currentTrack = trackSelect.value;
+        
+        activePlaybackNodes.forEach(node => {
+            if (node.trackNum === currentTrack && node.osc && trackSettings[currentTrack].instrument !== 'drums') {
+                node.osc.type = wave;
+            }
+        });
+        Object.values(activeOscillators).forEach(active => {
+            if (trackSettings[currentTrack].instrument !== 'drums') {
+                active.osc.type = wave;
+            }
+        });
+    });
+
+    volumeSlider.addEventListener('input', (e) => {
+        const vol = parseFloat(e.target.value);
+        saveTrackSetting('volume', vol);
+        const currentTrack = trackSelect.value;
+        
+        activePlaybackNodes.forEach(node => {
+            if (node.trackNum === currentTrack && audioCtx) {
+                node.gainNode.gain.setTargetAtTime(vol, audioCtx.currentTime, 0.015);
+            }
+        });
+        Object.values(activeOscillators).forEach(active => {
+            if (audioCtx) {
+                active.gainNode.gain.setTargetAtTime(vol, audioCtx.currentTime, 0.015);
+            }
+        });
+    });
+
+    // === Mute Setup ===
+    document.getElementById('mute1').addEventListener('click', function() {
+        trackMutes['1'] = !trackMutes['1'];
+        this.classList.toggle('active', !trackMutes['1']);
+    });
+    document.getElementById('mute2').addEventListener('click', function() {
+        trackMutes['2'] = !trackMutes['2'];
+        this.classList.toggle('active', !trackMutes['2']);
+    });
+
+    // === Audio Export Logic ===
+    exportDropdownBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        exportDropdownMenu.style.display = exportDropdownMenu.style.display === 'flex' ? 'none' : 'flex';
+    });
+    
+    document.addEventListener('click', () => {
+        exportDropdownMenu.style.display = 'none';
+    });
+
+    document.querySelectorAll('.export-option').forEach(opt => {
+        opt.addEventListener('click', (e) => {
+            const type = e.target.dataset.type;
+            if (type === 'wav') {
+                exportWav();
+            } else {
+                exportMediaFormat(type);
+            }
+        });
+    });
+
+    function getTrackLengthMs() {
+        let maxTime = 0;
+        const t1 = getNotesFromTextarea(outputData1);
+        const t2 = getNotesFromTextarea(outputData2);
+        [...t1, ...t2].forEach(n => {
+            const end = n.time + n.duration;
+            if (end > maxTime) maxTime = end;
+        });
+        return maxTime > 0 ? maxTime : 1000;
+    }
+
+    function playNoteOffline(ctx, noteData, trackNum) {
+        if (trackMutes[trackNum]) return;
+        const frequency = noteFrequencies[noteData.note];
+        if (!frequency) return;
+        
+        const osc = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        
+        const settings = trackSettings[trackNum];
+        const isDrums = settings.instrument === 'drums';
+        const masterVolume = settings.volume;
+        const waveType = settings.waveform;
+
+        const startTime = noteData.time / 1000;
+        const durationSec = noteData.duration / 1000;
+        const stopTime = startTime + durationSec;
+
+        let extraOscs = [];
+
+        if (isDrums) {
+            const noteBase = noteData.note.replace(/\d/g, '');
+            if (noteBase === 'C' || noteBase === 'B') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(150, startTime);
+                osc.frequency.exponentialRampToValueAtTime(40, startTime + 0.15);
+                gainNode.gain.setValueAtTime(masterVolume, startTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.6);
+            } else if (noteBase === 'D' || noteBase === 'E') {
+                osc.type = 'sine';
+                const baseFreq = (noteBase === 'D') ? 300 : 450;
+                osc.frequency.setValueAtTime(baseFreq + 100, startTime);
+                osc.frequency.exponentialRampToValueAtTime(baseFreq, startTime + 0.1);
+                gainNode.gain.setValueAtTime(masterVolume, startTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.3);
+            } else if (noteBase === 'F#' || noteBase === 'G#' || noteBase === 'A#' || noteBase === 'C#') {
+                osc.type = 'triangle';
+                let fq = 600;
+                if(noteBase === 'G#') fq = 800;
+                if(noteBase === 'A#') fq = 1000;
+                if(noteBase === 'C#') fq = 1200;
+                osc.frequency.setValueAtTime(fq, startTime);
+                gainNode.gain.setValueAtTime(masterVolume * 0.7, startTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.5);
+
+                const ringOsc = ctx.createOscillator();
+                ringOsc.type = 'triangle';
+                ringOsc.frequency.setValueAtTime(fq * 2.75, startTime);
+                ringOsc.connect(gainNode);
+                ringOsc.start(startTime);
+                extraOscs.push(ringOsc);
+            } else {
+                osc.type = 'sine';
+                const targetFreq = (noteBase === 'F') ? 250 : (noteBase === 'G' ? 300 : 350);
+                osc.frequency.setValueAtTime(100, startTime);
+                osc.frequency.exponentialRampToValueAtTime(targetFreq, startTime + 0.15);
+                gainNode.gain.setValueAtTime(masterVolume, startTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.4);
+            }
+        } else {
+            osc.type = waveType;
+            osc.frequency.setValueAtTime(frequency, startTime);
+            gainNode.gain.setValueAtTime(0, startTime);
+            gainNode.gain.linearRampToValueAtTime(masterVolume, startTime + 0.02);
+        }
+
+        if (!isDrums) {
+            gainNode.gain.setValueAtTime(masterVolume, Math.max(startTime + 0.02, stopTime - 0.05));
+            gainNode.gain.linearRampToValueAtTime(0, stopTime);
+        } else {
+            gainNode.gain.cancelScheduledValues(stopTime);
+            gainNode.gain.setTargetAtTime(0, stopTime, 0.015);
+        }
+
+        osc.connect(gainNode);
+        gainNode.connect(ctx.destination);
+
+        osc.start(startTime);
+        osc.stop(stopTime + 0.05);
+        if (extraOscs.length > 0) {
+            extraOscs.forEach(eo => eo.stop(stopTime + 0.05));
+        }
+    }
+
+    async function renderOfflineBuffer() {
+        const lengthMs = getTrackLengthMs() + 500; 
+        const sampleRate = 44100;
+        const offlineCtx = new OfflineAudioContext(2, (lengthMs / 1000) * sampleRate, sampleRate);
+        
+        getNotesFromTextarea(outputData1).forEach(n => playNoteOffline(offlineCtx, n, '1'));
+        getNotesFromTextarea(outputData2).forEach(n => playNoteOffline(offlineCtx, n, '2'));
+
+        return await offlineCtx.startRendering();
+    }
+
+    function audioBufferToWav(buffer) {
+        let numOfChan = buffer.numberOfChannels;
+        let length = buffer.length * numOfChan * 2 + 44;
+        let bufferData = new ArrayBuffer(length);
+        let view = new DataView(bufferData);
+        let channels = [];
+        let i;
+        let sample;
+        let offset = 0;
+        let pos = 0;
+
+        function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
+        function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
+
+        setUint32(0x46464952); // "RIFF"
+        setUint32(length - 8); // file length - 8
+        setUint32(0x45564157); // "WAVE"
+        setUint32(0x20746d66); // "fmt " chunk
+        setUint32(16); // length = 16
+        setUint16(1); // PCM (uncompressed)
+        setUint16(numOfChan);
+        setUint32(buffer.sampleRate);
+        setUint32(buffer.sampleRate * 2 * numOfChan); // avg. bytes/sec
+        setUint16(numOfChan * 2); // block-align
+        setUint16(16); // 16-bit
+        setUint32(0x61746164); // "data" - chunk
+        setUint32(length - pos - 4); // chunk length
+
+        for (i = 0; i < buffer.numberOfChannels; i++) channels.push(buffer.getChannelData(i));
+
+        while(pos < length) {
+            for (i = 0; i < numOfChan; i++) {
+                sample = Math.max(-1, Math.min(1, channels[i][offset])); 
+                sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767) | 0; 
+                view.setInt16(pos, sample, true);
+                pos += 2;
+            }
+            offset++;
+        }
+        return bufferData;
+    }
+
+    async function exportWav() {
+        exportDropdownBtn.textContent = "Rendering...";
+        try {
+            const buffer = await renderOfflineBuffer();
+            const wavData = audioBufferToWav(buffer);
+            const blob = new Blob([wavData], { type: 'audio/wav' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `synth_export.wav`;
+            a.click();
+            URL.revokeObjectURL(url);
+        } catch(e) {
+            console.error(e);
+            alert("Error exporting WAV");
+        }
+        exportDropdownBtn.textContent = "Export ▾";
+    }
+
+    async function exportMediaFormat(requestedFormat) {
+        let mimeType = '';
+        let ext = '';
+
+        if (requestedFormat === 'ogg') {
+            if (MediaRecorder.isTypeSupported('audio/ogg')) {
+                mimeType = 'audio/ogg';
+                ext = 'ogg';
+            } else if (MediaRecorder.isTypeSupported('audio/webm')) {
+                mimeType = 'audio/webm';
+                ext = 'webm';
+                alert('Your browser does not natively encode .OGG. Falling back to native .WEBM');
+            }
+        } else if (requestedFormat === 'mp4') {
+            if (MediaRecorder.isTypeSupported('audio/mp4')) {
+                mimeType = 'audio/mp4';
+                ext = 'mp4';
+            } else if (MediaRecorder.isTypeSupported('audio/webm')) {
+                mimeType = 'audio/webm'; 
+                ext = 'webm';
+                alert('Your browser does not natively encode .MP4 audio offline. Falling back to native .WEBM');
+            }
+        }
+
+        if (!mimeType) {
+            alert("No supported native encoder found for this format in your browser.");
+            return;
+        }
+
+        exportDropdownBtn.textContent = "Rendering...";
+
+        try {
+            const buffer = await renderOfflineBuffer();
+            if (!audioCtx) initAudio();
+            
+            const exportCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const dest = exportCtx.createMediaStreamDestination();
+            const source = exportCtx.createBufferSource();
+            source.buffer = buffer;
+            source.connect(dest);
+
+            const recorder = new MediaRecorder(dest.stream, { mimeType: mimeType });
+            let chunks = [];
+            recorder.ondataavailable = e => chunks.push(e.data);
+            recorder.onstop = () => {
+                const blob = new Blob(chunks, { type: mimeType });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `synth_export.${ext}`;
+                a.click();
+                URL.revokeObjectURL(url);
+                exportCtx.close();
+                exportDropdownBtn.textContent = "Export ▾";
+            };
+            
+            recorder.start();
+            source.start(0);
+            
+            source.onended = () => {
+                recorder.stop();
+            };
+        } catch (e) {
+            console.error(e);
+            alert("Error exporting media stream.");
+            exportDropdownBtn.textContent = "Export ▾";
+        }
+    }
+
+
+    function getMeasureDurationMs() {
+        return 4 * (60000 / metronomeBPM);
+    }
+
+    function getTotalDurationMs() {
+        const measures = parseInt(document.getElementById('measuresInput').value, 10) || 1;
+        return measures * getMeasureDurationMs();
+    }
+
+    function initAudio() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+    }
+
+    function playClick(time) {
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        osc.frequency.value = (beatCount % 4 === 0) ? 1000 : 800;
+        
+        const clickVol = parseFloat(metronomeVolumeSlider.value);
+
+        gainNode.gain.setValueAtTime(0, time);
+        gainNode.gain.linearRampToValueAtTime(clickVol, time + 0.005);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, time + 0.1);
+        
+        osc.start(time);
+        osc.stop(time + 0.1);
+    }
+
+    function startScheduler() {
+        if (!isSchedulerRunning) {
+            isSchedulerRunning = true;
+            metronomeScheduler();
+        }
+    }
+
+    function stopScheduler() {
+        isSchedulerRunning = false;
+        clearTimeout(metronomeTimerID);
+    }
+
+    function executePlayRecordAction(action, exactStartTime) {
+        const totalDur = getTotalDurationMs();
+        let ls = Math.max(0, Math.min(loopStartMs, totalDur));
+        let le = Math.max(ls + 10, Math.min(loopEndMs, totalDur));
+        let loopDur = le - ls;
+        let offset = manualPlayheadTime - ls;
+        let skipBefore = null;
+        let adjustedStartTime = exactStartTime;
+
+        if (offset > 0 && offset < loopDur) {
+            adjustedStartTime = exactStartTime - offset;
+            skipBefore = manualPlayheadTime;
+        }
+        
+        if (action === 'record') {
+            if (isLoopPlaying) return; 
+            isRecording = true;
+            noteStartTimes = {};
+            
+            const targetTrack = trackSelect.value;
+            const targetTextarea = targetTrack === '1' ? outputData1 : outputData2;
+            recordedSequence = getNotesFromTextarea(targetTextarea);
+            
+            selectedNotes = [];
+            updateCopyPasteButtons();
+
+            recordBtn.textContent = "Stop";
+            recordBtn.classList.add('recording');
+            updateUIStates();
+        }
+
+        startLoopPlaybackSynced(adjustedStartTime, skipBefore);
+    }
+
+    function metronomeScheduler() {
+        if (!isSchedulerRunning) return;
+        
+        while (nextClickTime < audioCtx.currentTime + 0.1) {
+            if (isWaitingForDownbeat) {
+                if (countInBeats <= 0) {
+                    isWaitingForDownbeat = false;
+                    const delayMs = (nextClickTime - audioCtx.currentTime) * 1000;
+                    const exactStartTime = performance.now() + delayMs;
+                    
+                    const action = pendingAction;
+                    pendingAction = null;
+
+                    setTimeout(() => {
+                        playLoopBtn.disabled = false;
+                        recordBtn.disabled = false;
+                        if (action === 'play') playLoopBtn.textContent = "Stop";
+                        if (action === 'record') {
+                            recordBtn.textContent = "Stop";
+                            recordBtn.classList.add('recording');
+                        }
+                    }, Math.max(0, delayMs));
+
+                    executePlayRecordAction(action, exactStartTime);
+                } else {
+                    countInBeats--;
+                }
+            }
+
+            if (isMetronomeArmed || (isWaitingForDownbeat && isCountInEnabled)) {
+                playClick(nextClickTime);
+            }
+            
+            nextClickTime += (60.0 / metronomeBPM);
+            beatCount++;
+        }
+        metronomeTimerID = setTimeout(metronomeScheduler, 25);
+    }
+
+    function updateBPM(newBPM, sourceElement) {
+        if (isNaN(newBPM) || newBPM < 40) newBPM = 40;
+        if (newBPM > 240) newBPM = 240;
+        
+        if (sourceElement !== bpmInput) bpmInput.value = newBPM;
+        if (sourceElement !== bpmDisplay) bpmDisplay.value = newBPM;
+
+        const ratio = metronomeBPM / newBPM;
+        
+        loopStartMs *= ratio;
+        loopEndMs *= ratio;
+
+        function scaleData(textarea, trackNum) {
+            let notes = getNotesFromTextarea(textarea);
+            if (notes.length === 0) return;
+            notes = notes.map(note => {
+                note.time = Math.round(note.time * ratio);
+                note.duration = Math.round(note.duration * ratio);
+                return note;
+            });
+            writeTrackData(trackNum, notes);
+        }
+
+        scaleData(outputData1, '1');
+        scaleData(outputData2, '2');
+
+        metronomeBPM = newBPM;
+        updateGrid();
+        updateLoopRegionUI();
+        renderTimeline();
+        
+        if (isLoopPlaying) {
+            stopLoopPlayback(true);
+            isWaitingForDownbeat = true;
+            pendingAction = 'play';
+            playLoopBtn.textContent = "Waiting for Beat 1...";
+            playLoopBtn.disabled = true;
+        }
+    }
+
+    bpmInput.addEventListener('input', (e) => {
+        updateBPM(parseInt(e.target.value, 10), bpmInput);
+    });
+
+    bpmDisplay.addEventListener('change', (e) => {
+        updateBPM(parseInt(e.target.value, 10), bpmDisplay);
+    });
+
+    metronomeBtn.addEventListener('click', () => {
+        initAudio();
+        isMetronomeArmed = !isMetronomeArmed;
+        if (isMetronomeArmed) {
+            metronomeBtn.textContent = "Click: ON";
+            metronomeBtn.classList.add('recording');
+        } else {
+            metronomeBtn.textContent = "Click: OFF";
+            metronomeBtn.classList.remove('recording');
+        }
+    });
+
+    countInBtn.addEventListener('click', () => {
+        isCountInEnabled = !isCountInEnabled;
+        if (isCountInEnabled) {
+            countInBtn.textContent = "Count-in: ON";
+            countInBtn.style.backgroundColor = "#4ed9ff";
+            countInBtn.style.color = "#1e1e24";
+        } else {
+            countInBtn.textContent = "Count-in: OFF";
+            countInBtn.style.backgroundColor = "#555";
+            countInBtn.style.color = "#888";
+        }
+    });
+
+    function updateUIStates() {
+        const targetTextarea = trackSelect.value === '1' ? outputData1 : outputData2;
+        const val = targetTextarea.value.trim();
+        clearBtn.disabled = !(val && (val.startsWith("[{") || val.startsWith('{"')));
+    }
+
+    function updateCopyPasteButtons() {
+        if (selectedNotes.length > 0) {
+            copyNotesBtn.style.display = 'inline-block';
+            deleteNoteBtn.style.display = 'inline-block';
+        } else {
+            copyNotesBtn.style.display = 'none';
+            deleteNoteBtn.style.display = 'none';
+        }
+        
+        if (clipboardNotes.length > 0) {
+            pasteNotesBtn.style.display = 'inline-block';
+        } else {
+            pasteNotesBtn.style.display = 'none';
+        }
+    }
+
+    playLoopBtn.addEventListener('click', () => {
+        initAudio();
+        if (isLoopPlaying || isWaitingForDownbeat) {
+            stopLoopPlayback();
+        } else {
+            savedPlayheadTime = manualPlayheadTime; 
+            if (isCountInEnabled) {
+                isWaitingForDownbeat = true;
+                pendingAction = 'play';
+                countInBeats = 3; 
+                beatCount = 0;
+                nextClickTime = audioCtx.currentTime + 0.05;
+                playLoopBtn.textContent = "Waiting...";
+                playLoopBtn.disabled = true;
+                startScheduler();
+            } else {
+                beatCount = 0;
+                nextClickTime = audioCtx.currentTime + 0.05;
+                executePlayRecordAction('play', performance.now());
+                playLoopBtn.textContent = "Stop";
+                playLoopBtn.classList.add('recording');
+                startScheduler();
+            }
+        }
+    });
+    
+    recordBtn.addEventListener('click', () => {
+        initAudio();
+        if (isRecording || isWaitingForDownbeat || isLoopPlaying) {
+            stopLoopPlayback();
+            isRecording = false;
+            recordBtn.textContent = "Record";
+            recordBtn.classList.remove('recording');
+            updateUIStates();
+        } else {
+            savedPlayheadTime = manualPlayheadTime; 
+            if (isCountInEnabled) {
+                isWaitingForDownbeat = true;
+                pendingAction = 'record';
+                countInBeats = 3;
+                beatCount = 0;
+                nextClickTime = audioCtx.currentTime + 0.05;
+                recordBtn.textContent = "Waiting...";
+                recordBtn.disabled = true;
+                clearBtn.disabled = true;
+                startScheduler();
+            } else {
+                beatCount = 0;
+                nextClickTime = audioCtx.currentTime + 0.05;
+                executePlayRecordAction('record', performance.now());
+                startScheduler();
+            }
+        }
+    });
+
+    deleteNoteBtn.addEventListener('click', () => {
+        if (selectedNotes.length === 0) return;
+        
+        let t1Data = getNotesFromTextarea(outputData1);
+        let t2Data = getNotesFromTextarea(outputData2);
+        
+        const s1 = selectedNotes.filter(n => n.track === '1').map(n => n.index).sort((a,b)=>b-a);
+        const s2 = selectedNotes.filter(n => n.track === '2').map(n => n.index).sort((a,b)=>b-a);
+        
+        s1.forEach(i => t1Data.splice(i, 1));
+        s2.forEach(i => t2Data.splice(i, 1));
+        
+        writeTrackData('1', t1Data);
+        writeTrackData('2', t2Data);
+        
+        selectedNotes = [];
+        updateCopyPasteButtons();
+        updateUIStates();
+        renderTimeline();
+    });
+
+    copyNotesBtn.addEventListener('click', () => {
+        clipboardNotes = [];
+        let t1Data = getNotesFromTextarea(outputData1);
+        let t2Data = getNotesFromTextarea(outputData2);
+        
+        let minTime = Infinity;
+        
+        selectedNotes.forEach(sn => {
+            let noteObj = null;
+            if (sn.track === '1' && t1Data[sn.index]) noteObj = JSON.parse(JSON.stringify(t1Data[sn.index]));
+            if (sn.track === '2' && t2Data[sn.index]) noteObj = JSON.parse(JSON.stringify(t2Data[sn.index]));
+            
+            if (noteObj) {
+                if (noteObj.time < minTime) minTime = noteObj.time;
+                clipboardNotes.push({ ...noteObj, originalTrack: sn.track });
+            }
+        });
+        
+        clipboardNotes.forEach(cn => cn.offsetTime = cn.time - minTime);
+        updateCopyPasteButtons();
+    });
+
+    pasteNotesBtn.addEventListener('click', () => {
+        if (clipboardNotes.length === 0) return;
+        
+        let pasteTime = manualPlayheadTime;
+        const quantizeVal = trackSettings[trackSelect.value].quantize;
+        if (quantizeVal !== 'none') {
+            const beatMs = 60000 / metronomeBPM;
+            const gridMs = beatMs * (4 / parseInt(quantizeVal, 10));
+            pasteTime = Math.round(pasteTime / gridMs) * gridMs;
+        }
+        
+        let t1Data = getNotesFromTextarea(outputData1);
+        let t2Data = getNotesFromTextarea(outputData2);
+        
+        clipboardNotes.forEach(cn => {
+            const tr = cn.originalTrack;
+            const newNote = {
+                note: cn.note,
+                time: pasteTime + cn.offsetTime,
+                duration: cn.duration,
+                instrument: trackSettings[tr].instrument,
+                waveform: trackSettings[tr].waveform,
+                volume: trackSettings[tr].volume
+            };
+            if (tr === '1') t1Data.push(newNote);
+            else t2Data.push(newNote);
+        });
+        
+        writeTrackData('1', t1Data);
+        writeTrackData('2', t2Data);
+        
+        updateUIStates();
+        renderTimeline();
+    });
+
+    // === Place Mode Mechanics ===
+    let isPlaceModeActive = false;
+    const placeToggleBtn = document.getElementById('placeToggleBtn');
+    placeToggleBtn.addEventListener('click', () => {
+        isPlaceModeActive = !isPlaceModeActive;
+        if (isPlaceModeActive) {
+            placeToggleBtn.textContent = "Place: ON";
+            placeToggleBtn.style.backgroundColor = "#4ed9ff";
+            placeToggleBtn.style.color = "#1e1e24";
+        } else {
+            placeToggleBtn.textContent = "Place: OFF";
+            placeToggleBtn.style.backgroundColor = "#555";
+            placeToggleBtn.style.color = "#888";
+        }
+    });
+
+    // === Octave Shifter Mechanics ===
+    let currentOctaveShift = 0;
+    const keyElements = document.querySelectorAll('.key');
+    keyElements.forEach(key => {
+        key.dataset.baseNote = key.getAttribute('data-note');
+    });
+    const baseKeyMap = Object.assign({}, keyMap);
+
+    function updateOctave() {
+        const octaveNumEl = document.querySelector('#octaveDisplay span:nth-child(2)');
+        if (octaveNumEl) {
+            octaveNumEl.textContent = `${4 + currentOctaveShift}`;
+        }
+        
+        keyElements.forEach(key => {
+            const base = key.dataset.baseNote;
+            const match = base.match(/([A-G]#?)(\d)/);
+            if (match) {
+                const newOctave = parseInt(match[2], 10) + currentOctaveShift;
+                key.setAttribute('data-note', match[1] + newOctave);
+            }
+        });
+
+        Object.keys(baseKeyMap).forEach(k => {
+            const base = baseKeyMap[k];
+            const match = base.match(/([A-G]#?)(\d)/);
+            if (match) {
+                const newOctave = parseInt(match[2], 10) + currentOctaveShift;
+                keyMap[k] = match[1] + newOctave;
+            }
+        });
+    }
+
+    document.getElementById('octaveDownBtn').addEventListener('click', () => {
+        if (currentOctaveShift > -2) {
+            currentOctaveShift--;
+            updateOctave();
+        }
+    });
+
+    document.getElementById('octaveUpBtn').addEventListener('click', () => {
+        if (currentOctaveShift < 2) {
+            currentOctaveShift++;
+            updateOctave();
+        }
+    });
+
+
+    function updateLoopRegionUI() {
+        const totalDur = getTotalDurationMs();
+        let ls = Math.max(0, Math.min(loopStartMs, totalDur));
+        let le = Math.max(ls + 10, Math.min(loopEndMs, totalDur)); 
+        
+        const leftPct = (ls / totalDur) * 100;
+        const rightPct = (le / totalDur) * 100;
+        const widthPct = rightPct - leftPct;
+        
+        document.getElementById('loopHandleLeft').style.left = `${leftPct}%`;
+        document.getElementById('loopHandleRight').style.left = `${rightPct}%`;
+        
+        const highlight = document.getElementById('loopRegionHighlight');
+        if(highlight) {
+            highlight.style.left = `${leftPct}%`;
+            highlight.style.width = `${widthPct}%`;
+        }
+        
+        const overlay = document.getElementById('loopRegionOverlay');
+        if(overlay) {
+            overlay.style.left = `${leftPct}%`;
+            overlay.style.width = `${widthPct}%`;
+        }
+    }
+
+
+    function updatePlayhead() {
+        const totalDuration = getTotalDurationMs();
+        const playhead = document.getElementById('playhead');
+        const playheadHandle = document.getElementById('playheadHandle');
+        
+        let ls = Math.max(0, Math.min(loopStartMs, totalDuration));
+        let le = Math.max(ls + 10, Math.min(loopEndMs, totalDuration));
+        const loopDur = le - ls;
+
+        if (isLoopPlaying) {
+            const now = performance.now();
+            const elapsed = now - loopStartSystemTime;
+            
+            if (elapsed < 0) {
+                manualPlayheadTime = ls;
+            } else {
+                const currentLoopTime = elapsed % loopDur;
+                manualPlayheadTime = ls + currentLoopTime;
+            }
+            const pct = (manualPlayheadTime / totalDuration) * 100;
+            playhead.style.left = `${pct}%`;
+            if (playheadHandle) playheadHandle.style.left = `${pct}%`;
+
+            const wrapper = document.querySelector('.timeline-wrapper');
+            const inner = document.getElementById('timelineInner');
+            const currentX = (manualPlayheadTime / totalDuration) * inner.offsetWidth;
+            const halfMeasurePx = (getMeasureDurationMs() / 2 / totalDuration) * inner.offsetWidth;
+
+            if (currentX > wrapper.scrollLeft + wrapper.clientWidth - halfMeasurePx) {
+                wrapper.scrollLeft = currentX - wrapper.clientWidth + halfMeasurePx;
+            } else if (currentX < wrapper.scrollLeft) { 
+                wrapper.scrollLeft = Math.max(0, currentX - halfMeasurePx);
+            }
+            
+            playheadAnimId = requestAnimationFrame(updatePlayhead);
+        } else {
+            const pct = (manualPlayheadTime / totalDuration) * 100;
+            playhead.style.left = `${pct}%`;
+            if (playheadHandle) playheadHandle.style.left = `${pct}%`;
+        }
+    }
+
+    function setPlayheadFromMouse(clientX) {
+        const rect = document.getElementById('timelineInner').getBoundingClientRect();
+        let x = clientX - rect.left;
+        let pct = x / rect.width;
+        if (pct < 0) pct = 0;
+        if (pct > 1) pct = 1;
+        
+        const totalDuration = getTotalDurationMs();
+        manualPlayheadTime = pct * totalDuration;
+        if (!isLoopPlaying) updatePlayhead();
+    }
+
+    const playheadHandleEl = document.getElementById('playheadHandle');
+    const timelineRulerEl = document.getElementById('timelineRuler');
+
+    function startPlayheadDrag(e) {
+        isDraggingPlayhead = true;
+        e.stopPropagation();
+        if (e.touches) e.preventDefault();
+    }
+
+    playheadHandleEl.addEventListener('mousedown', startPlayheadDrag);
+    playheadHandleEl.addEventListener('touchstart', startPlayheadDrag, { passive: false });
+
+    function rulerClickDrag(e) {
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        setPlayheadFromMouse(clientX);
+        isDraggingPlayhead = true;
+        if (e.touches) e.preventDefault();
+    }
+
+    timelineRulerEl.addEventListener('mousedown', rulerClickDrag);
+    timelineRulerEl.addEventListener('touchstart', rulerClickDrag, { passive: false });
+
+
+    function startLoopLeftDrag(e) {
+        isDraggingLoopLeft = true;
+        e.stopPropagation();
+        if (e.touches) e.preventDefault();
+    }
+    
+    function startLoopRightDrag(e) {
+        isDraggingLoopRight = true;
+        e.stopPropagation();
+        if (e.touches) e.preventDefault();
+    }
+
+    document.getElementById('loopHandleLeft').addEventListener('mousedown', startLoopLeftDrag);
+    document.getElementById('loopHandleLeft').addEventListener('touchstart', startLoopLeftDrag, { passive: false });
+    document.getElementById('loopHandleRight').addEventListener('mousedown', startLoopRightDrag);
+    document.getElementById('loopHandleRight').addEventListener('touchstart', startLoopRightDrag, { passive: false });
+
+
+    function startLoopPlaybackSynced(exactStartTime, skipBefore = null) {
+        isLoopPlaying = true;
+        
+        scheduleLoop(exactStartTime, skipBefore);
+        updatePlayhead();
+    }
+
+    function scheduleLoop(iterationStartTime, skipBefore = null) {
+        if (!isLoopPlaying) return;
+
+        let sequenceToPlay = [];
+        let t1Notes = getNotesFromTextarea(outputData1).map(n => ({...n, _track: '1'}));
+        let t2Notes = getNotesFromTextarea(outputData2).map(n => ({...n, _track: '2'}));
+        
+        sequenceToPlay = sequenceToPlay.concat(t1Notes, t2Notes);
+        
+        loopTimeoutIDs.forEach(id => clearTimeout(id));
+        loopTimeoutIDs = [];
+        
+        loopStartSystemTime = iterationStartTime;
+        const now = performance.now();
+
+        const totalDur = getTotalDurationMs();
+        let ls = Math.max(0, Math.min(loopStartMs, totalDur));
+        let le = Math.max(ls + 10, Math.min(loopEndMs, totalDur));
+        const loopDur = le - ls;
+
+        sequenceToPlay.forEach(noteData => {
+            if (noteData.time >= ls && noteData.time < le) {
+                if (skipBefore !== null && noteData.time < skipBefore) return;
+                if (trackMutes[noteData._track]) return;
+
+                const timeOffset = noteData.time - ls;
+                const absoluteTime = iterationStartTime + timeOffset;
+                const delay = absoluteTime - now;
+                
+                if (delay >= -100) {
+                    const timeoutId = setTimeout(() => {
+                        playBackNote(noteData.note, noteData.duration, noteData._track);
+                    }, Math.max(0, delay));
+                    loopTimeoutIDs.push(timeoutId);
+                }
+            }
+        });
+
+        const nextIterationTime = iterationStartTime + loopDur;
+        const iterationDelay = nextIterationTime - now;
+
+        loopIntervalID = setTimeout(() => scheduleLoop(nextIterationTime, null), Math.max(0, iterationDelay));
+    }
+
+    function stopLoopPlayback(soft = false) {
+        isLoopPlaying = false;
+        loopTimeoutIDs.forEach(id => clearTimeout(id));
+        loopTimeoutIDs = [];
+        if (loopIntervalID) clearTimeout(loopIntervalID);
+        loopIntervalID = null;
+
+        activePlaybackNodes.forEach(node => {
+            try {
+                node.gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
+                node.gainNode.gain.setTargetAtTime(0, audioCtx.currentTime, 0.015);
+                node.osc.stop(audioCtx.currentTime + 0.05);
+                if (node.extraOscs) node.extraOscs.forEach(eo => eo.stop(audioCtx.currentTime + 0.05));
+            } catch(e) {}
+        });
+        activePlaybackNodes = [];
+
+        if(playheadAnimId) cancelAnimationFrame(playheadAnimId);
+
+        if (!soft) {
+            isWaitingForDownbeat = false;
+            stopScheduler();
+            
+            playLoopBtn.textContent = "Play";
+            playLoopBtn.classList.remove('recording');
+            playLoopBtn.disabled = false;
+            
+            recordBtn.textContent = "Record";
+            recordBtn.classList.remove('recording');
+            recordBtn.disabled = false;
+            isRecording = false;
+            
+            manualPlayheadTime = savedPlayheadTime;
+            updatePlayhead();
+        }
+    }
+
+    function playBackNote(note, durationMs, trackNum) {
+        const frequency = noteFrequencies[note];
+        if (!frequency) return;
+        if (trackMutes[trackNum]) return;
+
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        
+        const settings = trackSettings[trackNum];
+        const isDrums = settings.instrument === 'drums';
+        const masterVolume = settings.volume;
+        const waveType = settings.waveform;
+        
+        let extraOscs = [];
+
+        if (isDrums) {
+            const noteBase = note.replace(/\d/g, '');
+            if (noteBase === 'C' || noteBase === 'B') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.15);
+                gainNode.gain.setValueAtTime(masterVolume, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+            } else if (noteBase === 'D' || noteBase === 'E') {
+                osc.type = 'sine';
+                const baseFreq = (noteBase === 'D') ? 300 : 450;
+                osc.frequency.setValueAtTime(baseFreq + 100, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(baseFreq, audioCtx.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(masterVolume, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            } else if (noteBase === 'F#' || noteBase === 'G#' || noteBase === 'A#' || noteBase === 'C#') {
+                osc.type = 'triangle';
+                let fq = 600;
+                if(noteBase === 'G#') fq = 800;
+                if(noteBase === 'A#') fq = 1000;
+                if(noteBase === 'C#') fq = 1200;
+                osc.frequency.setValueAtTime(fq, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(masterVolume * 0.7, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+
+                const ringOsc = audioCtx.createOscillator();
+                ringOsc.type = 'triangle';
+                ringOsc.frequency.setValueAtTime(fq * 2.75, audioCtx.currentTime);
+                ringOsc.connect(gainNode);
+                ringOsc.start(audioCtx.currentTime);
+                extraOscs.push(ringOsc);
+            } else {
+                osc.type = 'sine';
+                const targetFreq = (noteBase === 'F') ? 250 : (noteBase === 'G' ? 300 : 350);
+                osc.frequency.setValueAtTime(100, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(targetFreq, audioCtx.currentTime + 0.15);
+                gainNode.gain.setValueAtTime(masterVolume, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+            }
+        } else {
+            osc.type = waveType;
+            osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+            osc.detune.setValueAtTime(0, audioCtx.currentTime); 
+            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(masterVolume, audioCtx.currentTime + 0.02);
+        }
+
+        const durationSec = durationMs / 1000;
+        const stopTime = audioCtx.currentTime + durationSec;
+        
+        if (!isDrums) {
+            gainNode.gain.setValueAtTime(masterVolume, stopTime - 0.05 < audioCtx.currentTime + 0.02 ? audioCtx.currentTime + 0.02 : stopTime - 0.05);
+            gainNode.gain.linearRampToValueAtTime(0, stopTime);
+        } else {
+            gainNode.gain.cancelScheduledValues(stopTime);
+            gainNode.gain.setTargetAtTime(0, stopTime, 0.015);
+        }
+
+        osc.connect(gainNode);
+        gainNode.connect(ctx.destination);
+
+        osc.start(audioCtx.currentTime);
+        osc.stop(stopTime + 0.05);
+        if (extraOscs.length > 0) {
+            extraOscs.forEach(eo => eo.stop(stopTime + 0.05));
+        }
+
+        const nodeRef = { osc, gainNode, extraOscs, trackNum };
+        activePlaybackNodes.push(nodeRef);
+        setTimeout(() => {
+            activePlaybackNodes = activePlaybackNodes.filter(n => n !== nodeRef);
+        }, durationMs + 100);
+    }
+
+    function startNote(note) {
+        physicallyHeldKeys.add(note);
+        pendingSustainReleases.delete(note);
+
+        initAudio();
+        
+        const currentTrack = trackSelect.value;
+        const settings = trackSettings[currentTrack];
+
+        if (isPlaceModeActive) {
+            let pasteTime = manualPlayheadTime;
+            const quantizeVal = settings.quantize;
+            let durationMs = 250;
+            if (quantizeVal !== 'none') {
+                const beatMs = 60000 / metronomeBPM;
+                const gridMs = beatMs * (4 / parseInt(quantizeVal, 10));
+                pasteTime = Math.round(pasteTime / gridMs) * gridMs;
+                durationMs = gridMs;
+            }
+            
+            let notes = getNotesFromTextarea(currentTrack === '1' ? outputData1 : outputData2);
+            
+            let newNote = {
+                note: note,
+                time: pasteTime,
+                duration: durationMs,
+                instrument: settings.instrument,
+                waveform: settings.waveform,
+                volume: settings.volume
+            };
+            
+            notes.push(newNote);
+            writeTrackData(currentTrack, notes);
+            
+            updateUIStates();
+            renderTimeline();
+        }
+
+        if (activeOscillators[note]) return;
+        if (trackMutes[currentTrack]) return;
+
+        if (isRecording) {
+            const now = performance.now();
+            
+            const totalDur = getTotalDurationMs();
+            let ls = Math.max(0, Math.min(loopStartMs, totalDur));
+            let le = Math.max(ls + 10, Math.min(loopEndMs, totalDur));
+            let loopDur = le - ls;
+            
+            let elapsed = now - loopStartSystemTime;
+            let currentLoopTime = elapsed % loopDur;
+            if (currentLoopTime < 0) currentLoopTime += loopDur;
+            let playheadTime = ls + currentLoopTime;
+            
+            noteStartTimes[note] = { playheadTime: playheadTime, absTime: now };
+        }
+
+        const frequency = noteFrequencies[note];
+        if (!frequency) return;
+
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        const isDrums = settings.instrument === 'drums';
+        const masterVolume = settings.volume;
+        let extraOscs = [];
+
+        if (isDrums) {
+            const noteBase = note.replace(/\d/g, '');
+            if (noteBase === 'C' || noteBase === 'B') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.15);
+                gainNode.gain.setValueAtTime(masterVolume, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+            } else if (noteBase === 'D' || noteBase === 'E') {
+                osc.type = 'sine';
+                const baseFreq = (noteBase === 'D') ? 300 : 450;
+                osc.frequency.setValueAtTime(baseFreq + 100, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(baseFreq, audioCtx.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(masterVolume, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            } else if (noteBase === 'F#' || noteBase === 'G#' || noteBase === 'A#' || noteBase === 'C#') {
+                osc.type = 'triangle';
+                let fq = 600;
+                if(noteBase === 'G#') fq = 800;
+                if(noteBase === 'A#') fq = 1000;
+                if(noteBase === 'C#') fq = 1200;
+                osc.frequency.setValueAtTime(fq, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(masterVolume * 0.7, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+
+                const ringOsc = audioCtx.createOscillator();
+                ringOsc.type = 'triangle';
+                ringOsc.frequency.setValueAtTime(fq * 2.75, audioCtx.currentTime);
+                ringOsc.connect(gainNode);
+                ringOsc.start(audioCtx.currentTime);
+                extraOscs.push(ringOsc);
+            } else {
+                osc.type = 'sine';
+                const targetFreq = (noteBase === 'F') ? 250 : (noteBase === 'G' ? 300 : 350);
+                osc.frequency.setValueAtTime(100, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(targetFreq, audioCtx.currentTime + 0.15);
+                gainNode.gain.setValueAtTime(masterVolume, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+            }
+        } else {
+            osc.type = settings.waveform;
+            osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+            osc.detune.setValueAtTime(currentPitchBend, audioCtx.currentTime);
+            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(masterVolume, audioCtx.currentTime + 0.02);
+        }
+
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        osc.start();
+
+        activeOscillators[note] = { osc, gainNode, extraOscs, trackNum: currentTrack };
+
+        const keyElement = document.querySelector(`[data-note="${note}"]`);
+        if (keyElement) keyElement.classList.add('active');
+    }
+
+    function stopNote(note) {
+        physicallyHeldKeys.delete(note);
+
+        if (isSustainActive) {
+            pendingSustainReleases.add(note);
+            return;
+        }
+
+        const activeNode = activeOscillators[note];
+        if (!activeNode) return;
+
+        const currentTrack = trackSelect.value;
+        const settings = trackSettings[currentTrack];
+
+        if (isRecording && noteStartTimes[note] !== undefined) {
+            const now = performance.now();
+            const duration = now - noteStartTimes[note].absTime;
+            
+            let newNote = {
+                note: note,
+                time: noteStartTimes[note].playheadTime,
+                duration: duration,
+                instrument: settings.instrument,
+                waveform: settings.waveform,
+                volume: settings.volume
+            };
+
+            const quantizeVal = settings.quantize;
+            if (quantizeVal !== 'none') {
+                const beatMs = 60000 / metronomeBPM;
+                const gridMs = beatMs * (4 / parseInt(quantizeVal, 10));
+                newNote.time = Math.round(newNote.time / gridMs) * gridMs;
+                newNote.duration = Math.max(gridMs, Math.round(newNote.duration / gridMs) * gridMs);
+            } else {
+                newNote.time = Math.round(newNote.time);
+                newNote.duration = Math.round(newNote.duration);
+            }
+            
+            const totalDur = getTotalDurationMs();
+            if (newNote.time >= totalDur) newNote.time = 0; 
+
+            recordedSequence.push(newNote);
+            delete noteStartTimes[note];
+            
+            writeTrackData(currentTrack, recordedSequence);
+            updateUIStates();
+            renderTimeline(); 
+        }
+
+        const { osc, gainNode, extraOscs } = activeNode;
+        
+        gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
+        gainNode.gain.setValueAtTime(gainNode.gain.value, audioCtx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.05);
+
+        osc.stop(audioCtx.currentTime + 0.05);
+        if (extraOscs && extraOscs.length > 0) {
+            extraOscs.forEach(eo => eo.stop(audioCtx.currentTime + 0.05));
+        }
+
+        delete activeOscillators[note];
+
+        const keyElement = document.querySelector(`[data-note="${note}"]`);
+        if (keyElement) keyElement.classList.remove('active');
+    }
+
+    clearBtn.addEventListener('click', () => {
+        recordedSequence = [];
+        writeTrackData(trackSelect.value, []);
+        
+        selectedNotes = [];
+        updateCopyPasteButtons();
+        
+        updateUIStates();
+        renderTimeline();
+    });
+
+    keys.forEach(key => {
+        key.addEventListener('mousedown', () => {
+            const note = key.getAttribute('data-note');
+            startNote(note);
+        });
+
+        key.addEventListener('mouseup', () => {
+            const note = key.getAttribute('data-note');
+            stopNote(note);
+        });
+
+        key.addEventListener('mouseleave', () => {
+            const note = key.getAttribute('data-note');
+            stopNote(note);
+        });
+
+        key.addEventListener('touchstart', (e) => {
+            e.preventDefault(); 
+            const note = key.getAttribute('data-note');
+            startNote(note);
+        }, { passive: false });
+
+        key.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            const note = key.getAttribute('data-note');
+            stopNote(note);
+        });
+
+        key.addEventListener('touchcancel', (e) => {
+            e.preventDefault();
+            const note = key.getAttribute('data-note');
+            stopNote(note);
+        });
+    });
+
+    window.addEventListener('keydown', (e) => {
+        if (e.repeat) return; 
+        const note = keyMap[e.key.toLowerCase()];
+        if (note) {
+            startNote(note);
+        }
+    });
+
+    window.addEventListener('keyup', (e) => {
+        const note = keyMap[e.key.toLowerCase()];
+        if (note) {
+            stopNote(note);
+        }
+    });
+
+    if (navigator.requestMIDIAccess) {
+        navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
+    } else {
+        console.warn("Web MIDI API not supported in this browser.");
+    }
+
+    function onMIDISuccess(midiAccess) {
+        const inputs = midiAccess.inputs.values();
+        for (let input = inputs.next(); input && !input.done; input = inputs.next()) {
+            input.value.onmidimessage = onMIDIMessage;
+        }
+        
+        midiAccess.onstatechange = function(e) {
+            if (e.port.type === "input" && e.port.state === "connected") {
+                e.port.onmidimessage = onMIDIMessage;
+            }
+        };
+    }
+
+    function onMIDIFailure() {
+        console.warn("Could not access your MIDI devices.");
+    }
+
+    const midiNotesMap = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+
+    function onMIDIMessage(event) {
+        if (event.data.length < 3) return;
+
+        const command = event.data[0] & 0xf0; 
+        const note = event.data[1];
+        const velocity = event.data[2];
+
+        if (command === 176 && note === 1) {
+            if (velocity > 0) {
+                const now = performance.now();
+                if (now - lastModPressTime > 500) { 
+                    document.getElementById('recordBtn').click();
+                    lastModPressTime = now;
+                }
+            }
+            return;
+        }
+
+        if (command === 224) {
+            const lsb = event.data[1];
+            const msb = event.data[2];
+            const bendValue = (msb << 7) | lsb; 
+            
+            const normalizedBend = (bendValue - 8192) / 8192; 
+            currentPitchBend = normalizedBend * 200; 
+
+            if (audioCtx) {
+                Object.values(activeOscillators).forEach(active => {
+                    active.osc.detune.setValueAtTime(currentPitchBend, audioCtx.currentTime);
+                });
+            }
+            return;
+        }
+
+        if (command === 176 && note === 64) {
+            isSustainActive = (velocity >= 64);
+            
+            if (!isSustainActive) {
+                pendingSustainReleases.forEach(pendingNote => {
+                    if (!physicallyHeldKeys.has(pendingNote)) {
+                        stopNote(pendingNote);
+                    }
+                });
+                pendingSustainReleases.clear();
+            }
+            return;
+        }
+        
+        const octave = Math.floor(note / 12) - 1 + currentOctaveShift;
+        const noteName = midiNotesMap[note % 12] + octave;
+
+        if (command === 144 && velocity > 0) {
+            startNote(noteName);
+        } else if (command === 128 || (command === 144 && velocity === 0)) {
+            stopNote(noteName);
+        }
+    }
+
+    let isDraggingNote = false;
+    let dragElement = null;
+    let dragStartX = 0;
+    let dragSelectedNotes = [];
+
+    function initTimeline() {
+        loopStartMs = 0;
+        loopEndMs = getMeasureDurationMs();
+        
+        const notesContainer = document.getElementById('notesContainer');
+        const timelineWrapper = document.querySelector('.timeline-wrapper');
+        
+        updateTimelineWidth();
+        updateLoopRegionUI();
+
+        document.getElementById('measuresInput').addEventListener('input', () => {
+            updateTimelineWidth();
+            updateGrid();
+            updateLoopRegionUI();
+            renderTimeline();
+        });
+
+        function handleImport(textarea, trackNum) {
+            try {
+                const data = JSON.parse(textarea.value);
+                if (data && !Array.isArray(data)) {
+                    if (data.tempo) {
+                        bpmInput.value = data.tempo;
+                        bpmDisplay.value = data.tempo;
+                        metronomeBPM = data.tempo;
+                    }
+                    if (data.instrument) trackSettings[trackNum].instrument = data.instrument;
+                    if (data.waveform) trackSettings[trackNum].waveform = data.waveform;
+                    if (data.volume !== undefined) trackSettings[trackNum].volume = data.volume;
+                    if (data.quantize) trackSettings[trackNum].quantize = data.quantize;
+                    
+                    if (trackSelect.value === trackNum) {
+                        instrumentSelect.value = trackSettings[trackNum].instrument;
+                        waveformSelect.value = trackSettings[trackNum].waveform;
+                        volumeSlider.value = trackSettings[trackNum].volume;
+                        quantizeSelect.value = trackSettings[trackNum].quantize;
+                    }
+                }
+            } catch(e) {}
+            
+            selectedNotes = [];
+            updateCopyPasteButtons();
+            updateUIStates();
+            updateGrid();
+            updateLoopRegionUI();
+            renderTimeline();
+        }
+
+        outputData1.addEventListener('input', () => handleImport(outputData1, '1'));
+        outputData2.addEventListener('input', () => handleImport(outputData2, '2'));
+
+        function handleNotesDown(e, clientX, clientY) {
+            if(e.target.classList.contains('note-block')) {
+                const tr = e.target.dataset.track;
+                const idx = parseInt(e.target.dataset.index, 10);
+                
+                if (!selectedNotes.find(n => n.track === tr && n.index === idx)) {
+                    document.querySelectorAll('.note-block.selected').forEach(el => el.classList.remove('selected'));
+                    selectedNotes = [{ track: tr, index: idx }];
+                    e.target.classList.add('selected');
+                }
+                
+                updateCopyPasteButtons();
+                
+                isDraggingNote = true;
+                dragStartX = clientX;
+                dragSelectedNotes = [];
+                document.querySelectorAll('.note-block.selected').forEach(el => {
+                    dragSelectedNotes.push({
+                        element: el,
+                        originalTime: parseFloat(el.dataset.time),
+                        track: el.dataset.track,
+                        index: parseInt(el.dataset.index, 10)
+                    });
+                });
+            } else if (e.target.id === 'timelineInner' || e.target.id === 'timelineGrid' || e.target.classList.contains('timeline-wrapper') || e.target.id === 'notesContainer') {
+                document.querySelectorAll('.note-block.selected').forEach(el => el.classList.remove('selected'));
+                selectedNotes = [];
+                updateCopyPasteButtons();
+
+                const rect = document.getElementById('timelineInner').getBoundingClientRect();
+                selStartX = clientX - rect.left;
+                selStartY = clientY - rect.top;
+
+                longPressTimeout = setTimeout(() => {
+                    isSelecting = true;
+                    selectionBoxEl = document.createElement('div');
+                    selectionBoxEl.className = 'selection-box';
+                    selectionBoxEl.style.left = selStartX + 'px';
+                    selectionBoxEl.style.top = selStartY + 'px';
+                    selectionBoxEl.style.width = '0px';
+                    selectionBoxEl.style.height = '0px';
+                    document.getElementById('timelineInner').appendChild(selectionBoxEl);
+                }, 500);
+            }
+        }
+
+        notesContainer.addEventListener('mousedown', (e) => handleNotesDown(e, e.clientX, e.clientY));
+        notesContainer.addEventListener('touchstart', (e) => handleNotesDown(e, e.touches[0].clientX, e.touches[0].clientY), { passive: false });
+
+        function handleNotesMove(clientX, clientY) {
+            if (longPressTimeout && !isSelecting) {
+                const rect = document.getElementById('timelineInner').getBoundingClientRect();
+                const currX = clientX - rect.left;
+                const currY = clientY - rect.top;
+                if (Math.abs(currX - selStartX) > 5 || Math.abs(currY - selStartY) > 5) {
+                    clearTimeout(longPressTimeout);
+                    longPressTimeout = null;
+                }
+            }
+        }
+        
+        notesContainer.addEventListener('mousemove', (e) => handleNotesMove(e.clientX, e.clientY));
+        notesContainer.addEventListener('touchmove', (e) => handleNotesMove(e.touches[0].clientX, e.touches[0].clientY), { passive: false });
+
+        document.addEventListener('mousemove', onGlobalMove);
+        document.addEventListener('touchmove', onGlobalMove, { passive: false });
+
+        timelineWrapper.addEventListener('wheel', (e) => {
+            if (e.ctrlKey) {
+                e.preventDefault(); 
+                const rect = timelineWrapper.getBoundingClientRect();
+                const focalX = e.clientX - rect.left;
+                
+                const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
+                const oldZoom = zoomLevel;
+                zoomLevel = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoomLevel * zoomFactor));
+                
+                if (oldZoom !== zoomLevel) {
+                    applyZoom(focalX, oldZoom);
+                }
+            }
+        }, { passive: false });
+
+        let initialPinchDistance = null;
+        let initialZoomLevel = 1;
+
+        timelineWrapper.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 2) {
+                e.preventDefault(); 
+                const t1 = e.touches[0];
+                const t2 = e.touches[1];
+                initialPinchDistance = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+                initialZoomLevel = zoomLevel;
+            }
+        }, { passive: false });
+
+        timelineWrapper.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 2 && initialPinchDistance) {
+                e.preventDefault();
+                const t1 = e.touches[0];
+                const t2 = e.touches[1];
+                const currentDistance = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+                
+                const scale = currentDistance / initialPinchDistance;
+                const oldZoom = zoomLevel;
+                zoomLevel = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, initialZoomLevel * scale));
+                
+                if (oldZoom !== zoomLevel) {
+                    const rect = timelineWrapper.getBoundingClientRect();
+                    const centerX = (t1.clientX + t2.clientX) / 2;
+                    const focalX = centerX - rect.left;
+                    applyZoom(focalX, oldZoom);
+                }
+            }
+        }, { passive: false });
+
+        timelineWrapper.addEventListener('touchend', (e) => {
+            if (e.touches.length < 2) {
+                initialPinchDistance = null;
+            }
+        });
+
+        updateGrid();
+    }
+
+    function updateTimelineWidth() {
+        const timelineInner = document.getElementById('timelineInner');
+        const measures = parseInt(document.getElementById('measuresInput').value, 10) || 1;
+        timelineInner.style.width = (measures * 100 * zoomLevel) + '%';
+    }
+
+    function applyZoom(focalX, oldZoom) {
+        const timelineInner = document.getElementById('timelineInner');
+        const timelineWrapper = document.querySelector('.timeline-wrapper');
+        const oldScrollLeft = timelineWrapper.scrollLeft;
+        const oldWidth = timelineInner.offsetWidth;
+
+        updateTimelineWidth();
+
+        const newWidth = timelineInner.offsetWidth;
+        if (oldWidth > 0 && newWidth !== oldWidth) {
+            const ratio = newWidth / oldWidth;
+            const innerX = oldScrollLeft + focalX;
+            const newInnerX = innerX * ratio;
+            timelineWrapper.scrollLeft = newInnerX - focalX;
+        }
+    }
+
+    function updateGrid() {
+        const measures = parseInt(document.getElementById('measuresInput').value, 10) || 1;
+        const grid = document.getElementById('timelineGrid');
+        const totalBeats = measures * 4;
+        const pctPerBeat = 100 / totalBeats; 
+        grid.style.backgroundImage = `repeating-linear-gradient(to right, transparent, transparent calc(${pctPerBeat}% - 1px), rgba(255, 255, 255, 0.3) calc(${pctPerBeat}% - 1px), rgba(255, 255, 255, 0.3) ${pctPerBeat}%)`;
+    }
+
+    function onGlobalMove(e) {
+        let clientX = e.clientX;
+        let clientY = e.clientY;
+        if(e.touches && e.touches.length > 0) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+            if (isDraggingPlayhead || isSelecting || isDraggingNote || isDraggingLoopLeft || isDraggingLoopRight) e.preventDefault(); 
+        }
+
+        if (isDraggingPlayhead) {
+            setPlayheadFromMouse(clientX);
+            return;
+        }
+        
+        if (isDraggingLoopLeft || isDraggingLoopRight) {
+            const rect = document.getElementById('timelineInner').getBoundingClientRect();
+            let pct = (clientX - rect.left) / rect.width;
+            if (pct < 0) pct = 0;
+            if (pct > 1) pct = 1;
+
+            const totalDur = getTotalDurationMs();
+            let newTime = pct * totalDur;
+
+            const quantizeVal = trackSettings[trackSelect.value].quantize;
+            if (quantizeVal !== 'none') {
+                const beatMs = 60000 / metronomeBPM;
+                const gridMs = beatMs * (4 / parseInt(quantizeVal, 10));
+                newTime = Math.round(newTime / gridMs) * gridMs;
+            }
+
+            if (isDraggingLoopLeft) {
+                if (newTime >= loopEndMs) newTime = loopEndMs - 10; 
+                loopStartMs = newTime;
+            } else {
+                if (newTime <= loopStartMs) newTime = loopStartMs + 10;
+                loopEndMs = newTime;
+            }
+            updateLoopRegionUI();
+            return;
+        }
+
+        if (isSelecting && selectionBoxEl) {
+            const rect = document.getElementById('timelineInner').getBoundingClientRect();
+            const currX = clientX - rect.left;
+            const currY = clientY - rect.top;
+            
+            const x = Math.min(selStartX, currX);
+            const y = Math.min(selStartY, currY);
+            const w = Math.abs(currX - selStartX);
+            const h = Math.abs(currY - selStartY);
+            
+            selectionBoxEl.style.left = x + 'px';
+            selectionBoxEl.style.top = y + 'px';
+            selectionBoxEl.style.width = w + 'px';
+            selectionBoxEl.style.height = h + 'px';
+            
+            const notes = document.querySelectorAll('.note-block');
+            selectedNotes = [];
+            
+            const sRect = selectionBoxEl.getBoundingClientRect();
+            notes.forEach(note => {
+                const nRect = note.getBoundingClientRect();
+                if (nRect.left < sRect.right && nRect.right > sRect.left && nRect.top < sRect.bottom && nRect.bottom > sRect.top) {
+                    note.classList.add('selected');
+                    const t = note.dataset.track;
+                    const i = parseInt(note.dataset.index, 10);
+                    if (!selectedNotes.find(sn => sn.track === t && sn.index === i)) {
+                        selectedNotes.push({ track: t, index: i });
+                    }
+                } else {
+                    note.classList.remove('selected');
+                }
+            });
+            updateCopyPasteButtons();
+            return;
+        }
+
+        if(!isDraggingNote || dragSelectedNotes.length === 0) return;
+
+        const timelineInner = document.getElementById('timelineInner');
+        const rect = timelineInner.getBoundingClientRect();
+        const dx = clientX - dragStartX;
+        
+        const totalDuration = getTotalDurationMs();
+        const msPerPixel = totalDuration / rect.width; 
+
+        dragSelectedNotes.forEach(dragObj => {
+            const quantizeVal = trackSettings[dragObj.track].quantize;
+            let gridMs = 1;
+            if (quantizeVal !== 'none') {
+                const beatMs = 60000 / metronomeBPM;
+                gridMs = beatMs * (4 / parseInt(quantizeVal, 10));
+            }
+
+            let newTime = dragObj.originalTime + (dx * msPerPixel);
+            
+            if (quantizeVal !== 'none') {
+                newTime = Math.round(newTime / gridMs) * gridMs;
+            }
+
+            if(newTime < 0) newTime = 0;
+            if(newTime > totalDuration) newTime = totalDuration; 
+            
+            dragObj.element.dataset.newTime = newTime;
+            dragObj.element.style.left = `${(newTime / totalDuration) * 100}%`;
+        });
+    }
+
+    function onGlobalUp(e) {
+        if (isDraggingPlayhead) isDraggingPlayhead = false;
+        if (isDraggingLoopLeft) isDraggingLoopLeft = false;
+        if (isDraggingLoopRight) isDraggingLoopRight = false;
+
+        if (longPressTimeout) {
+            clearTimeout(longPressTimeout);
+            longPressTimeout = null;
+        }
+
+        if (isSelecting || selectionBoxEl) {
+            isSelecting = false;
+            if (selectionBoxEl) {
+                selectionBoxEl.remove();
+                selectionBoxEl = null;
+            }
+        }
+
+        if(isDraggingNote) {
+            isDraggingNote = false;
+            if (dragSelectedNotes && dragSelectedNotes.length > 0) {
+                let t1Data = getNotesFromTextarea(outputData1);
+                let t2Data = getNotesFromTextarea(outputData2);
+                let changed = false;
+
+                dragSelectedNotes.forEach(dragObj => {
+                    const track = dragObj.track;
+                    const index = dragObj.index;
+                    const newTime = parseFloat(dragObj.element.dataset.newTime);
+                    
+                    if(!isNaN(newTime)) {
+                        let notes = track === '1' ? t1Data : t2Data;
+                        if (notes[index]) {
+                            notes[index].time = newTime;
+                            changed = true;
+                        }
+                    }
+                });
+
+                if (changed) {
+                    writeTrackData('1', t1Data);
+                    writeTrackData('2', t2Data);
+                }
+                dragSelectedNotes = [];
+                renderTimeline();
+            }
+        }
+    }
+
+    window.addEventListener('mouseup', onGlobalUp);
+    window.addEventListener('touchend', onGlobalUp);
+    window.addEventListener('blur', onGlobalUp);
+
+    document.addEventListener('mouseleave', (e) => {
+        if (e.clientY <= 0 || e.clientX <= 0 || (e.clientX >= window.innerWidth || e.clientY >= window.innerHeight)) {
+            onGlobalUp(e);
+        }
+    });
+
+    function renderTimeline() {
+        const container = document.getElementById('notesContainer');
+        container.innerHTML = '';
+        const totalDuration = getTotalDurationMs();
+        const allNotes = Object.keys(noteFrequencies);
+        const activeTrack = trackSelect.value;
+
+        function drawTrack(textarea, trackNum) {
+            const notes = getNotesFromTextarea(textarea);
+            if(notes.length === 0) return;
+            try {
+                notes.forEach((n, i) => {
+                    const el = document.createElement('div');
+                    el.className = `note-block note-track-${trackNum}`;
+                    const leftPct = (n.time / totalDuration) * 100;
+                    const widthPct = (n.duration / totalDuration) * 100;
+                    const noteIdx = allNotes.indexOf(n.note);
+                    let topPct = 50;
+                    if(noteIdx !== -1) {
+                        topPct = 100 - ((noteIdx / (allNotes.length - 1)) * 100);
+                    }
+                    
+                    if (selectedNotes.find(sn => sn.track === trackNum && sn.index === i)) {
+                        el.classList.add('selected');
+                    }
+                    
+                    if (trackNum !== activeTrack) {
+                        el.style.opacity = '0.5';
+                    }
+
+                    el.style.left = `${leftPct}%`;
+                    el.style.width = `${Math.max(widthPct, 0.5)}%`; 
+                    el.style.top = `calc(${topPct}% - 6px)`;
+                    
+                    el.dataset.track = trackNum;
+                    el.dataset.index = i;
+                    el.dataset.time = n.time;
+                    
+                    container.appendChild(el);
+                });
+            } catch(e) {}
+        }
+        drawTrack(outputData1, '1');
+        drawTrack(outputData2, '2');
+    }
+
+    initTimeline();
+
+    document.getElementById('mainViewport').addEventListener('wheel', (e) => {
+        if (!e.target.closest('.timeline-wrapper')) {
+            e.preventDefault();
+        }
+    }, { passive: false });
+
+    function copyTextToClipboard(text, btn, defaultText) {
+        if (!text) return;
+        navigator.clipboard.writeText(text).then(() => {
+            btn.textContent = "Copied!";
+            const oldBg = btn.style.backgroundColor;
+            btn.style.backgroundColor = "#7adaff";
+            setTimeout(() => {
+                btn.textContent = defaultText;
+                btn.style.backgroundColor = oldBg; 
+            }, 1500);
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
+        });
+    }
+
+    exportBtn1.addEventListener('click', () => {
+        const notes = getNotesFromTextarea(outputData1);
+        if (notes.length) copyTextToClipboard(JSON.stringify(notes), exportBtn1, "COPY");
+    });
+
+    exportBtn2.addEventListener('click', () => {
+        const notes = getNotesFromTextarea(outputData2);
+        if (notes.length) copyTextToClipboard(JSON.stringify(notes), exportBtn2, "COPY");
+    });
+</script>
+
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/synth/sw.js', { scope: '/synth/' })
+                .then(registration => {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+        });
+    }
+</script>
+
+</body>
+</html>
