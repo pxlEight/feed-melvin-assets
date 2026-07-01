@@ -1,10 +1,10 @@
 {
-  "id": "/synth/",
+  "id": "/earworm/",
   "name": "Oscillator Synthesizer",
   "short_name": "Osc Synth",
   "description": "A web-based MIDI-capable synthesizer and loop recorder.",
-  "start_url": "/synth/",
-  "scope": "/synth/",
+  "start_url": "/earworm/",
+  "scope": "/earworm/",
   "display": "standalone",
   "background_color": "#1e1e24",
   "theme_color": "#2a2a35",

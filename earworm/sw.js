@@ -1,12 +1,12 @@
-const CACHE_NAME = 'synth-cache-v1';
+const CACHE_NAME = 'earworm-cache-v1';
 
 // Add all the specific paths needed to run the app offline
 const urlsToCache = [
-  '/synth/',
-  '/synth/index.html',
-  '/synth/manifest.json',
-  '/synth/icon-192.png',
-  '/synth/icon-512.png'
+  '/earworm/',
+  '/earworm/index.html',
+  '/earworm/manifest.json',
+  '/earworm/icon-192.png',
+  '/earworm/icon-512.png'
 ];
 
 // Install the service worker and cache the files
