@@ -1,4 +1,5 @@
 {
+  "id": "/synth/",
   "name": "Oscillator Synthesizer",
   "short_name": "Osc Synth",
   "description": "A web-based MIDI-capable synthesizer and loop recorder.",
