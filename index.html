@@ -99,14 +99,12 @@
 
         .action-btns { position: absolute; bottom: 73.8px; width: 100%; display: flex; justify-content: center; gap: 15px; padding: 0 15px; box-sizing: border-box; touch-action: manipulation; }
         .btn-wrapper { flex: 1; max-width: 170px; position: relative; }
-        .feed-btn, .burp-btn { width: 100%; height: 90px; margin: 0; padding: 0; border: none; border-radius: 0; cursor: pointer; outline: none; position: relative; z-index: 120; display: block; transform: translateY(0px); touch-action: manipulation; }
-        .feed-btn { background: #326efc; box-shadow: 0 6px 0 #234de2; }
-        .burp-btn { background: #5ea1fd; box-shadow: 0 6px 0 #326efc; }
-        .btn-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; pointer-events: none; z-index: 121; }
+        .feed-btn, .burp-btn { width: 100%; height: 90px; margin: 0; padding: 0; background: #5ea1fd; border: 4px solid #326efc; cursor: pointer; outline: none; position: relative; z-index: 120; display: block; transform: translate(0px, 0px); transition: transform 0.05s, box-shadow 0.05s; box-shadow: -5px 5px 0 #326efc; touch-action: manipulation; }
+        .btn-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; pointer-events: none; z-index: 121; filter: drop-shadow(2px 2px 0 #326efc); }
         
-        .feed-btn:active, .feed-btn.key-pressed { transform: translateY(4px); box-shadow: 0 2px 0 #234de2; }
-        .burp-btn:active, .burp-btn.key-pressed { transform: translateY(4px); box-shadow: 0 2px 0 #326efc; }
-        .feed-btn:active + .btn-icon, .burp-btn:active + .btn-icon, .feed-btn.key-pressed + .btn-icon, .burp-btn.key-pressed + .btn-icon { margin-top: 4px; }
+        .feed-btn:active, .feed-btn.key-pressed { transform: translate(-5px, 5px); box-shadow: 0px 0px 0 #326efc; }
+        .burp-btn:active, .burp-btn.key-pressed { transform: translate(-5px, 5px); box-shadow: 0px 0px 0 #326efc; }
+        .feed-btn:active + .btn-icon, .burp-btn:active + .btn-icon, .feed-btn.key-pressed + .btn-icon, .burp-btn.key-pressed + .btn-icon { margin-top: 5px; margin-left: -5px; }
         
         .left-column { position: absolute; top: 135px; left: 20px; bottom: 168.8px; display: flex; flex-direction: column; align-items: center; width: 50px; z-index: 110; }
         #timer-container { width: 22px; flex-grow: 1; background: #293241; border: 3px solid #fff; border-radius: 4px; overflow: hidden; margin-top: 5px; display: flex; flex-direction: column; justify-content: flex-end; }
@@ -2561,7 +2559,8 @@
             });
         }
 
-        installBtn.addEventListener('click', async () => {
+        installBtn.addEventListener('click', async (e) => {
+            e.stopPropagation();
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
