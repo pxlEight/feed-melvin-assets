@@ -2559,6 +2559,12 @@
             });
         }
 
+        // Prevent touch/pointer events from bubbling up and triggering the landing screen transition
+        const stopTap = (e) => e.stopPropagation();
+        installBtn.addEventListener('pointerdown', stopTap);
+        installBtn.addEventListener('mousedown', stopTap);
+        installBtn.addEventListener('touchend', stopTap);
+
         installBtn.addEventListener('click', async (e) => {
             e.stopPropagation();
             if (deferredPrompt) {
