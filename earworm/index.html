@@ -393,6 +393,7 @@
                 </div>
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
                     <div style="display: flex; gap: 10px; align-items: center;">
+                        <button id="undoBtn" class="btn" disabled style="padding: 4px 8px; font-size: 11px; background-color: #555; color: #888;">Undo</button>
                         <button id="placeToggleBtn" class="btn" style="padding: 4px 8px; font-size: 11px; background-color: #555; color: #888;">Place: OFF</button>
                         <div style="font-size: 11px; color: #888;">Pinch/Ctrl+Scroll to Zoom. Drag to adjust. Long press for selection.</div>
                     </div>
@@ -595,6 +596,44 @@
     const metronomeBtn = document.getElementById('metronomeBtn');
     const metronomeVolumeSlider = document.getElementById('metronomeVolume');
 
+    // === Undo Stack Setup ===
+    let undoStack = [];
+    const undoBtn = document.getElementById('undoBtn');
+
+    function saveState() {
+        const t1 = outputData1.value;
+        const t2 = outputData2.value;
+        
+        if (undoStack.length > 0) {
+            const last = undoStack[undoStack.length - 1];
+            if (last.t1 === t1 && last.t2 === t2) return;
+        }
+        
+        undoStack.push({ t1, t2 });
+        if (undoStack.length > 20) undoStack.shift();
+        
+        undoBtn.disabled = false;
+        undoBtn.style.backgroundColor = "#ffb84d";
+        undoBtn.style.color = "#1e1e24";
+    }
+
+    undoBtn.addEventListener('click', () => {
+        if (undoStack.length === 0) return;
+        const state = undoStack.pop();
+        
+        outputData1.value = state.t1;
+        outputData2.value = state.t2;
+        
+        if (undoStack.length === 0) {
+            undoBtn.disabled = true;
+            undoBtn.style.backgroundColor = "#555";
+            undoBtn.style.color = "#888";
+        }
+        
+        outputData1.dispatchEvent(new Event('input'));
+        outputData2.dispatchEvent(new Event('input'));
+    });
+
     // === Project Save / Open Setup ===
     const saveProjectBtn = document.getElementById('saveProjectBtn');
     const fileInput = document.getElementById('fileInput');
@@ -649,6 +688,12 @@
             try {
                 const data = JSON.parse(event.target.result);
                 if (data.isProject) {
+                    
+                    undoStack = [];
+                    undoBtn.disabled = true;
+                    undoBtn.style.backgroundColor = "#555";
+                    undoBtn.style.color = "#888";
+
                     if (isLoopPlaying) {
                         stopLoopPlayback();
                     }
@@ -1343,6 +1388,8 @@
     deleteNoteBtn.addEventListener('click', () => {
         if (selectedNotes.length === 0) return;
         
+        saveState();
+        
         let t1Data = getNotesFromTextarea(outputData1);
         let t2Data = getNotesFromTextarea(outputData2);
         
@@ -1385,6 +1432,8 @@
 
     pasteNotesBtn.addEventListener('click', () => {
         if (clipboardNotes.length === 0) return;
+        
+        saveState();
         
         let pasteTime = manualPlayheadTime;
         const quantizeVal = trackSettings[trackSelect.value].quantize;
@@ -1802,6 +1851,8 @@
             
             let notes = getNotesFromTextarea(currentTrack === '1' ? outputData1 : outputData2);
             
+            saveState();
+            
             let newNote = {
                 note: note,
                 time: pasteTime,
@@ -1944,6 +1995,8 @@
             
             const totalDur = getTotalDurationMs();
             if (newNote.time >= totalDur) newNote.time = 0; 
+            
+            saveState();
 
             recordedSequence.push(newNote);
             delete noteStartTimes[note];
@@ -1971,6 +2024,7 @@
     }
 
     clearBtn.addEventListener('click', () => {
+        saveState();
         recordedSequence = [];
         writeTrackData(trackSelect.value, []);
         
@@ -2204,6 +2258,8 @@
                 selStartY = clientY - rect.top;
 
                 longPressTimeout = setTimeout(() => {
+                    document.querySelectorAll('.selection-box').forEach(el => el.remove());
+                    
                     isSelecting = true;
                     selectionBoxEl = document.createElement('div');
                     selectionBoxEl.className = 'selection-box';
@@ -2451,6 +2507,8 @@
                 selectionBoxEl = null;
             }
         }
+        
+        document.querySelectorAll('.selection-box').forEach(el => el.remove());
 
         if(isDraggingNote) {
             isDraggingNote = false;
@@ -2474,6 +2532,7 @@
                 });
 
                 if (changed) {
+                    saveState();
                     writeTrackData('1', t1Data);
                     writeTrackData('2', t2Data);
                 }
@@ -2576,7 +2635,7 @@
 <script>
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/earworm/sw.js', { scope: '/earworm/' })
+            navigator.serviceWorker.register('/synth/sw.js', { scope: '/synth/' })
                 .then(registration => {
                     console.log('ServiceWorker registration successful with scope: ', registration.scope);
                 }, err => {
