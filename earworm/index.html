@@ -1765,7 +1765,7 @@
         }
 
         osc.connect(gainNode);
-        gainNode.connect(ctx.destination);
+        gainNode.connect(audioCtx.destination);
 
         osc.start(audioCtx.currentTime);
         osc.stop(stopTime + 0.05);
@@ -2576,7 +2576,7 @@
 <script>
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/synth/sw.js', { scope: '/synth/' })
+            navigator.serviceWorker.register('/earworm/sw.js', { scope: '/earworm/' })
                 .then(registration => {
                     console.log('ServiceWorker registration successful with scope: ', registration.scope);
                 }, err => {
