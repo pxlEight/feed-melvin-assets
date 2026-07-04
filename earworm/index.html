@@ -150,6 +150,42 @@
             height: 59%;
         }
 
+        .drum-pad {
+            display: none; 
+            width: 100%;
+            height: 100px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 10px;
+            background-color: #111;
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        .pad {
+            background: #2a2a2a;
+            color: #00e5ff;
+            border: 2px solid #00e5ff;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.05s ease-in-out;
+            user-select: none;
+            touch-action: manipulation;
+        }
+
+        .pad:active, .pad.active {
+            background: #00e5ff;
+            color: #121212;
+            transform: scale(0.95);
+        }
+
         .recording-section {
             margin-top: 10px;
             background-color: #333344;
@@ -256,6 +292,7 @@
 
         .note-track-1 { background-color: rgba(78, 217, 255, 1); border: 1px solid #4ed9ff; }
         .note-track-2 { background-color: rgba(255, 184, 77, 1); border: 1px solid #ffb84d; }
+        .note-track-3 { background-color: rgba(199, 125, 255, 1); border: 1px solid #c77dff; }
 
         .selection-box {
             position: absolute;
@@ -267,16 +304,28 @@
 
         .loop-handle {
             position: absolute;
-            top: 4px;
-            width: 12px;
-            height: 12px;
-            background-color: #4ed9ff;
-            border-radius: 50%;
+            top: -7px;
+            width: 34px;
+            height: 34px;
+            background-color: transparent;
             cursor: ew-resize;
             transform: translateX(-50%);
-            z-index: 18;
+            z-index: 25;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: none;
+        }
+
+        .loop-handle::before {
+            content: '';
+            width: 16px;
+            height: 16px;
+            background-color: #4ed9ff;
+            border-radius: 50%;
             border: 2px solid #1e1e24;
             box-sizing: border-box;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
         .mute-dot {
@@ -328,6 +377,10 @@
                         <span style="font-size: 11px; color: #bbb; font-weight: bold;">2:</span>
                         <div id="mute2" class="mute-dot active"></div>
                     </div>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
+                        <span style="font-size: 11px; color: #bbb; font-weight: bold;">3:</span>
+                        <div id="mute3" class="mute-dot active"></div>
+                    </div>
                 </div>
                 <button id="clearBtn" class="btn" disabled style="padding: 0; font-size: 10px; width: 48px; height: 48px; border-radius: 8px; line-height: 1.2;">Clear<br>Track</button>
             </div>
@@ -357,6 +410,7 @@
                             <select id="trackSelect" style="padding: 2px; font-size: 12px; background-color: #444455; color: white; border: 1px solid #555566; border-radius: 3px;">
                                 <option value="1" selected>1</option>
                                 <option value="2">2</option>
+                                <option value="3">3</option>
                             </select>
                         </div>
                         <div style="display: flex; align-items: center; gap: 5px;">
@@ -382,7 +436,7 @@
                             <div id="loopHandleLeft" class="loop-handle" style="left: 0%;"></div>
                             <div id="loopHandleRight" class="loop-handle" style="left: 100%;"></div>
 
-                            <div id="playheadHandle" style="position: absolute; top: 0; width: 30px; height: 20px; cursor: ew-resize; transform: translateX(-50%); z-index: 20; left: 0%; display: flex; justify-content: center;">
+                            <div id="playheadHandle" style="position: absolute; top: -5px; width: 34px; height: 30px; cursor: ew-resize; transform: translateX(-50%); z-index: 20; left: 0%; display: flex; justify-content: center; align-items: flex-start; padding-top: 5px; background: transparent; touch-action: none;">
                                 <div style="width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 12px solid #ff4e4e; pointer-events: none;"></div>
                             </div>
                         </div>
@@ -394,6 +448,7 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
                     <div style="display: flex; gap: 10px; align-items: center;">
                         <button id="undoBtn" class="btn" disabled style="padding: 4px 8px; font-size: 11px; background-color: #555; color: #888;">Undo</button>
+                        <button id="redoBtn" class="btn" disabled style="padding: 4px 8px; font-size: 11px; background-color: #555; color: #888;">Redo</button>
                         <button id="placeToggleBtn" class="btn" style="padding: 4px 8px; font-size: 11px; background-color: #555; color: #888;">Place: OFF</button>
                         <div style="font-size: 11px; color: #888;">Pinch/Ctrl+Scroll to Zoom. Drag to adjust. Long press for selection.</div>
                     </div>
@@ -406,6 +461,11 @@
             </div>
 
             <div style="display: flex; flex-direction: column; justify-content: flex-end; gap: 15px; width: 48px; flex-shrink: 0; border-left: 1px solid #555566; padding-left: 15px; padding-bottom: 28px;">
+                <button id="returnToStartBtn" class="btn" style="padding: 0; display: flex; align-items: center; justify-content: center; width: 48px; height: 32px; border-radius: 8px;" title="Return to Start">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                        <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+                    </svg>
+                </button>
                 <button id="playLoopBtn" class="btn" style="padding: 0; font-size: 11px; width: 48px; height: 48px; border-radius: 8px;">Play</button>
                 <button id="recordBtn" class="btn" style="padding: 0; font-size: 10px; width: 48px; height: 48px; border-radius: 8px;">Record</button>
             </div>
@@ -426,6 +486,19 @@
             <div class="key black" data-note="A#4" data-key="u">U</div>
             <div class="key" data-note="B4" data-key="j">J</div>
             <div class="key" data-note="C5" data-key="k">K</div>
+        </div>
+
+        <div class="drum-pad" id="drumPad">
+            <div class="pad" data-note="KICK">Kick</div>
+            <div class="pad" data-note="SNARE">Snare</div>
+            <div class="pad" data-note="CHAT">Closed Hat</div>
+            <div class="pad" data-note="OHAT">Open Hat</div>
+            <div class="pad" data-note="WOOD">Woodblock</div>
+            <div class="pad" data-note="CRAS">Crash</div>
+            <div class="pad" data-note="HTOM">High Tom</div>
+            <div class="pad" data-note="LTOM">Low Tom</div>
+            <div class="pad" data-note="CLAV">Clave</div>
+            <div class="pad" data-note="COWB">Cowbell</div>
         </div>
         
         <div style="display: flex; justify-content: space-between; align-items: center; background-color: #333344; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
@@ -464,7 +537,7 @@
 
         <div class="recording-section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <strong style="color: #4ed9ff; font-size: 14px;">Track Data Export</strong>
+                <strong id="trackDataLabel" style="color: #4ed9ff; font-size: 14px;">Track Data 1</strong>
             </div>
 
             <div id="track1Container" style="display: flex; flex-direction: column;">
@@ -480,7 +553,15 @@
                     <button id="exportBtn2" class="btn" style="padding: 4px 8px; font-size: 11px; width: 100%; background-color: #ffb84d; color: #1e1e24;">COPY</button>
                 </div>
             </div>
+
+            <div id="track3Container" style="display: none; flex-direction: column;">
+                <textarea id="outputData3" placeholder="Track 3 sequence data..."></textarea>
+                <div style="display: flex; gap: 5px; margin-top: 5px;">
+                    <button id="exportBtn3" class="btn" style="padding: 4px 8px; font-size: 11px; width: 100%; background-color: #ffb84d; color: #1e1e24;">COPY</button>
+                </div>
+            </div>
             
+            <button id="copyFullSongBtn" class="btn" style="background-color: #ffb84d; color: #1e1e24; margin-top: 15px; width: 100%;">Copy Full Song</button>
         </div>
     </div>
 </div>
@@ -495,6 +576,9 @@
         "C7": 2093.00
     };
 
+    const midiNotesList = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+    const drumNotes = ['KICK', 'SNARE', 'CHAT', 'OHAT', 'WOOD', 'CRAS', 'HTOM', 'LTOM', 'CLAV', 'COWB'];
+
     const keyMap = {
         'a': 'C4', 'w': 'C#4', 's': 'D4', 'e': 'D#4', 'd': 'E4',
         'f': 'F4', 't': 'F#4', 'g': 'G4', 'y': 'G#4', 'h': 'A4',
@@ -503,12 +587,14 @@
 
     let trackSettings = {
         '1': { instrument: 'synth', waveform: 'square', volume: 0.2, quantize: '16' },
-        '2': { instrument: 'synth', waveform: 'square', volume: 0.2, quantize: '16' }
+        '2': { instrument: 'synth', waveform: 'square', volume: 0.2, quantize: '16' },
+        '3': { instrument: 'synth', waveform: 'square', volume: 0.2, quantize: '16' }
     };
 
     let trackMutes = {
         '1': false,
-        '2': false
+        '2': false,
+        '3': false
     };
 
     let audioCtx = null;
@@ -570,10 +656,12 @@
     const volumeSlider = document.getElementById('volume');
     const quantizeSelect = document.getElementById('quantizeSelect');
     const keys = document.querySelectorAll('.key');
+    const pads = document.querySelectorAll('.pad');
 
     const recordBtn = document.getElementById('recordBtn');
     const clearBtn = document.getElementById('clearBtn');
     const playLoopBtn = document.getElementById('playLoopBtn'); 
+    const returnToStartBtn = document.getElementById('returnToStartBtn');
     const deleteNoteBtn = document.getElementById('deleteNoteBtn'); 
     const copyNotesBtn = document.getElementById('copyNotesBtn');
     const pasteNotesBtn = document.getElementById('pasteNotesBtn');
@@ -581,57 +669,101 @@
     
     const exportBtn1 = document.getElementById('exportBtn1');
     const exportBtn2 = document.getElementById('exportBtn2');
+    const exportBtn3 = document.getElementById('exportBtn3');
     const exportDropdownBtn = document.getElementById('exportDropdownBtn');
     const exportDropdownMenu = document.getElementById('exportDropdownMenu');
     
     const trackSelect = document.getElementById('trackSelect');
     const track1Container = document.getElementById('track1Container');
     const track2Container = document.getElementById('track2Container');
+    const track3Container = document.getElementById('track3Container');
     
     const outputData1 = document.getElementById('outputData1');
     const outputData2 = document.getElementById('outputData2');
+    const outputData3 = document.getElementById('outputData3');
 
     const bpmInput = document.getElementById('bpmInput');
     const bpmDisplay = document.getElementById('bpmDisplay');
     const metronomeBtn = document.getElementById('metronomeBtn');
     const metronomeVolumeSlider = document.getElementById('metronomeVolume');
 
-    // === Undo Stack Setup ===
+    // === Undo/Redo Stack Setup ===
     let undoStack = [];
+    let redoStack = [];
     const undoBtn = document.getElementById('undoBtn');
+    const redoBtn = document.getElementById('redoBtn');
 
-    function saveState() {
-        const t1 = outputData1.value;
-        const t2 = outputData2.value;
-        
+    function updateUndoRedoUI() {
         if (undoStack.length > 0) {
-            const last = undoStack[undoStack.length - 1];
-            if (last.t1 === t1 && last.t2 === t2) return;
-        }
-        
-        undoStack.push({ t1, t2 });
-        if (undoStack.length > 20) undoStack.shift();
-        
-        undoBtn.disabled = false;
-        undoBtn.style.backgroundColor = "#ffb84d";
-        undoBtn.style.color = "#1e1e24";
-    }
-
-    undoBtn.addEventListener('click', () => {
-        if (undoStack.length === 0) return;
-        const state = undoStack.pop();
-        
-        outputData1.value = state.t1;
-        outputData2.value = state.t2;
-        
-        if (undoStack.length === 0) {
+            undoBtn.disabled = false;
+            undoBtn.style.backgroundColor = "#ffb84d";
+            undoBtn.style.color = "#1e1e24";
+        } else {
             undoBtn.disabled = true;
             undoBtn.style.backgroundColor = "#555";
             undoBtn.style.color = "#888";
         }
+
+        if (redoStack.length > 0) {
+            redoBtn.disabled = false;
+            redoBtn.style.backgroundColor = "#ffb84d";
+            redoBtn.style.color = "#1e1e24";
+        } else {
+            redoBtn.disabled = true;
+            redoBtn.style.backgroundColor = "#555";
+            redoBtn.style.color = "#888";
+        }
+    }
+
+    function saveState() {
+        const t1 = outputData1.value;
+        const t2 = outputData2.value;
+        const t3 = outputData3.value;
+        
+        if (undoStack.length > 0) {
+            const last = undoStack[undoStack.length - 1];
+            if (last.t1 === t1 && last.t2 === t2 && last.t3 === t3) return;
+        }
+        
+        undoStack.push({ t1, t2, t3 });
+        if (undoStack.length > 20) undoStack.shift();
+        
+        redoStack = [];
+        updateUndoRedoUI();
+    }
+
+    undoBtn.addEventListener('click', () => {
+        if (undoStack.length === 0) return;
+        
+        redoStack.push({ t1: outputData1.value, t2: outputData2.value, t3: outputData3.value });
+        const state = undoStack.pop();
+        
+        outputData1.value = state.t1;
+        outputData2.value = state.t2;
+        outputData3.value = state.t3;
+        
+        updateUndoRedoUI();
         
         outputData1.dispatchEvent(new Event('input'));
         outputData2.dispatchEvent(new Event('input'));
+        outputData3.dispatchEvent(new Event('input'));
+    });
+
+    redoBtn.addEventListener('click', () => {
+        if (redoStack.length === 0) return;
+        
+        undoStack.push({ t1: outputData1.value, t2: outputData2.value, t3: outputData3.value });
+        const state = redoStack.pop();
+        
+        outputData1.value = state.t1;
+        outputData2.value = state.t2;
+        outputData3.value = state.t3;
+        
+        updateUndoRedoUI();
+        
+        outputData1.dispatchEvent(new Event('input'));
+        outputData2.dispatchEvent(new Event('input'));
+        outputData3.dispatchEvent(new Event('input'));
     });
 
     // === Project Save / Open Setup ===
@@ -648,6 +780,7 @@
 
         const projectData = {
             isProject: true,
+            loopDuration: getTotalDurationMs(),
             tempo: parseInt(bpmInput.value, 10),
             measures: parseInt(document.getElementById('measuresInput').value, 10) || 1,
             track1: {
@@ -663,6 +796,13 @@
                 volume: trackSettings['2'].volume,
                 quantize: trackSettings['2'].quantize,
                 notes: getNotesFromTextarea(outputData2)
+            },
+            track3: {
+                instrument: trackSettings['3'].instrument,
+                waveform: trackSettings['3'].waveform,
+                volume: trackSettings['3'].volume,
+                quantize: trackSettings['3'].quantize,
+                notes: getNotesFromTextarea(outputData3)
             }
         };
 
@@ -678,6 +818,39 @@
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
     });
+    
+    const copyFullSongBtn = document.getElementById('copyFullSongBtn');
+    copyFullSongBtn.addEventListener('click', () => {
+        const projectData = {
+            isProject: true,
+            loopDuration: getTotalDurationMs(),
+            tempo: parseInt(bpmInput.value, 10),
+            measures: parseInt(document.getElementById('measuresInput').value, 10) || 1,
+            track1: {
+                instrument: trackSettings['1'].instrument,
+                waveform: trackSettings['1'].waveform,
+                volume: trackSettings['1'].volume,
+                quantize: trackSettings['1'].quantize,
+                notes: getNotesFromTextarea(outputData1)
+            },
+            track2: {
+                instrument: trackSettings['2'].instrument,
+                waveform: trackSettings['2'].waveform,
+                volume: trackSettings['2'].volume,
+                quantize: trackSettings['2'].quantize,
+                notes: getNotesFromTextarea(outputData2)
+            },
+            track3: {
+                instrument: trackSettings['3'].instrument,
+                waveform: trackSettings['3'].waveform,
+                volume: trackSettings['3'].volume,
+                quantize: trackSettings['3'].quantize,
+                notes: getNotesFromTextarea(outputData3)
+            }
+        };
+        
+        copyTextToClipboard(JSON.stringify(projectData), copyFullSongBtn, "Copy Full Song");
+    });
 
     fileInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
@@ -690,9 +863,8 @@
                 if (data.isProject) {
                     
                     undoStack = [];
-                    undoBtn.disabled = true;
-                    undoBtn.style.backgroundColor = "#555";
-                    undoBtn.style.color = "#888";
+                    redoStack = [];
+                    updateUndoRedoUI();
 
                     if (isLoopPlaying) {
                         stopLoopPlayback();
@@ -721,11 +893,27 @@
                         writeTrackData('2', data.track2.notes || []);
                     }
 
+                    if (data.track3) {
+                        if (data.track3.instrument) trackSettings['3'].instrument = data.track3.instrument;
+                        if (data.track3.waveform) trackSettings['3'].waveform = data.track3.waveform;
+                        if (data.track3.volume !== undefined) trackSettings['3'].volume = data.track3.volume;
+                        if (data.track3.quantize) trackSettings['3'].quantize = data.track3.quantize;
+                        writeTrackData('3', data.track3.notes || []);
+                    }
+
                     const currentTrack = trackSelect.value;
                     instrumentSelect.value = trackSettings[currentTrack].instrument;
                     waveformSelect.value = trackSettings[currentTrack].waveform;
                     volumeSlider.value = trackSettings[currentTrack].volume;
                     quantizeSelect.value = trackSettings[currentTrack].quantize;
+                    
+                    if (trackSettings[currentTrack].instrument === 'drums') {
+                        document.getElementById('keyboard').style.display = 'none';
+                        document.getElementById('drumPad').style.display = 'grid';
+                    } else {
+                        document.getElementById('keyboard').style.display = 'flex';
+                        document.getElementById('drumPad').style.display = 'none';
+                    }
 
                     loopStartMs = 0;
                     loopEndMs = getMeasureDurationMs();
@@ -757,14 +945,30 @@
         waveformSelect.value = settings.waveform;
         volumeSlider.value = settings.volume;
         quantizeSelect.value = settings.quantize;
+        
+        if (settings.instrument === 'drums') {
+            document.getElementById('keyboard').style.display = 'none';
+            document.getElementById('drumPad').style.display = 'grid';
+        } else {
+            document.getElementById('keyboard').style.display = 'flex';
+            document.getElementById('drumPad').style.display = 'none';
+        }
 
         if (newTrack === '1') {
             track1Container.style.display = 'flex';
             track2Container.style.display = 'none';
-        } else {
+            track3Container.style.display = 'none';
+        } else if (newTrack === '2') {
             track1Container.style.display = 'none';
             track2Container.style.display = 'flex';
+            track3Container.style.display = 'none';
+        } else {
+            track1Container.style.display = 'none';
+            track2Container.style.display = 'none';
+            track3Container.style.display = 'flex';
         }
+        
+        document.getElementById('trackDataLabel').textContent = `Track Data ${newTrack}`;
 
         updateUIStates();
         renderTimeline(); 
@@ -782,7 +986,11 @@
     }
 
     function writeTrackData(trackNum, notes) {
-        const textarea = trackNum === '1' ? outputData1 : outputData2;
+        let textarea;
+        if (trackNum === '1') textarea = outputData1;
+        else if (trackNum === '2') textarea = outputData2;
+        else textarea = outputData3;
+
         if (!notes || notes.length === 0) {
             textarea.value = "";
             return;
@@ -802,7 +1010,11 @@
         const track = trackSelect.value;
         trackSettings[track][key] = value;
         
-        let textarea = track === '1' ? outputData1 : outputData2;
+        let textarea;
+        if (track === '1') textarea = outputData1;
+        else if (track === '2') textarea = outputData2;
+        else textarea = outputData3;
+
         let notes = getNotesFromTextarea(textarea);
         if (notes.length > 0) {
             notes = notes.map(note => {
@@ -813,7 +1025,17 @@
         }
     }
 
-    instrumentSelect.addEventListener('change', (e) => saveTrackSetting('instrument', e.target.value));
+    instrumentSelect.addEventListener('change', (e) => {
+        saveTrackSetting('instrument', e.target.value);
+        if (e.target.value === 'drums') {
+            document.getElementById('keyboard').style.display = 'none';
+            document.getElementById('drumPad').style.display = 'grid';
+        } else {
+            document.getElementById('keyboard').style.display = 'flex';
+            document.getElementById('drumPad').style.display = 'none';
+        }
+    });
+    
     quantizeSelect.addEventListener('change', (e) => saveTrackSetting('quantize', e.target.value));
 
     waveformSelect.addEventListener('change', (e) => {
@@ -840,12 +1062,20 @@
         
         activePlaybackNodes.forEach(node => {
             if (node.trackNum === currentTrack && audioCtx) {
-                node.gainNode.gain.setTargetAtTime(vol, audioCtx.currentTime, 0.015);
+                if (node.isDrums && node.masterGain) {
+                    node.masterGain.gain.setTargetAtTime(vol, audioCtx.currentTime, 0.015);
+                } else if (node.gainNode) {
+                    node.gainNode.gain.setTargetAtTime(vol, audioCtx.currentTime, 0.015);
+                }
             }
         });
         Object.values(activeOscillators).forEach(active => {
             if (audioCtx) {
-                active.gainNode.gain.setTargetAtTime(vol, audioCtx.currentTime, 0.015);
+                if (active.isDrums && active.masterGain) {
+                    active.masterGain.gain.setTargetAtTime(vol, audioCtx.currentTime, 0.015);
+                } else if (active.gainNode) {
+                    active.gainNode.gain.setTargetAtTime(vol, audioCtx.currentTime, 0.015);
+                }
             }
         });
     });
@@ -858,6 +1088,10 @@
     document.getElementById('mute2').addEventListener('click', function() {
         trackMutes['2'] = !trackMutes['2'];
         this.classList.toggle('active', !trackMutes['2']);
+    });
+    document.getElementById('mute3').addEventListener('click', function() {
+        trackMutes['3'] = !trackMutes['3'];
+        this.classList.toggle('active', !trackMutes['3']);
     });
 
     // === Audio Export Logic ===
@@ -885,20 +1119,275 @@
         let maxTime = 0;
         const t1 = getNotesFromTextarea(outputData1);
         const t2 = getNotesFromTextarea(outputData2);
-        [...t1, ...t2].forEach(n => {
+        const t3 = getNotesFromTextarea(outputData3);
+        [...t1, ...t2, ...t3].forEach(n => {
             const end = n.time + n.duration;
             if (end > maxTime) maxTime = end;
         });
         return maxTime > 0 ? maxTime : 1000;
     }
 
+    // Helper for transient tick
+    function buildTick(ctx, masterGain, time, freqStart, freqEnd, duration) {
+        const clickOsc = ctx.createOscillator();
+        const clickGain = ctx.createGain();
+        clickOsc.type = 'sine';
+        clickOsc.frequency.setValueAtTime(freqStart, time);
+        clickOsc.frequency.exponentialRampToValueAtTime(freqEnd, time + duration);
+        clickGain.gain.setValueAtTime(0.5, time);
+        clickGain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+        clickOsc.connect(clickGain).connect(masterGain);
+        clickOsc.start(time);
+        clickOsc.stop(time + duration);
+        return { osc: clickOsc, gain: clickGain, stopTime: time + duration };
+    }
+
+    // --- NEW DRUM ENGINE MASTER BUILDER ---
+    function buildDrumSound(ctx, destination, noteName, time, volume) {
+        const t = time;
+        const masterGain = ctx.createGain();
+        masterGain.gain.value = volume;
+        masterGain.connect(destination);
+        
+        const playMetallic = (duration, baseFreq, ratios, bpFreq, hpFreq) => {
+            const bandpass = ctx.createBiquadFilter();
+            bandpass.type = 'bandpass';
+            bandpass.frequency.value = bpFreq;
+            const highpass = ctx.createBiquadFilter();
+            highpass.type = 'highpass';
+            highpass.frequency.value = hpFreq;
+            const gain = ctx.createGain();
+            gain.gain.setValueAtTime(1.0, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
+            bandpass.connect(highpass).connect(gain).connect(masterGain);
+            
+            let oscs = [];
+            ratios.forEach(ratio => {
+                const osc = ctx.createOscillator();
+                osc.type = 'square';
+                osc.frequency.value = baseFreq * ratio;
+                osc.connect(bandpass);
+                osc.start(t);
+                osc.stop(t + duration);
+                oscs.push(osc);
+            });
+            return { oscs, gain };
+        };
+
+        let activeNodes = []; 
+        
+        switch(noteName) {
+            case 'KICK': {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(250, t);
+                osc.frequency.exponentialRampToValueAtTime(45, t + 0.1);
+                gain.gain.setValueAtTime(1.0, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+                osc.connect(gain).connect(masterGain);
+                osc.start(t);
+                osc.stop(t + 0.5);
+                activeNodes.push({osc, gain, stopTime: t + 0.5});
+
+                const tickNode = buildTick(ctx, masterGain, t, 3000, 100, 0.015);
+                activeNodes.push(tickNode);
+                break;
+            }
+            case 'SNARE': {
+                const bodyOsc = ctx.createOscillator();
+                const bodyGain = ctx.createGain();
+                bodyOsc.type = 'triangle';
+                bodyOsc.frequency.setValueAtTime(800, t);
+                bodyOsc.frequency.exponentialRampToValueAtTime(200, t + 0.06);
+                bodyGain.gain.setValueAtTime(0.8, t);
+                bodyGain.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
+                bodyOsc.connect(bodyGain).connect(masterGain);
+                bodyOsc.start(t);
+                bodyOsc.stop(t + 0.06);
+                activeNodes.push({osc: bodyOsc, gain: bodyGain, stopTime: t + 0.06});
+
+                const bandpass = ctx.createBiquadFilter();
+                bandpass.type = 'bandpass';
+                bandpass.frequency.value = 7000;
+                const highpass = ctx.createBiquadFilter();
+                highpass.type = 'highpass';
+                highpass.frequency.value = 4000;
+                const rattleGain = ctx.createGain();
+                rattleGain.gain.setValueAtTime(0.7, t); 
+                rattleGain.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+                bandpass.connect(highpass).connect(rattleGain).connect(masterGain);
+                
+                [2, 3, 4.16, 5.43, 6.79, 8.21].forEach(ratio => {
+                    const osc = ctx.createOscillator();
+                    osc.type = 'square';
+                    osc.frequency.value = 40 * ratio;
+                    osc.connect(bandpass);
+                    osc.start(t);
+                    osc.stop(t + 0.15);
+                    activeNodes.push({osc, stopTime: t + 0.15});
+                });
+                break;
+            }
+            case 'CHAT': {
+                let r = playMetallic(0.1, 40, [2, 3, 4.16, 5.43, 6.79, 8.21], 10000, 7000);
+                r.oscs.forEach(o => activeNodes.push({osc: o, gain: r.gain, stopTime: t + 0.1}));
+                break;
+            }
+            case 'OHAT': {
+                let r = playMetallic(0.4, 40, [2, 3, 4.16, 5.43, 6.79, 8.21], 10000, 7000);
+                r.oscs.forEach(o => activeNodes.push({osc: o, gain: r.gain, stopTime: t + 0.4}));
+                break;
+            }
+            case 'LTOM': {
+                const osc1 = ctx.createOscillator();
+                const gain1 = ctx.createGain();
+                osc1.type = 'triangle';
+                osc1.frequency.setValueAtTime(200, t);
+                osc1.frequency.exponentialRampToValueAtTime(60, t + 0.2);
+                gain1.gain.setValueAtTime(0.8, t);
+                gain1.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+                osc1.connect(gain1).connect(masterGain);
+                osc1.start(t);
+                osc1.stop(t + 0.4);
+                activeNodes.push({osc: osc1, gain: gain1, stopTime: t + 0.4});
+                
+                const osc2 = ctx.createOscillator();
+                const gain2 = ctx.createGain();
+                const filter = ctx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.value = 1000;
+                filter.Q.value = 5.0; 
+                
+                osc2.type = 'sawtooth';
+                osc2.frequency.setValueAtTime(200, t);
+                osc2.frequency.exponentialRampToValueAtTime(60, t + 0.2);
+                gain2.gain.setValueAtTime(0.3, t);
+                gain2.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+                osc2.connect(filter).connect(gain2).connect(masterGain);
+                osc2.start(t);
+                osc2.stop(t + 0.3);
+                activeNodes.push({osc: osc2, gain: gain2, stopTime: t + 0.3});
+                break;
+            }
+            case 'HTOM': {
+                const osc1 = ctx.createOscillator();
+                const gain1 = ctx.createGain();
+                osc1.type = 'triangle';
+                osc1.frequency.setValueAtTime(300, t);
+                osc1.frequency.exponentialRampToValueAtTime(120, t + 0.2);
+                gain1.gain.setValueAtTime(0.8, t);
+                gain1.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+                osc1.connect(gain1).connect(masterGain);
+                osc1.start(t);
+                osc1.stop(t + 0.4);
+                activeNodes.push({osc: osc1, gain: gain1, stopTime: t + 0.4});
+                
+                const osc2 = ctx.createOscillator();
+                const gain2 = ctx.createGain();
+                const filter = ctx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.value = 1000;
+                filter.Q.value = 5.0; 
+                
+                osc2.type = 'sawtooth';
+                osc2.frequency.setValueAtTime(300, t);
+                osc2.frequency.exponentialRampToValueAtTime(120, t + 0.2);
+                gain2.gain.setValueAtTime(0.3, t);
+                gain2.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+                osc2.connect(filter).connect(gain2).connect(masterGain);
+                osc2.start(t);
+                osc2.stop(t + 0.3);
+                activeNodes.push({osc: osc2, gain: gain2, stopTime: t + 0.3});
+                break;
+            }
+            case 'COWB': {
+                const gain = ctx.createGain();
+                gain.gain.setValueAtTime(0.8, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+                gain.connect(masterGain);
+                [540, 800].forEach(freq => {
+                    const osc = ctx.createOscillator();
+                    osc.type = 'square';
+                    osc.frequency.value = freq;
+                    const filter = ctx.createBiquadFilter();
+                    filter.type = 'bandpass';
+                    filter.frequency.value = 1200;
+                    osc.connect(filter).connect(gain);
+                    osc.start(t);
+                    osc.stop(t + 0.3);
+                    activeNodes.push({osc, gain, stopTime: t + 0.3});
+                });
+                break;
+            }
+            case 'WOOD': {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'square';
+                osc.frequency.value = 800;
+                gain.gain.setValueAtTime(1.0, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+                const filter = ctx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.value = 1000;
+                osc.connect(filter).connect(gain).connect(masterGain);
+                osc.start(t);
+                osc.stop(t + 0.05);
+                activeNodes.push({osc, gain, stopTime: t + 0.05});
+                break;
+            }
+            case 'CLAV': {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = 2500; 
+                gain.gain.setValueAtTime(1.0, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.1); 
+                osc.connect(gain).connect(masterGain);
+                osc.start(t);
+                osc.stop(t + 0.1);
+                activeNodes.push({osc, gain, stopTime: t + 0.1});
+                break;
+            }
+            case 'CRAS': {
+                const bandpass = ctx.createBiquadFilter();
+                bandpass.type = 'bandpass';
+                bandpass.frequency.value = 6000;
+                
+                const highpass = ctx.createBiquadFilter();
+                highpass.type = 'highpass';
+                highpass.frequency.value = 4000;
+                
+                const crashGain = ctx.createGain();
+                crashGain.gain.setValueAtTime(0.8, t);
+                crashGain.gain.exponentialRampToValueAtTime(0.001, t + 1.5);
+                
+                bandpass.connect(highpass).connect(crashGain).connect(masterGain);
+
+                const ratios = [2, 3, 4.16, 5.43, 6.79, 8.21];
+                
+                ratios.forEach(ratio => {
+                  const osc = ctx.createOscillator();
+                  osc.type = 'square';
+                  
+                  const targetFreq = 40 * ratio;
+                  
+                  osc.frequency.setValueAtTime(targetFreq * 2.0, t);
+                  osc.frequency.exponentialRampToValueAtTime(targetFreq, t + 0.1);
+                  
+                  osc.connect(bandpass);
+                  osc.start(t);
+                  osc.stop(t + 1.5);
+                  activeNodes.push({osc, gain: crashGain, stopTime: t + 1.5});
+                });
+                break;
+            }
+        }
+        return { activeNodes, masterGain };
+    }
+
     function playNoteOffline(ctx, noteData, trackNum) {
         if (trackMutes[trackNum]) return;
-        const frequency = noteFrequencies[noteData.note];
-        if (!frequency) return;
-        
-        const osc = ctx.createOscillator();
-        const gainNode = ctx.createGain();
         
         const settings = trackSettings[trackNum];
         const isDrums = settings.instrument === 'drums';
@@ -909,70 +1398,30 @@
         const durationSec = noteData.duration / 1000;
         const stopTime = startTime + durationSec;
 
-        let extraOscs = [];
-
         if (isDrums) {
-            const noteBase = noteData.note.replace(/\d/g, '');
-            if (noteBase === 'C' || noteBase === 'B') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(150, startTime);
-                osc.frequency.exponentialRampToValueAtTime(40, startTime + 0.15);
-                gainNode.gain.setValueAtTime(masterVolume, startTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.6);
-            } else if (noteBase === 'D' || noteBase === 'E') {
-                osc.type = 'sine';
-                const baseFreq = (noteBase === 'D') ? 300 : 450;
-                osc.frequency.setValueAtTime(baseFreq + 100, startTime);
-                osc.frequency.exponentialRampToValueAtTime(baseFreq, startTime + 0.1);
-                gainNode.gain.setValueAtTime(masterVolume, startTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.3);
-            } else if (noteBase === 'F#' || noteBase === 'G#' || noteBase === 'A#' || noteBase === 'C#') {
-                osc.type = 'triangle';
-                let fq = 600;
-                if(noteBase === 'G#') fq = 800;
-                if(noteBase === 'A#') fq = 1000;
-                if(noteBase === 'C#') fq = 1200;
-                osc.frequency.setValueAtTime(fq, startTime);
-                gainNode.gain.setValueAtTime(masterVolume * 0.7, startTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.5);
-
-                const ringOsc = ctx.createOscillator();
-                ringOsc.type = 'triangle';
-                ringOsc.frequency.setValueAtTime(fq * 2.75, startTime);
-                ringOsc.connect(gainNode);
-                ringOsc.start(startTime);
-                extraOscs.push(ringOsc);
-            } else {
-                osc.type = 'sine';
-                const targetFreq = (noteBase === 'F') ? 250 : (noteBase === 'G' ? 300 : 350);
-                osc.frequency.setValueAtTime(100, startTime);
-                osc.frequency.exponentialRampToValueAtTime(targetFreq, startTime + 0.15);
-                gainNode.gain.setValueAtTime(masterVolume, startTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.4);
-            }
-        } else {
-            osc.type = waveType;
-            osc.frequency.setValueAtTime(frequency, startTime);
-            gainNode.gain.setValueAtTime(0, startTime);
-            gainNode.gain.linearRampToValueAtTime(masterVolume, startTime + 0.02);
+            buildDrumSound(ctx, ctx.destination, noteData.note, startTime, masterVolume);
+            return;
         }
 
-        if (!isDrums) {
-            gainNode.gain.setValueAtTime(masterVolume, Math.max(startTime + 0.02, stopTime - 0.05));
-            gainNode.gain.linearRampToValueAtTime(0, stopTime);
-        } else {
-            gainNode.gain.cancelScheduledValues(stopTime);
-            gainNode.gain.setTargetAtTime(0, stopTime, 0.015);
-        }
+        const frequency = noteFrequencies[noteData.note];
+        if (!frequency) return;
+
+        const osc = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        
+        osc.type = waveType;
+        osc.frequency.setValueAtTime(frequency, startTime);
+        gainNode.gain.setValueAtTime(0, startTime);
+        gainNode.gain.linearRampToValueAtTime(masterVolume, startTime + 0.02);
+        
+        gainNode.gain.setValueAtTime(masterVolume, Math.max(startTime + 0.02, stopTime - 0.05));
+        gainNode.gain.linearRampToValueAtTime(0, stopTime);
 
         osc.connect(gainNode);
         gainNode.connect(ctx.destination);
 
         osc.start(startTime);
         osc.stop(stopTime + 0.05);
-        if (extraOscs.length > 0) {
-            extraOscs.forEach(eo => eo.stop(stopTime + 0.05));
-        }
     }
 
     async function renderOfflineBuffer() {
@@ -982,6 +1431,7 @@
         
         getNotesFromTextarea(outputData1).forEach(n => playNoteOffline(offlineCtx, n, '1'));
         getNotesFromTextarea(outputData2).forEach(n => playNoteOffline(offlineCtx, n, '2'));
+        getNotesFromTextarea(outputData3).forEach(n => playNoteOffline(offlineCtx, n, '3'));
 
         return await offlineCtx.startRendering();
     }
@@ -1181,8 +1631,12 @@
             isRecording = true;
             noteStartTimes = {};
             
+            let targetTextarea;
             const targetTrack = trackSelect.value;
-            const targetTextarea = targetTrack === '1' ? outputData1 : outputData2;
+            if (targetTrack === '1') targetTextarea = outputData1;
+            else if (targetTrack === '2') targetTextarea = outputData2;
+            else targetTextarea = outputData3;
+            
             recordedSequence = getNotesFromTextarea(targetTextarea);
             
             selectedNotes = [];
@@ -1260,6 +1714,7 @@
 
         scaleData(outputData1, '1');
         scaleData(outputData2, '2');
+        scaleData(outputData3, '3');
 
         metronomeBPM = newBPM;
         updateGrid();
@@ -1309,7 +1764,12 @@
     });
 
     function updateUIStates() {
-        const targetTextarea = trackSelect.value === '1' ? outputData1 : outputData2;
+        let targetTextarea;
+        const targetTrack = trackSelect.value;
+        if (targetTrack === '1') targetTextarea = outputData1;
+        else if (targetTrack === '2') targetTextarea = outputData2;
+        else targetTextarea = outputData3;
+        
         const val = targetTextarea.value.trim();
         clearBtn.disabled = !(val && (val.startsWith("[{") || val.startsWith('{"')));
     }
@@ -1329,6 +1789,17 @@
             pasteNotesBtn.style.display = 'none';
         }
     }
+
+    returnToStartBtn.addEventListener('click', () => {
+        const totalDur = getTotalDurationMs();
+        manualPlayheadTime = Math.max(0, Math.min(loopStartMs, totalDur));
+        if (isLoopPlaying) {
+            stopLoopPlayback();
+            executePlayRecordAction('play', performance.now());
+        } else {
+            updatePlayhead();
+        }
+    });
 
     playLoopBtn.addEventListener('click', () => {
         initAudio();
@@ -1392,15 +1863,19 @@
         
         let t1Data = getNotesFromTextarea(outputData1);
         let t2Data = getNotesFromTextarea(outputData2);
+        let t3Data = getNotesFromTextarea(outputData3);
         
         const s1 = selectedNotes.filter(n => n.track === '1').map(n => n.index).sort((a,b)=>b-a);
         const s2 = selectedNotes.filter(n => n.track === '2').map(n => n.index).sort((a,b)=>b-a);
+        const s3 = selectedNotes.filter(n => n.track === '3').map(n => n.index).sort((a,b)=>b-a);
         
         s1.forEach(i => t1Data.splice(i, 1));
         s2.forEach(i => t2Data.splice(i, 1));
+        s3.forEach(i => t3Data.splice(i, 1));
         
         writeTrackData('1', t1Data);
         writeTrackData('2', t2Data);
+        writeTrackData('3', t3Data);
         
         selectedNotes = [];
         updateCopyPasteButtons();
@@ -1412,6 +1887,7 @@
         clipboardNotes = [];
         let t1Data = getNotesFromTextarea(outputData1);
         let t2Data = getNotesFromTextarea(outputData2);
+        let t3Data = getNotesFromTextarea(outputData3);
         
         let minTime = Infinity;
         
@@ -1419,6 +1895,7 @@
             let noteObj = null;
             if (sn.track === '1' && t1Data[sn.index]) noteObj = JSON.parse(JSON.stringify(t1Data[sn.index]));
             if (sn.track === '2' && t2Data[sn.index]) noteObj = JSON.parse(JSON.stringify(t2Data[sn.index]));
+            if (sn.track === '3' && t3Data[sn.index]) noteObj = JSON.parse(JSON.stringify(t3Data[sn.index]));
             
             if (noteObj) {
                 if (noteObj.time < minTime) minTime = noteObj.time;
@@ -1445,6 +1922,7 @@
         
         let t1Data = getNotesFromTextarea(outputData1);
         let t2Data = getNotesFromTextarea(outputData2);
+        let t3Data = getNotesFromTextarea(outputData3);
         
         clipboardNotes.forEach(cn => {
             const tr = cn.originalTrack;
@@ -1457,11 +1935,13 @@
                 volume: trackSettings[tr].volume
             };
             if (tr === '1') t1Data.push(newNote);
-            else t2Data.push(newNote);
+            else if (tr === '2') t2Data.push(newNote);
+            else t3Data.push(newNote);
         });
         
         writeTrackData('1', t1Data);
         writeTrackData('2', t2Data);
+        writeTrackData('3', t3Data);
         
         updateUIStates();
         renderTimeline();
@@ -1665,8 +2145,9 @@
         let sequenceToPlay = [];
         let t1Notes = getNotesFromTextarea(outputData1).map(n => ({...n, _track: '1'}));
         let t2Notes = getNotesFromTextarea(outputData2).map(n => ({...n, _track: '2'}));
+        let t3Notes = getNotesFromTextarea(outputData3).map(n => ({...n, _track: '3'}));
         
-        sequenceToPlay = sequenceToPlay.concat(t1Notes, t2Notes);
+        sequenceToPlay = sequenceToPlay.concat(t1Notes, t2Notes, t3Notes);
         
         loopTimeoutIDs.forEach(id => clearTimeout(id));
         loopTimeoutIDs = [];
@@ -1712,10 +2193,19 @@
 
         activePlaybackNodes.forEach(node => {
             try {
-                node.gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
-                node.gainNode.gain.setTargetAtTime(0, audioCtx.currentTime, 0.015);
-                node.osc.stop(audioCtx.currentTime + 0.05);
-                if (node.extraOscs) node.extraOscs.forEach(eo => eo.stop(audioCtx.currentTime + 0.05));
+                if (node.isDrums) {
+                    if (node.masterGain) {
+                        node.masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
+                        node.masterGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.015);
+                    }
+                    node.activeNodes.forEach(n => {
+                        if (n.osc) n.osc.stop(audioCtx.currentTime + 0.05);
+                    });
+                } else {
+                    node.gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
+                    node.gainNode.gain.setTargetAtTime(0, audioCtx.currentTime, 0.015);
+                    node.osc.stop(audioCtx.currentTime + 0.05);
+                }
             } catch(e) {}
         });
         activePlaybackNodes = [];
@@ -1741,88 +2231,48 @@
     }
 
     function playBackNote(note, durationMs, trackNum) {
-        const frequency = noteFrequencies[note];
-        if (!frequency) return;
         if (trackMutes[trackNum]) return;
-
-        const osc = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
         
         const settings = trackSettings[trackNum];
         const isDrums = settings.instrument === 'drums';
-        const masterVolume = settings.volume;
-        const waveType = settings.waveform;
-        
-        let extraOscs = [];
 
         if (isDrums) {
-            const noteBase = note.replace(/\d/g, '');
-            if (noteBase === 'C' || noteBase === 'B') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.15);
-                gainNode.gain.setValueAtTime(masterVolume, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
-            } else if (noteBase === 'D' || noteBase === 'E') {
-                osc.type = 'sine';
-                const baseFreq = (noteBase === 'D') ? 300 : 450;
-                osc.frequency.setValueAtTime(baseFreq + 100, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(baseFreq, audioCtx.currentTime + 0.1);
-                gainNode.gain.setValueAtTime(masterVolume, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-            } else if (noteBase === 'F#' || noteBase === 'G#' || noteBase === 'A#' || noteBase === 'C#') {
-                osc.type = 'triangle';
-                let fq = 600;
-                if(noteBase === 'G#') fq = 800;
-                if(noteBase === 'A#') fq = 1000;
-                if(noteBase === 'C#') fq = 1200;
-                osc.frequency.setValueAtTime(fq, audioCtx.currentTime);
-                gainNode.gain.setValueAtTime(masterVolume * 0.7, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-
-                const ringOsc = audioCtx.createOscillator();
-                ringOsc.type = 'triangle';
-                ringOsc.frequency.setValueAtTime(fq * 2.75, audioCtx.currentTime);
-                ringOsc.connect(gainNode);
-                ringOsc.start(audioCtx.currentTime);
-                extraOscs.push(ringOsc);
-            } else {
-                osc.type = 'sine';
-                const targetFreq = (noteBase === 'F') ? 250 : (noteBase === 'G' ? 300 : 350);
-                osc.frequency.setValueAtTime(100, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(targetFreq, audioCtx.currentTime + 0.15);
-                gainNode.gain.setValueAtTime(masterVolume, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-            }
-        } else {
-            osc.type = waveType;
-            osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
-            osc.detune.setValueAtTime(0, audioCtx.currentTime); 
-            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-            gainNode.gain.linearRampToValueAtTime(masterVolume, audioCtx.currentTime + 0.02);
+            let drumData = buildDrumSound(audioCtx, audioCtx.destination, note, audioCtx.currentTime, settings.volume);
+            const nodeRef = { isDrums: true, trackNum, activeNodes: drumData.activeNodes, masterGain: drumData.masterGain };
+            activePlaybackNodes.push(nodeRef);
+            setTimeout(() => {
+                activePlaybackNodes = activePlaybackNodes.filter(n => n !== nodeRef);
+            }, durationMs + 100);
+            return; 
         }
+
+        const frequency = noteFrequencies[note];
+        if (!frequency) return;
+
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        const masterVolume = settings.volume;
+        const waveType = settings.waveform;
+
+        osc.type = waveType;
+        osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+        osc.detune.setValueAtTime(0, audioCtx.currentTime); 
+        gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(masterVolume, audioCtx.currentTime + 0.02);
 
         const durationSec = durationMs / 1000;
         const stopTime = audioCtx.currentTime + durationSec;
         
-        if (!isDrums) {
-            gainNode.gain.setValueAtTime(masterVolume, stopTime - 0.05 < audioCtx.currentTime + 0.02 ? audioCtx.currentTime + 0.02 : stopTime - 0.05);
-            gainNode.gain.linearRampToValueAtTime(0, stopTime);
-        } else {
-            gainNode.gain.cancelScheduledValues(stopTime);
-            gainNode.gain.setTargetAtTime(0, stopTime, 0.015);
-        }
+        gainNode.gain.setValueAtTime(masterVolume, stopTime - 0.05 < audioCtx.currentTime + 0.02 ? audioCtx.currentTime + 0.02 : stopTime - 0.05);
+        gainNode.gain.linearRampToValueAtTime(0, stopTime);
 
         osc.connect(gainNode);
         gainNode.connect(audioCtx.destination);
 
         osc.start(audioCtx.currentTime);
         osc.stop(stopTime + 0.05);
-        if (extraOscs.length > 0) {
-            extraOscs.forEach(eo => eo.stop(stopTime + 0.05));
-        }
 
-        const nodeRef = { osc, gainNode, extraOscs, trackNum };
+        const nodeRef = { osc, gainNode, trackNum };
         activePlaybackNodes.push(nodeRef);
         setTimeout(() => {
             activePlaybackNodes = activePlaybackNodes.filter(n => n !== nodeRef);
@@ -1837,7 +2287,22 @@
         
         const currentTrack = trackSelect.value;
         const settings = trackSettings[currentTrack];
+        const isDrums = settings.instrument === 'drums';
 
+        if (isDrums) {
+            const match = note.match(/^([A-G]#?)(\d+)?$/);
+            if (match) {
+                const noteIndex = midiNotesList.indexOf(match[1]);
+                if (noteIndex >= 0 && noteIndex < drumNotes.length) {
+                    note = drumNotes[noteIndex];
+                } else {
+                    return; 
+                }
+            }
+        } else {
+            if (!noteFrequencies[note]) return;
+        }
+        
         if (isPlaceModeActive) {
             let pasteTime = manualPlayheadTime;
             const quantizeVal = settings.quantize;
@@ -1849,7 +2314,12 @@
                 durationMs = gridMs;
             }
             
-            let notes = getNotesFromTextarea(currentTrack === '1' ? outputData1 : outputData2);
+            let targetTextarea;
+            if (currentTrack === '1') targetTextarea = outputData1;
+            else if (currentTrack === '2') targetTextarea = outputData2;
+            else targetTextarea = outputData3;
+            
+            let notes = getNotesFromTextarea(targetTextarea);
             
             saveState();
             
@@ -1888,70 +2358,35 @@
             noteStartTimes[note] = { playheadTime: playheadTime, absTime: now };
         }
 
+        if (isDrums) {
+            let drumData = buildDrumSound(audioCtx, audioCtx.destination, note, audioCtx.currentTime, settings.volume);
+            const padElement = document.querySelector(`.pad[data-note="${note}"]`);
+            if (padElement) padElement.classList.add('active');
+            activeOscillators[note] = { isDrums: true, trackNum: currentTrack, activeNodes: drumData.activeNodes, masterGain: drumData.masterGain };
+            return;
+        }
+
         const frequency = noteFrequencies[note];
         if (!frequency) return;
 
         const osc = audioCtx.createOscillator();
         const gainNode = audioCtx.createGain();
-        const isDrums = settings.instrument === 'drums';
         const masterVolume = settings.volume;
-        let extraOscs = [];
 
-        if (isDrums) {
-            const noteBase = note.replace(/\d/g, '');
-            if (noteBase === 'C' || noteBase === 'B') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.15);
-                gainNode.gain.setValueAtTime(masterVolume, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
-            } else if (noteBase === 'D' || noteBase === 'E') {
-                osc.type = 'sine';
-                const baseFreq = (noteBase === 'D') ? 300 : 450;
-                osc.frequency.setValueAtTime(baseFreq + 100, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(baseFreq, audioCtx.currentTime + 0.1);
-                gainNode.gain.setValueAtTime(masterVolume, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-            } else if (noteBase === 'F#' || noteBase === 'G#' || noteBase === 'A#' || noteBase === 'C#') {
-                osc.type = 'triangle';
-                let fq = 600;
-                if(noteBase === 'G#') fq = 800;
-                if(noteBase === 'A#') fq = 1000;
-                if(noteBase === 'C#') fq = 1200;
-                osc.frequency.setValueAtTime(fq, audioCtx.currentTime);
-                gainNode.gain.setValueAtTime(masterVolume * 0.7, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-
-                const ringOsc = audioCtx.createOscillator();
-                ringOsc.type = 'triangle';
-                ringOsc.frequency.setValueAtTime(fq * 2.75, audioCtx.currentTime);
-                ringOsc.connect(gainNode);
-                ringOsc.start(audioCtx.currentTime);
-                extraOscs.push(ringOsc);
-            } else {
-                osc.type = 'sine';
-                const targetFreq = (noteBase === 'F') ? 250 : (noteBase === 'G' ? 300 : 350);
-                osc.frequency.setValueAtTime(100, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(targetFreq, audioCtx.currentTime + 0.15);
-                gainNode.gain.setValueAtTime(masterVolume, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-            }
-        } else {
-            osc.type = settings.waveform;
-            osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
-            osc.detune.setValueAtTime(currentPitchBend, audioCtx.currentTime);
-            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-            gainNode.gain.linearRampToValueAtTime(masterVolume, audioCtx.currentTime + 0.02);
-        }
+        osc.type = settings.waveform;
+        osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+        osc.detune.setValueAtTime(currentPitchBend, audioCtx.currentTime);
+        gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(masterVolume, audioCtx.currentTime + 0.02);
 
         osc.connect(gainNode);
         gainNode.connect(audioCtx.destination);
 
         osc.start();
 
-        activeOscillators[note] = { osc, gainNode, extraOscs, trackNum: currentTrack };
+        activeOscillators[note] = { osc, gainNode, trackNum: currentTrack };
 
-        const keyElement = document.querySelector(`[data-note="${note}"]`);
+        const keyElement = document.querySelector(`.key[data-note="${note}"]`);
         if (keyElement) keyElement.classList.add('active');
     }
 
@@ -1962,12 +2397,25 @@
             pendingSustainReleases.add(note);
             return;
         }
+        
+        const currentTrack = trackSelect.value;
+        const settings = trackSettings[currentTrack];
+        const isDrums = settings.instrument === 'drums';
+
+        if (isDrums) {
+            const match = note.match(/^([A-G]#?)(\d+)?$/);
+            if (match) {
+                const noteIndex = midiNotesList.indexOf(match[1]);
+                if (noteIndex >= 0 && noteIndex < drumNotes.length) {
+                    note = drumNotes[noteIndex];
+                } else {
+                    return;
+                }
+            }
+        }
 
         const activeNode = activeOscillators[note];
         if (!activeNode) return;
-
-        const currentTrack = trackSelect.value;
-        const settings = trackSettings[currentTrack];
 
         if (isRecording && noteStartTimes[note] !== undefined) {
             const now = performance.now();
@@ -2006,20 +2454,23 @@
             renderTimeline(); 
         }
 
-        const { osc, gainNode, extraOscs } = activeNode;
+        if (activeNode.isDrums) {
+            const padElement = document.querySelector(`.pad[data-note="${note}"]`);
+            if (padElement) padElement.classList.remove('active');
+            delete activeOscillators[note];
+            return;
+        }
+
+        const { osc, gainNode } = activeNode;
         
         gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
         gainNode.gain.setValueAtTime(gainNode.gain.value, audioCtx.currentTime);
         gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.05);
 
         osc.stop(audioCtx.currentTime + 0.05);
-        if (extraOscs && extraOscs.length > 0) {
-            extraOscs.forEach(eo => eo.stop(audioCtx.currentTime + 0.05));
-        }
-
         delete activeOscillators[note];
 
-        const keyElement = document.querySelector(`[data-note="${note}"]`);
+        const keyElement = document.querySelector(`.key[data-note="${note}"]`);
         if (keyElement) keyElement.classList.remove('active');
     }
 
@@ -2036,36 +2487,55 @@
     });
 
     keys.forEach(key => {
-        key.addEventListener('mousedown', () => {
+        key.addEventListener('pointerdown', (e) => {
+            if (e.pointerType === 'mouse' && e.button !== 0) return;
+            e.preventDefault();
             const note = key.getAttribute('data-note');
             startNote(note);
         });
 
-        key.addEventListener('mouseup', () => {
-            const note = key.getAttribute('data-note');
-            stopNote(note);
-        });
-
-        key.addEventListener('mouseleave', () => {
-            const note = key.getAttribute('data-note');
-            stopNote(note);
-        });
-
-        key.addEventListener('touchstart', (e) => {
-            e.preventDefault(); 
-            const note = key.getAttribute('data-note');
-            startNote(note);
-        }, { passive: false });
-
-        key.addEventListener('touchend', (e) => {
+        key.addEventListener('pointerup', (e) => {
             e.preventDefault();
             const note = key.getAttribute('data-note');
             stopNote(note);
         });
 
-        key.addEventListener('touchcancel', (e) => {
+        key.addEventListener('pointerleave', (e) => {
             e.preventDefault();
             const note = key.getAttribute('data-note');
+            stopNote(note);
+        });
+
+        key.addEventListener('pointercancel', (e) => {
+            e.preventDefault();
+            const note = key.getAttribute('data-note');
+            stopNote(note);
+        });
+    });
+
+    pads.forEach(pad => {
+        pad.addEventListener('pointerdown', (e) => {
+            if (e.pointerType === 'mouse' && e.button !== 0) return;
+            e.preventDefault();
+            const note = pad.getAttribute('data-note');
+            startNote(note);
+        });
+
+        pad.addEventListener('pointerup', (e) => {
+            e.preventDefault();
+            const note = pad.getAttribute('data-note');
+            stopNote(note);
+        });
+
+        pad.addEventListener('pointerleave', (e) => {
+            e.preventDefault();
+            const note = pad.getAttribute('data-note');
+            stopNote(note);
+        });
+
+        pad.addEventListener('pointercancel', (e) => {
+            e.preventDefault();
+            const note = pad.getAttribute('data-note');
             stopNote(note);
         });
     });
@@ -2108,8 +2578,6 @@
         console.warn("Could not access your MIDI devices.");
     }
 
-    const midiNotesMap = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-
     function onMIDIMessage(event) {
         if (event.data.length < 3) return;
 
@@ -2138,7 +2606,9 @@
 
             if (audioCtx) {
                 Object.values(activeOscillators).forEach(active => {
-                    active.osc.detune.setValueAtTime(currentPitchBend, audioCtx.currentTime);
+                    if (!active.isDrums && active.osc) {
+                        active.osc.detune.setValueAtTime(currentPitchBend, audioCtx.currentTime);
+                    }
                 });
             }
             return;
@@ -2159,7 +2629,7 @@
         }
         
         const octave = Math.floor(note / 12) - 1 + currentOctaveShift;
-        const noteName = midiNotesMap[note % 12] + octave;
+        const noteName = midiNotesList[note % 12] + octave;
 
         if (command === 144 && velocity > 0) {
             startNote(noteName);
@@ -2209,6 +2679,14 @@
                         waveformSelect.value = trackSettings[trackNum].waveform;
                         volumeSlider.value = trackSettings[trackNum].volume;
                         quantizeSelect.value = trackSettings[trackNum].quantize;
+                        
+                        if (trackSettings[trackNum].instrument === 'drums') {
+                            document.getElementById('keyboard').style.display = 'none';
+                            document.getElementById('drumPad').style.display = 'grid';
+                        } else {
+                            document.getElementById('keyboard').style.display = 'flex';
+                            document.getElementById('drumPad').style.display = 'none';
+                        }
                     }
                 }
             } catch(e) {}
@@ -2223,6 +2701,7 @@
 
         outputData1.addEventListener('input', () => handleImport(outputData1, '1'));
         outputData2.addEventListener('input', () => handleImport(outputData2, '2'));
+        outputData3.addEventListener('input', () => handleImport(outputData3, '3'));
 
         function handleNotesDown(e, clientX, clientY) {
             if(e.target.classList.contains('note-block')) {
@@ -2515,6 +2994,7 @@
             if (dragSelectedNotes && dragSelectedNotes.length > 0) {
                 let t1Data = getNotesFromTextarea(outputData1);
                 let t2Data = getNotesFromTextarea(outputData2);
+                let t3Data = getNotesFromTextarea(outputData3);
                 let changed = false;
 
                 dragSelectedNotes.forEach(dragObj => {
@@ -2523,7 +3003,11 @@
                     const newTime = parseFloat(dragObj.element.dataset.newTime);
                     
                     if(!isNaN(newTime)) {
-                        let notes = track === '1' ? t1Data : t2Data;
+                        let notes;
+                        if (track === '1') notes = t1Data;
+                        else if (track === '2') notes = t2Data;
+                        else notes = t3Data;
+
                         if (notes[index]) {
                             notes[index].time = newTime;
                             changed = true;
@@ -2535,6 +3019,7 @@
                     saveState();
                     writeTrackData('1', t1Data);
                     writeTrackData('2', t2Data);
+                    writeTrackData('3', t3Data);
                 }
                 dragSelectedNotes = [];
                 renderTimeline();
@@ -2568,9 +3053,15 @@
                     el.className = `note-block note-track-${trackNum}`;
                     const leftPct = (n.time / totalDuration) * 100;
                     const widthPct = (n.duration / totalDuration) * 100;
-                    const noteIdx = allNotes.indexOf(n.note);
+                    
+                    let noteIdx = allNotes.indexOf(n.note);
                     let topPct = 50;
-                    if(noteIdx !== -1) {
+                    if (noteIdx === -1) {
+                        noteIdx = drumNotes.indexOf(n.note);
+                        if (noteIdx !== -1) {
+                            topPct = 100 - ((noteIdx / (drumNotes.length - 1)) * 100);
+                        }
+                    } else {
                         topPct = 100 - ((noteIdx / (allNotes.length - 1)) * 100);
                     }
                     
@@ -2596,6 +3087,7 @@
         }
         drawTrack(outputData1, '1');
         drawTrack(outputData2, '2');
+        drawTrack(outputData3, '3');
     }
 
     initTimeline();
@@ -2623,12 +3115,35 @@
 
     exportBtn1.addEventListener('click', () => {
         const notes = getNotesFromTextarea(outputData1);
-        if (notes.length) copyTextToClipboard(JSON.stringify(notes), exportBtn1, "COPY");
+        if (notes.length) {
+            const exportData = {
+                loopDuration: getTotalDurationMs(),
+                notes: notes
+            };
+            copyTextToClipboard(JSON.stringify(exportData), exportBtn1, "COPY");
+        }
     });
 
     exportBtn2.addEventListener('click', () => {
         const notes = getNotesFromTextarea(outputData2);
-        if (notes.length) copyTextToClipboard(JSON.stringify(notes), exportBtn2, "COPY");
+        if (notes.length) {
+            const exportData = {
+                loopDuration: getTotalDurationMs(),
+                notes: notes
+            };
+            copyTextToClipboard(JSON.stringify(exportData), exportBtn2, "COPY");
+        }
+    });
+
+    exportBtn3.addEventListener('click', () => {
+        const notes = getNotesFromTextarea(outputData3);
+        if (notes.length) {
+            const exportData = {
+                loopDuration: getTotalDurationMs(),
+                notes: notes
+            };
+            copyTextToClipboard(JSON.stringify(exportData), exportBtn3, "COPY");
+        }
     });
 </script>
 
