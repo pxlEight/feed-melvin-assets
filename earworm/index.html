@@ -1077,6 +1077,7 @@
                     active.gainNode.gain.setTargetAtTime(vol, audioCtx.currentTime, 0.015);
                 }
             }
+        }
         });
     });
 
@@ -1578,6 +1579,11 @@
 
     function initAudio() {
         if (!audioCtx) {
+            // --- iOS AUDIO BYPASS (W3C AUDIO SESSION API) ---
+            if ('audioSession' in navigator) {
+                navigator.audioSession.type = 'playback';
+            }
+            // ------------------------------------------------
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
     }
