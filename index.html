@@ -1450,7 +1450,27 @@
 
         // Route drum instrument instructions directly to the synthesis engine
         if (noteData.instrument === 'drums') {
-            buildDrumSound(audioCtx, musicMasterGain, noteData.note, time, musicVol);
+            let drumData = buildDrumSound(audioCtx, musicMasterGain, noteData.note, time, musicVol);
+            
+            let maxStopTime = 0;
+            let longestOsc = null;
+            
+            drumData.activeNodes.forEach(n => {
+                if (n.stopTime > maxStopTime && n.osc) {
+                    maxStopTime = n.stopTime;
+                    longestOsc = n.osc;
+                }
+            });
+
+            if (longestOsc) {
+                longestOsc.onended = () => {
+                    drumData.activeNodes.forEach(n => {
+                        if (n.osc) n.osc.disconnect();
+                        if (n.gain) n.gain.disconnect();
+                    });
+                    drumData.masterGain.disconnect();
+                };
+            }
             return;
         }
 
@@ -1467,6 +1487,8 @@
 
         osc.connect(gainNode);
         gainNode.connect(musicMasterGain);
+        
+        osc.onended = () => { osc.disconnect(); gainNode.disconnect(); };
 
         osc.start(time);
         osc.stop(time + duration);
@@ -1923,6 +1945,7 @@
         const o = audioCtx.createOscillator(), g = audioCtx.createGain();
         o.type = t; o.frequency.setValueAtTime(f, audioCtx.currentTime);
         g.gain.setValueAtTime(v, audioCtx.currentTime); o.connect(g); g.connect(fxMasterGain);
+        o.onended = () => { o.disconnect(); g.disconnect(); };
         o.start(); o.stop(audioCtx.currentTime + d);
     }
     
@@ -2082,6 +2105,7 @@
             g.gain.setValueAtTime(0.08, audioCtx.currentTime);
             g.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
             o.connect(g); g.connect(fxMasterGain);
+            o.onended = () => { o.disconnect(); g.disconnect(); };
             o.start(); o.stop(audioCtx.currentTime + 0.2);
         };
         
@@ -2095,6 +2119,7 @@
             g.gain.setValueAtTime(0.02, audioCtx.currentTime);
             g.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
             o.connect(g); g.connect(fxMasterGain);
+            o.onended = () => { o.disconnect(); g.disconnect(); };
             o.start(); o.stop(audioCtx.currentTime + 0.2);
         };
 
