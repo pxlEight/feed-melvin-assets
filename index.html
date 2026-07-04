@@ -1446,7 +1446,7 @@
 
     function scheduleNewNote(noteData, time) {
         let musicVol = noteData.volume * 0.5;
-        let duration = noteData.duration / 1000;
+        let duration = Math.max(0.015, noteData.duration / 1000);
 
         // Route drum instrument instructions directly to the synthesis engine
         if (noteData.instrument === 'drums') {
@@ -1481,8 +1481,11 @@
         osc.type = noteData.waveform; 
         osc.frequency.setValueAtTime(noteFreqs[noteData.note] || 440, time);
 
-        gainNode.gain.setValueAtTime(musicVol, time);
-        gainNode.gain.setValueAtTime(musicVol, time + duration - 0.03);
+        gainNode.gain.setValueAtTime(0, time); 
+        gainNode.gain.linearRampToValueAtTime(musicVol, time + 0.005); 
+        
+        let sustainTime = Math.max(time + 0.01, time + duration - 0.03);
+        gainNode.gain.setValueAtTime(musicVol, sustainTime);
         gainNode.gain.linearRampToValueAtTime(0.0001, time + duration);
 
         osc.connect(gainNode);
@@ -1491,7 +1494,7 @@
         osc.onended = () => { osc.disconnect(); gainNode.disconnect(); };
 
         osc.start(time);
-        osc.stop(time + duration);
+        osc.stop(time + duration + 0.05); 
     }
 
     function scheduler() {
@@ -1607,12 +1610,14 @@
             const data = JSON.parse(dataStr);
             let newTrack1 = [];
             let newTrack2 = [];
+            let newTrack3 = [];
             let newLoopDuration = 22.500; 
 
             if (data.isProject) {
                 if (data.loopDuration) newLoopDuration = data.loopDuration / 1000; 
                 if (data.track1 && data.track1.notes) newTrack1 = data.track1.notes;
                 if (data.track2 && data.track2.notes) newTrack2 = data.track2.notes;
+                if (data.track3 && data.track3.notes) newTrack3 = data.track3.notes;
             } else if (data.notes) {
                 newTrack1 = data.notes;
                 if (data.loopDuration) {
@@ -1632,8 +1637,12 @@
                 return;
             }
 
-            allNotes = [...newTrack1, ...newTrack2].sort((a, b) => a.time - b.time);
+            allNotes = [...newTrack1, ...newTrack2, ...newTrack3].sort((a, b) => a.time - b.time);
             LOOP_DURATION = newLoopDuration;
+
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
 
             if (musicStarted && audioCtx && audioCtx.state === 'running') {
                 currentLoopStartTime = audioCtx.currentTime + 0.05;
