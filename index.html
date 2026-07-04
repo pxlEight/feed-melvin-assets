@@ -228,7 +228,7 @@
         .sound-btn-global { position: absolute; bottom: 26px; left: 26px; display: flex; }
 
         #sound-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000000; align-items: center; justify-content: center; pointer-events: auto; }
-        #sound-box { background: rgba(61, 90, 128, 0.7); padding: 18px; width: 60%; max-width: 225px; text-align: center; box-shadow: 0 6px 0 #000; border: none; color: rgba(255, 255, 255, 0.7); display: flex; flex-direction: column; gap: 15px; position: relative; }
+        #sound-box { background: rgba(61, 90, 128, 0.95); padding: 18px; width: 60%; max-width: 240px; text-align: center; box-shadow: 0 6px 0 #000; border: none; color: rgba(255, 255, 255, 0.7); display: flex; flex-direction: column; gap: 15px; position: relative; }
         .sound-slider-row { display: flex; flex-direction: column; align-items: center; gap: 8px; }
         .sound-slider-label { font-size: 1.6rem; text-shadow: none; color: rgba(255, 255, 255, 0.7); }
         .sound-slider { width: 90%; height: 15px; background: rgba(255, 255, 255, 0.5); outline: none; -webkit-appearance: none; border: none; }
@@ -263,27 +263,61 @@
         <div id="bmc-tooltip">Thanks for playing! Care to buy us some baby formula?</div>
         <a id="custom-bmc-btn" href="https://www.buymeacoffee.com/pixelmover" target="_blank" rel="noopener noreferrer" title="Buy me a coffee!">🍼</a>
         
-        <button id="sound-toggle-main" class="sound-btn-landing" style="display: none; pointer-events: auto;" onpointerdown="toggleSoundMenu()">
+        <button id="sound-toggle-main" class="sound-btn-landing" style="display: none; pointer-events: auto;" onclick="toggleSoundMenu()">
             <svg viewBox="0 0 24 24">
                 <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
             </svg>
         </button>
         
-        <div id="sound-overlay" style="display: none; pointer-events: auto;" onpointerdown="if(event.target===this) toggleSoundMenu()">
+        <div id="sound-overlay" style="display: none; pointer-events: auto;" onclick="if(event.target===this) toggleSoundMenu()">
             <div id="sound-box">
-                <div class="sound-close-btn" onpointerdown="toggleSoundMenu()">X</div>
-                <h2 style="font-size: 2.5rem; margin: 0; text-shadow: none; color: rgba(255, 255, 255, 0.7);">SOUND</h2>
-                <div class="sound-slider-row">
-                    <div class="sound-slider-label">FX</div>
-                    <input type="range" id="fx-vol-slider" class="sound-slider" min="0" max="1" step="0.05" value="1" oninput="if(typeof fxMasterGain !== 'undefined') fxMasterGain.gain.value = parseFloat(this.value);">
+                <button class="sound-close-btn" onclick="toggleSoundMenu()">X</button>
+                
+                <div id="sound-view-main" style="display: flex; flex-direction: column; gap: 15px;">
+                    <h2 style="font-size: 2.5rem; margin: 0; text-shadow: none; color: rgba(255, 255, 255, 0.7);">SOUND</h2>
+                    <div class="sound-slider-row">
+                        <div class="sound-slider-label">FX</div>
+                        <input type="range" id="fx-vol-slider" class="sound-slider" min="0" max="1" step="0.05" value="1" oninput="if(typeof fxMasterGain !== 'undefined') fxMasterGain.gain.value = parseFloat(this.value);">
+                    </div>
+                    <div class="sound-slider-row">
+                        <div class="sound-slider-label">MUSIC</div>
+                        <input type="range" id="music-vol-slider" class="sound-slider" min="0" max="1" step="0.05" value="1" oninput="if(typeof musicMasterGain !== 'undefined') musicMasterGain.gain.value = parseFloat(this.value);">
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 5px;">
+                        <div class="mute-row" style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: rgba(255, 255, 255, 0.7); font-size: 1.6rem;" onclick="toggleMute()">
+                            <div id="mute-checkbox" style="width: 20px; height: 20px; border: 2px solid rgba(255, 255, 255, 0.7); display: flex; align-items: center; justify-content: center; background: transparent;"></div>
+                            <div>MUTE</div>
+                        </div>
+                        <div style="cursor: pointer; color: rgba(255, 255, 255, 0.7);" onclick="document.getElementById('sound-view-main').style.display='none'; document.getElementById('sound-view-custom').style.display='flex';">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+                        </div>
+                    </div>
                 </div>
-                <div class="sound-slider-row">
-                    <div class="sound-slider-label">MUSIC</div>
-                    <input type="range" id="music-vol-slider" class="sound-slider" min="0" max="1" step="0.05" value="1" oninput="if(typeof musicMasterGain !== 'undefined') musicMasterGain.gain.value = parseFloat(this.value);">
-                </div>
-                <div class="mute-row" style="display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; color: rgba(255, 255, 255, 0.7); font-size: 1.6rem; margin-top: 5px;" onpointerdown="toggleMute()">
-                    <div id="mute-checkbox" style="width: 20px; height: 20px; border: 2px solid rgba(255, 255, 255, 0.7); display: flex; align-items: center; justify-content: center; background: transparent;"></div>
-                    <div>MUTE</div>
+
+                <div id="sound-view-custom" style="display: none; flex-direction: column; gap: 15px; width: 100%;">
+                    <h2 style="font-size: 2.5rem; margin: 0; text-shadow: none; color: rgba(255, 255, 255, 0.7);">RECORD</h2>
+                    
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; color: #4ed9ff; font-size: 1.6rem;" onclick="window.location.href='https://www.feedmelvin.com/earworm'">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20 5H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 12H4V7h16v10zm-2-8h-2v4h2V9zm-4 0h-2v4h2V9zm-4 0H8v4h2V9z"/></svg>
+                        <span>MUSIC LAB</span>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 5px; text-align: left; width: 100%;">
+                        <label style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.7); margin: 0;">IMPORT</label>
+                        <div style="display: flex; gap: 5px; width: 100%;">
+                            <button id="paste-music-btn" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.5); cursor: pointer; padding: 4px 8px; font-family: 'VT323', monospace; font-size: 1.4rem;" onclick="pasteCustomMusic()">PASTE</button>
+                            <input type="text" id="custom-music-input" placeholder="Paste JSON..." style="flex: 1; min-width: 0; background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.5); padding: 4px; font-family: 'VT323', monospace; font-size: 1.2rem; outline: none;">
+                        </div>
+                        <input type="file" id="custom-music-file" accept=".json" style="display: none;" onchange="handleMusicFileSelect(event)">
+                        <button style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.5); cursor: pointer; padding: 4px 8px; font-family: 'VT323', monospace; font-size: 1.4rem; width: 100%; margin-top: 5px;" onclick="document.getElementById('custom-music-file').click()">FILE IMPORT</button>
+                    </div>
+
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 5px;">
+                        <div style="cursor: pointer; color: rgba(255,255,255,0.7); padding: 5px;" onclick="document.getElementById('sound-view-custom').style.display='none'; document.getElementById('sound-view-main').style.display='flex';">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>
+                        </div>
+                        <button id="swap-music-btn" style="background: #ffffff; color: #3d5a80; border: none; cursor: pointer; padding: 6px 16px; font-family: 'VT323', monospace; font-size: 1.6rem; font-weight: bold; box-shadow: 0 4px 0 #000;" onclick="swapCustomMusic()">SWAP</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -389,8 +423,8 @@
             </div>
         </div>
         
-        <div id="instructions-box-left" onpointerdown="startGame('easy', this)">EASY</div>
-        <div id="instructions-box-right" onpointerdown="startGame('normal', this)">NORMAL</div>
+        <div id="instructions-box-left" onclick="startGame('easy', this)">EASY</div>
+        <div id="instructions-box-right" onclick="startGame('normal', this)">NORMAL</div>
     </div>
 
     <div id="checkup-screen" style="display: none;">
@@ -422,7 +456,7 @@
         </div>
         
         <div class="checkup-btn-row">
-            <button class="resume-btn" onpointerdown="resumeGame(this)">RESUME</button>
+            <button class="resume-btn" onclick="resumeGame(this)">RESUME</button>
         </div>
             
         <div id="random-tip-msg-container">
@@ -441,7 +475,7 @@
             <div id="pause-box">
                 <h2 style="color: rgba(255, 255, 255, 0.7); font-size: 2.5rem; text-shadow: none; margin-top: 0; margin-bottom: 10px;">PAUSED</h2>
                 <div id="pause-tip" style="color: #aed9e0; font-size: 1.6rem; line-height: 1.3;"></div>
-                <div class="pause-start-over-btn" onpointerdown="location.reload()">START OVER</div>
+                <div class="pause-start-over-btn" onclick="location.reload()">START OVER</div>
             </div>
         </div>
         <div id="spitup-overlay"></div>
@@ -1109,12 +1143,11 @@
     let petAnimTimeout = null, isBigBurpAnimating = false;
 
     // --- NEW LAYERED MUSIC SEQUENCER ---
-    const track1 = [{"note":"B4","time":0,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D5","time":335,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G4","time":667,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B4","time":832,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G5","time":1168,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D5","time":1498,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B4","time":2665,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D5","time":3000,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G4","time":3333,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B4","time":3499,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"A4","time":3834,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B4","time":5333,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D5","time":5668,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G4","time":6002,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B4","time":6166,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G5","time":6499,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D5","time":6834,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B4","time":8336,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G5","time":8669,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"A4","time":8834,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G4","time":9167,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B5","time":7999,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":10668,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":11000,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"F4","time":11333,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":11499,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D4","time":11834,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":12166,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"F4","time":12501,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":12669,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D4","time":13002,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"C4","time":13331,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"C4","time":13666,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D4","time":13997,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":14167,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D4","time":14501,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":15999,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":16336,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"F4","time":16663,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":16835,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D4","time":17166,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":17502,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"F4","time":17832,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":18001,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D4","time":18332,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"C6","time":19835,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"C4","time":20667,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G4","time":18668,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"A4","time":19002,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D5","time":19332,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G5","time":19498,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"C2","time":22500,"duration":166.66666666666666,"instrument":"synth","waveform":"sine","volume":0.3}];
-    
-    const track2 = [{"note":"B4","time":0,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D5","time":335,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G4","time":667,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B4","time":832,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G5","time":1168,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D5","time":1498,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B4","time":2665,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D5","time":3000,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G4","time":3333,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B4","time":3499,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"A4","time":3834,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B4","time":5333,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D5","time":5668,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G4","time":6002,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B4","time":6166,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G5","time":6499,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D5","time":6834,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B4","time":8336,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G5","time":8669,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"A4","time":8834,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G4","time":9167,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B5","time":7999,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":10668,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":11000,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"F4","time":11333,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":11499,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D4","time":11834,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":12166,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"F4","time":12501,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":12669,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D4","time":13002,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"C4","time":13331,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"C4","time":13666,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D4","time":13997,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":14167,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D4","time":14501,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":15999,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":16336,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"F4","time":16663,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":16835,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D4","time":17166,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":17502,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"F4","time":17832,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":18001,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D4","time":18332,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"C6","time":19835,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"C4","time":20667,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G4","time":18668,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"A4","time":19002,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D5","time":19332,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G5","time":19498,"duration":168,"instrument":"synth","waveform":"square","volume":0.05}];
+    let track1 = [{"note":"B4","time":0,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D5","time":335,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G4","time":667,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B4","time":832,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G5","time":1168,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D5","time":1498,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B4","time":2665,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D5","time":3000,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G4","time":3333,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B4","time":3499,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"A4","time":3834,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B4","time":5333,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D5","time":5668,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G4","time":6002,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B4","time":6166,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G5","time":6499,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D5","time":6834,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B4","time":8336,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G5","time":8669,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"A4","time":8834,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G4","time":9167,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B5","time":7999,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":10668,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":11000,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"F4","time":11333,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":11499,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D4","time":11834,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":12166,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"F4","time":12501,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":12669,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D4","time":13002,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"C4","time":13331,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"C4","time":13666,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D4","time":13997,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":14167,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D4","time":14501,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":15999,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":16336,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"F4","time":16663,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":16835,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D4","time":17166,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":17502,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"F4","time":17832,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":18001,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D4","time":18332,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"C6","time":19835,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"C4","time":20667,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G4","time":18668,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"A4","time":19002,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D5","time":19332,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G5","time":19498,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"C2","time":22500,"duration":166.66666666666666,"instrument":"synth","waveform":"sine","volume":0.3}];
+    let track2 = [{"note":"B4","time":0,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D5","time":335,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G4","time":667,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B4","time":832,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G5","time":1168,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D5","time":1498,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B4","time":2665,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D5","time":3000,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G4","time":3333,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B4","time":3499,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"A4","time":3834,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B4","time":5333,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D5","time":5668,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G4","time":6002,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B4","time":6166,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G5","time":6499,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D5","time":6834,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B4","time":8336,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G5","time":8669,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"A4","time":8834,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G4","time":9167,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B5","time":7999,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":10668,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":11000,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"F4","time":11333,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":11499,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D4","time":11834,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":12166,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"F4","time":12501,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":12669,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D4","time":13002,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"C4","time":13331,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"C4","time":13666,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D4","time":13997,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":14167,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D4","time":14501,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":15999,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":16336,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"F4","time":16663,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":16835,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D4","time":17166,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":17502,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"F4","time":17832,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":18001,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D4","time":18332,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"C6","time":19835,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"C4","time":20667,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G4","time":18668,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"A4","time":19002,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D5","time":19332,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G5","time":19498,"duration":168,"instrument":"synth","waveform":"square","volume":0.05}];
 
-    const allNotes = [...track1, ...track2].sort((a, b) => a.time - b.time);
-    const LOOP_DURATION = 22.500;
+    let allNotes = [...track1, ...track2].sort((a, b) => a.time - b.time);
+    let LOOP_DURATION = 22.500;
 
     const noteFreqs = {
         // Octave 0 (Sub-bass)
@@ -1253,6 +1286,79 @@
         } else {
             muteCheck.style.background = 'transparent';
             if (masterGainNode && !document.hidden) masterGainNode.gain.value = 1;
+        }
+    }
+
+    async function pasteCustomMusic() {
+        try {
+            const text = await navigator.clipboard.readText();
+            document.getElementById('custom-music-input').value = text;
+        } catch (err) {
+            setTimeout(() => alert('Clipboard access denied. Please tap the text field and paste manually.'), 10);
+        }
+    }
+
+    function handleMusicFileSelect(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            document.getElementById('custom-music-input').value = e.target.result;
+        };
+        reader.readAsText(file);
+    }
+
+    function swapCustomMusic() {
+        const dataStr = document.getElementById('custom-music-input').value;
+        if (!dataStr) {
+            setTimeout(() => alert("Please paste or load a music file first."), 10);
+            return;
+        }
+
+        try {
+            const data = JSON.parse(dataStr);
+            let newTrack1 = [];
+            let newTrack2 = [];
+            let newLoopDuration = 22.500; 
+
+            if (data.isProject) {
+                if (data.loopDuration) newLoopDuration = data.loopDuration / 1000; 
+                if (data.track1 && data.track1.notes) newTrack1 = data.track1.notes;
+                if (data.track2 && data.track2.notes) newTrack2 = data.track2.notes;
+            } else if (data.notes) {
+                newTrack1 = data.notes;
+                if (data.loopDuration) {
+                    newLoopDuration = data.loopDuration / 1000;
+                } else {
+                    let maxTime = 0;
+                    newTrack1.forEach(n => { if (n.time + n.duration > maxTime) maxTime = n.time + n.duration; });
+                    newLoopDuration = (maxTime > 0 ? maxTime : 22500) / 1000;
+                }
+            } else if (Array.isArray(data)) {
+                newTrack1 = data;
+                let maxTime = 0;
+                newTrack1.forEach(n => { if (n.time + n.duration > maxTime) maxTime = n.time + n.duration; });
+                newLoopDuration = (maxTime > 0 ? maxTime : 22500) / 1000;
+            } else {
+                setTimeout(() => alert("Unrecognized music format."), 10);
+                return;
+            }
+
+            allNotes = [...newTrack1, ...newTrack2].sort((a, b) => a.time - b.time);
+            LOOP_DURATION = newLoopDuration;
+
+            if (musicStarted && audioCtx && audioCtx.state === 'running') {
+                currentLoopStartTime = audioCtx.currentTime + 0.05;
+                currentNoteIndex = 0;
+                clearTimeout(musicTimeoutId);
+                scheduler();
+            }
+
+            document.getElementById('sound-view-custom').style.display = 'none';
+            document.getElementById('sound-view-main').style.display = 'flex';
+            setTimeout(() => alert("Custom music loaded successfully!"), 10);
+        } catch(e) {
+            setTimeout(() => alert("Invalid JSON data. Ensure you copied the full export string."), 10);
         }
     }
 
