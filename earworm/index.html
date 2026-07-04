@@ -1585,6 +1585,9 @@
             // ------------------------------------------------
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
     }
 
     function playClick(time) {
@@ -2245,9 +2248,27 @@
             let drumData = buildDrumSound(audioCtx, audioCtx.destination, note, audioCtx.currentTime, settings.volume);
             const nodeRef = { isDrums: true, trackNum, activeNodes: drumData.activeNodes, masterGain: drumData.masterGain };
             activePlaybackNodes.push(nodeRef);
-            setTimeout(() => {
-                activePlaybackNodes = activePlaybackNodes.filter(n => n !== nodeRef);
-            }, durationMs + 100);
+            
+            let maxStopTime = 0;
+            let longestOsc = null;
+            
+            drumData.activeNodes.forEach(n => {
+                if (n.stopTime > maxStopTime && n.osc) {
+                    maxStopTime = n.stopTime;
+                    longestOsc = n.osc;
+                }
+            });
+
+            if (longestOsc) {
+                longestOsc.onended = () => {
+                    drumData.activeNodes.forEach(n => {
+                        if (n.osc) n.osc.disconnect();
+                        if (n.gain) n.gain.disconnect();
+                    });
+                    drumData.masterGain.disconnect();
+                    activePlaybackNodes = activePlaybackNodes.filter(n => n !== nodeRef);
+                };
+            }
             return; 
         }
 
@@ -2279,9 +2300,12 @@
 
         const nodeRef = { osc, gainNode, trackNum };
         activePlaybackNodes.push(nodeRef);
-        setTimeout(() => {
+        
+        osc.onended = () => {
+            osc.disconnect();
+            gainNode.disconnect();
             activePlaybackNodes = activePlaybackNodes.filter(n => n !== nodeRef);
-        }, durationMs + 100);
+        };
     }
 
     function startNote(note) {
@@ -2473,6 +2497,12 @@
         gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.05);
 
         osc.stop(audioCtx.currentTime + 0.05);
+        
+        osc.onended = () => {
+            osc.disconnect();
+            gainNode.disconnect();
+        };
+        
         delete activeOscillators[note];
 
         const keyElement = document.querySelector(`.key[data-note="${note}"]`);
