@@ -1185,15 +1185,281 @@
     
     let isMuted = false;
 
+    // Helper for transient tick (needed for kick drums)
+    function buildTick(ctx, masterGain, time, freqStart, freqEnd, duration) {
+        const clickOsc = ctx.createOscillator();
+        const clickGain = ctx.createGain();
+        clickOsc.type = 'sine';
+        clickOsc.frequency.setValueAtTime(freqStart, time);
+        clickOsc.frequency.exponentialRampToValueAtTime(freqEnd, time + duration);
+        clickGain.gain.setValueAtTime(0.5, time);
+        clickGain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+        clickOsc.connect(clickGain).connect(masterGain);
+        clickOsc.start(time);
+        clickOsc.stop(time + duration);
+        return { osc: clickOsc, gain: clickGain, stopTime: time + duration };
+    }
+
+    // Master drum synthesis builder
+    function buildDrumSound(ctx, destination, noteName, time, volume) {
+        const t = time;
+        const masterGain = ctx.createGain();
+        masterGain.gain.value = volume;
+        masterGain.connect(destination);
+        
+        const playMetallic = (duration, baseFreq, ratios, bpFreq, hpFreq) => {
+            const bandpass = ctx.createBiquadFilter();
+            bandpass.type = 'bandpass';
+            bandpass.frequency.value = bpFreq;
+            const highpass = ctx.createBiquadFilter();
+            highpass.type = 'highpass';
+            highpass.frequency.value = hpFreq;
+            const gain = ctx.createGain();
+            gain.gain.setValueAtTime(1.0, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
+            bandpass.connect(highpass).connect(gain).connect(masterGain);
+            
+            let oscs = [];
+            ratios.forEach(ratio => {
+                const osc = ctx.createOscillator();
+                osc.type = 'square';
+                osc.frequency.value = baseFreq * ratio;
+                osc.connect(bandpass);
+                osc.start(t);
+                osc.stop(t + duration);
+                oscs.push(osc);
+            });
+            return { oscs, gain };
+        };
+
+        let activeNodes = []; 
+        
+        switch(noteName) {
+            case 'KICK': {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(250, t);
+                osc.frequency.exponentialRampToValueAtTime(45, t + 0.1);
+                gain.gain.setValueAtTime(1.0, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+                osc.connect(gain).connect(masterGain);
+                osc.start(t);
+                osc.stop(t + 0.5);
+                activeNodes.push({osc, gain, stopTime: t + 0.5});
+
+                const tickNode = buildTick(ctx, masterGain, t, 3000, 100, 0.015);
+                activeNodes.push(tickNode);
+                break;
+            }
+            case 'SNARE': {
+                const bodyOsc = ctx.createOscillator();
+                const bodyGain = ctx.createGain();
+                bodyOsc.type = 'triangle';
+                bodyOsc.frequency.setValueAtTime(800, t);
+                bodyOsc.frequency.exponentialRampToValueAtTime(200, t + 0.06);
+                bodyGain.gain.setValueAtTime(0.8, t);
+                bodyGain.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
+                bodyOsc.connect(bodyGain).connect(masterGain);
+                bodyOsc.start(t);
+                bodyOsc.stop(t + 0.06);
+                activeNodes.push({osc: bodyOsc, gain: bodyGain, stopTime: t + 0.06});
+
+                const bandpass = ctx.createBiquadFilter();
+                bandpass.type = 'bandpass';
+                bandpass.frequency.value = 7000;
+                const highpass = ctx.createBiquadFilter();
+                highpass.type = 'highpass';
+                highpass.frequency.value = 4000;
+                const rattleGain = ctx.createGain();
+                rattleGain.gain.setValueAtTime(0.7, t); 
+                rattleGain.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+                bandpass.connect(highpass).connect(rattleGain).connect(masterGain);
+                
+                [2, 3, 4.16, 5.43, 6.79, 8.21].forEach(ratio => {
+                    const osc = ctx.createOscillator();
+                    osc.type = 'square';
+                    osc.frequency.value = 40 * ratio;
+                    osc.connect(bandpass);
+                    osc.start(t);
+                    osc.stop(t + 0.15);
+                    activeNodes.push({osc, stopTime: t + 0.15});
+                });
+                break;
+            }
+            case 'CHAT': {
+                let r = playMetallic(0.1, 40, [2, 3, 4.16, 5.43, 6.79, 8.21], 10000, 7000);
+                r.oscs.forEach(o => activeNodes.push({osc: o, gain: r.gain, stopTime: t + 0.1}));
+                break;
+            }
+            case 'OHAT': {
+                let r = playMetallic(0.4, 40, [2, 3, 4.16, 5.43, 6.79, 8.21], 10000, 7000);
+                r.oscs.forEach(o => activeNodes.push({osc: o, gain: r.gain, stopTime: t + 0.4}));
+                break;
+            }
+            case 'LTOM': {
+                const osc1 = ctx.createOscillator();
+                const gain1 = ctx.createGain();
+                osc1.type = 'triangle';
+                osc1.frequency.setValueAtTime(200, t);
+                osc1.frequency.exponentialRampToValueAtTime(60, t + 0.2);
+                gain1.gain.setValueAtTime(0.8, t);
+                gain1.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+                osc1.connect(gain1).connect(masterGain);
+                osc1.start(t);
+                osc1.stop(t + 0.4);
+                activeNodes.push({osc: osc1, gain: gain1, stopTime: t + 0.4});
+                
+                const osc2 = ctx.createOscillator();
+                const gain2 = ctx.createGain();
+                const filter = ctx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.value = 1000;
+                filter.Q.value = 5.0; 
+                
+                osc2.type = 'sawtooth';
+                osc2.frequency.setValueAtTime(200, t);
+                osc2.frequency.exponentialRampToValueAtTime(60, t + 0.2);
+                gain2.gain.setValueAtTime(0.3, t);
+                gain2.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+                osc2.connect(filter).connect(gain2).connect(masterGain);
+                osc2.start(t);
+                osc2.stop(t + 0.3);
+                activeNodes.push({osc: osc2, gain: gain2, stopTime: t + 0.3});
+                break;
+            }
+            case 'HTOM': {
+                const osc1 = ctx.createOscillator();
+                const gain1 = ctx.createGain();
+                osc1.type = 'triangle';
+                osc1.frequency.setValueAtTime(300, t);
+                osc1.frequency.exponentialRampToValueAtTime(120, t + 0.2);
+                gain1.gain.setValueAtTime(0.8, t);
+                gain1.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+                osc1.connect(gain1).connect(masterGain);
+                osc1.start(t);
+                osc1.stop(t + 0.4);
+                activeNodes.push({osc: osc1, gain: gain1, stopTime: t + 0.4});
+                
+                const osc2 = ctx.createOscillator();
+                const gain2 = ctx.createGain();
+                const filter = ctx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.value = 1000;
+                filter.Q.value = 5.0; 
+                
+                osc2.type = 'sawtooth';
+                osc2.frequency.setValueAtTime(300, t);
+                osc2.frequency.exponentialRampToValueAtTime(120, t + 0.2);
+                gain2.gain.setValueAtTime(0.3, t);
+                gain2.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+                osc2.connect(filter).connect(gain2).connect(masterGain);
+                osc2.start(t);
+                osc2.stop(t + 0.3);
+                activeNodes.push({osc: osc2, gain: gain2, stopTime: t + 0.3});
+                break;
+            }
+            case 'COWB': {
+                const gain = ctx.createGain();
+                gain.gain.setValueAtTime(0.8, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+                gain.connect(masterGain);
+                [540, 800].forEach(freq => {
+                    const osc = ctx.createOscillator();
+                    osc.type = 'square';
+                    osc.frequency.value = freq;
+                    const filter = ctx.createBiquadFilter();
+                    filter.type = 'bandpass';
+                    filter.frequency.value = 1200;
+                    osc.connect(filter).connect(gain);
+                    osc.start(t);
+                    osc.stop(t + 0.3);
+                    activeNodes.push({osc, gain, stopTime: t + 0.3});
+                });
+                break;
+            }
+            case 'WOOD': {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'square';
+                osc.frequency.value = 800;
+                gain.gain.setValueAtTime(1.0, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+                const filter = ctx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.value = 1000;
+                osc.connect(filter).connect(gain).connect(masterGain);
+                osc.start(t);
+                osc.stop(t + 0.05);
+                activeNodes.push({osc, gain, stopTime: t + 0.05});
+                break;
+            }
+            case 'CLAV': {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = 2500; 
+                gain.gain.setValueAtTime(1.0, t);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.1); 
+                osc.connect(gain).connect(masterGain);
+                osc.start(t);
+                osc.stop(t + 0.1);
+                activeNodes.push({osc, gain, stopTime: t + 0.1});
+                break;
+            }
+            case 'CRAS': {
+                const bandpass = ctx.createBiquadFilter();
+                bandpass.type = 'bandpass';
+                bandpass.frequency.value = 6000;
+                
+                const highpass = ctx.createBiquadFilter();
+                highpass.type = 'highpass';
+                highpass.frequency.value = 4000;
+                
+                const crashGain = ctx.createGain();
+                crashGain.gain.setValueAtTime(0.8, t);
+                crashGain.gain.exponentialRampToValueAtTime(0.001, t + 1.5);
+                
+                bandpass.connect(highpass).connect(crashGain).connect(masterGain);
+
+                const ratios = [2, 3, 4.16, 5.43, 6.79, 8.21];
+                
+                ratios.forEach(ratio => {
+                  const osc = ctx.createOscillator();
+                  osc.type = 'square';
+                  
+                  const targetFreq = 40 * ratio;
+                  
+                  osc.frequency.setValueAtTime(targetFreq * 2.0, t);
+                  osc.frequency.exponentialRampToValueAtTime(targetFreq, t + 0.1);
+                  
+                  osc.connect(bandpass);
+                  osc.start(t);
+                  osc.stop(t + 1.5);
+                  activeNodes.push({osc, gain: crashGain, stopTime: t + 1.5});
+                });
+                break;
+            }
+        }
+        return { activeNodes, masterGain };
+    }
+
     function scheduleNewNote(noteData, time) {
+        let musicVol = noteData.volume * 0.5;
+        let duration = noteData.duration / 1000;
+
+        // Route drum instrument instructions directly to the synthesis engine
+        if (noteData.instrument === 'drums') {
+            buildDrumSound(audioCtx, musicMasterGain, noteData.note, time, musicVol);
+            return;
+        }
+
+        // Standard synth oscillator handling
         const osc = audioCtx.createOscillator();
         const gainNode = audioCtx.createGain();
 
         osc.type = noteData.waveform; 
         osc.frequency.setValueAtTime(noteFreqs[noteData.note] || 440, time);
-
-        let musicVol = noteData.volume * 0.5;
-        let duration = noteData.duration / 1000;
 
         gainNode.gain.setValueAtTime(musicVol, time);
         gainNode.gain.setValueAtTime(musicVol, time + duration - 0.03);
