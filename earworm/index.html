@@ -2368,7 +2368,23 @@
             renderTimeline();
         }
 
-        if (activeOscillators[note]) return;
+        // === KILLS LINGERING SUSTAINED NOTES TO ALLOW CLEAN RE-TRIGGERS ===
+        if (activeOscillators[note]) {
+            const activeNode = activeOscillators[note];
+            if (activeNode.isDrums) {
+                const padElement = document.querySelector(`.pad[data-note="${note}"]`);
+                if (padElement) padElement.classList.remove('active');
+            } else {
+                const { osc, gainNode } = activeNode;
+                gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(gainNode.gain.value, audioCtx.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.01);
+                osc.stop(audioCtx.currentTime + 0.02);
+                osc.onended = () => { osc.disconnect(); gainNode.disconnect(); };
+            }
+            delete activeOscillators[note];
+        }
+
         if (trackMutes[currentTrack]) return;
 
         if (isRecording) {
@@ -2422,11 +2438,6 @@
     function stopNote(note) {
         physicallyHeldKeys.delete(note);
 
-        if (isSustainActive) {
-            pendingSustainReleases.add(note);
-            return;
-        }
-        
         const currentTrack = trackSelect.value;
         const settings = trackSettings[currentTrack];
         const isDrums = settings.instrument === 'drums';
@@ -2443,9 +2454,9 @@
             }
         }
 
-        const activeNode = activeOscillators[note];
-        if (!activeNode) return;
-
+        // === RECORD NOTE IMMEDIATELY UPON PHYSICAL KEY RELEASE ===
+        // We evaluate and record the sequence block here *before* audio sustain 
+        // checks to ensure the timeline data remains entirely decoupled from audio hold.
         if (isRecording && noteStartTimes[note] !== undefined) {
             const now = performance.now();
             const duration = now - noteStartTimes[note].absTime;
@@ -2482,6 +2493,15 @@
             updateUIStates();
             renderTimeline(); 
         }
+
+        // === SUSTAIN AUDIO HOLD OVERRIDE ===
+        if (isSustainActive) {
+            pendingSustainReleases.add(note);
+            return; // Hold the audio out without affecting the recording.
+        }
+
+        const activeNode = activeOscillators[note];
+        if (!activeNode) return;
 
         if (activeNode.isDrums) {
             const padElement = document.querySelector(`.pad[data-note="${note}"]`);
