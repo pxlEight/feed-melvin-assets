@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+l<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -38,6 +38,48 @@
         .main-viewport::-webkit-scrollbar {
             display: none;
         }
+
+        /* --- Rotate Blocker CSS --- */
+        #rotate-blocker {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #1e1e24;
+            color: #4ed9ff;
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+        }
+
+        #rotate-blocker h2 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        #rotate-blocker p {
+            color: #bbb;
+            margin: 0;
+        }
+
+        @media screen and (orientation: portrait) and (max-width: 768px) {
+            .main-viewport {
+                display: none !important;
+            }
+            #rotate-blocker {
+                display: flex;
+            }
+        }
+
+        @media (hover: none) and (pointer: coarse) {
+            .desktop-key {
+                display: none;
+            }
+        }
+        /* -------------------------- */
 
         .synth-container {
             background-color: #2a2a35;
@@ -346,6 +388,11 @@
 </head>
 <body>
 
+<div id="rotate-blocker">
+    <h2>Please Rotate Your Device</h2>
+    <p>This synthesizer requires landscape mode.</p>
+</div>
+
 <div class="main-viewport" id="mainViewport">
     <div class="synth-container">
         <h1>Oscillator Synthesizer</h1>
@@ -489,16 +536,16 @@
         </div>
 
         <div class="drum-pad" id="drumPad">
-            <div class="pad" data-note="KICK">Kick</div>
-            <div class="pad" data-note="SNARE">Snare</div>
-            <div class="pad" data-note="CHAT">Closed Hat</div>
-            <div class="pad" data-note="OHAT">Open Hat</div>
-            <div class="pad" data-note="WOOD">Woodblock</div>
-            <div class="pad" data-note="CRAS">Crash</div>
-            <div class="pad" data-note="HTOM">High Tom</div>
-            <div class="pad" data-note="LTOM">Low Tom</div>
-            <div class="pad" data-note="CLAV">Clave</div>
-            <div class="pad" data-note="COWB">Cowbell</div>
+            <div class="pad" data-note="KICK"><span class="desktop-key">(A)&nbsp;</span>Kick</div>
+            <div class="pad" data-note="SNARE"><span class="desktop-key">(W)&nbsp;</span>Snare</div>
+            <div class="pad" data-note="CHAT"><span class="desktop-key">(S)&nbsp;</span>Closed Hat</div>
+            <div class="pad" data-note="OHAT"><span class="desktop-key">(E)&nbsp;</span>Open Hat</div>
+            <div class="pad" data-note="WOOD"><span class="desktop-key">(D)&nbsp;</span>Woodblock</div>
+            <div class="pad" data-note="CRAS"><span class="desktop-key">(F)&nbsp;</span>Crash</div>
+            <div class="pad" data-note="HTOM"><span class="desktop-key">(T)&nbsp;</span>High Tom</div>
+            <div class="pad" data-note="LTOM"><span class="desktop-key">(G)&nbsp;</span>Low Tom</div>
+            <div class="pad" data-note="CLAV"><span class="desktop-key">(Y)&nbsp;</span>Clave</div>
+            <div class="pad" data-note="COWB"><span class="desktop-key">(H)&nbsp;</span>Cowbell</div>
         </div>
         
         <div style="display: flex; justify-content: space-between; align-items: center; background-color: #333344; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
@@ -537,7 +584,7 @@
 
         <div class="recording-section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <strong style="color: #4ed9ff; font-size: 14px;">Full Project Data</strong>
+                <strong style="color: #4ed9ff; font-size: 14px;">Multi-Track Project Data</strong>
             </div>
 
             <div id="fullProjectContainer" style="display: flex; flex-direction: column; margin-bottom: 25px;">
@@ -707,6 +754,13 @@
     const bpmDisplay = document.getElementById('bpmDisplay');
     const metronomeBtn = document.getElementById('metronomeBtn');
     const metronomeVolumeSlider = document.getElementById('metronomeVolume');
+
+    function updateFullProjectDataField() {
+        if (outputDataFull) {
+            const projectData = generateFullProjectJSON();
+            outputDataFull.value = JSON.stringify(projectData);
+        }
+    }
 
     // === Undo/Redo Stack Setup ===
     let undoStack = [];
@@ -993,6 +1047,7 @@
 
         if (!notes || notes.length === 0) {
             textarea.value = "";
+            updateFullProjectDataField();
             return;
         }
         const settings = trackSettings[trackNum];
@@ -1004,6 +1059,7 @@
             notes: notes
         };
         textarea.value = JSON.stringify(data);
+        updateFullProjectDataField();
     }
 
     function saveTrackSetting(key, value) {
@@ -1734,6 +1790,8 @@
             playLoopBtn.textContent = "Waiting for Beat 1...";
             playLoopBtn.disabled = true;
         }
+        
+        updateFullProjectDataField();
     }
 
     bpmInput.addEventListener('input', (e) => {
@@ -2348,8 +2406,6 @@
             
             let notes = getNotesFromTextarea(targetTextarea);
             
-            saveState();
-            
             let newNote = {
                 note: note,
                 time: pasteTime,
@@ -2359,11 +2415,14 @@
                 volume: settings.volume
             };
             
-            notes.push(newNote);
-            writeTrackData(currentTrack, notes);
-            
-            updateUIStates();
-            renderTimeline();
+            const isDuplicate = notes.some(n => n.note === newNote.note && n.time === newNote.time);
+            if (!isDuplicate) {
+                saveState();
+                notes.push(newNote);
+                writeTrackData(currentTrack, notes);
+                updateUIStates();
+                renderTimeline();
+            }
         }
 
         if (activeOscillators[note]) {
@@ -2478,14 +2537,20 @@
             const totalDur = getTotalDurationMs();
             if (newNote.time >= totalDur) newNote.time = 0; 
             
-            saveState();
-
-            recordedSequence.push(newNote);
-            delete noteStartTimes[note];
+            const isDuplicate = recordedSequence.some(n => 
+                n.note === newNote.note && 
+                n.time === newNote.time
+            );
             
-            writeTrackData(currentTrack, recordedSequence);
-            updateUIStates();
-            renderTimeline(); 
+            if (!isDuplicate) {
+                saveState();
+                recordedSequence.push(newNote);
+                writeTrackData(currentTrack, recordedSequence);
+                updateUIStates();
+                renderTimeline(); 
+            }
+            
+            delete noteStartTimes[note];
         }
 
         if (isSustainActive) {
@@ -2706,6 +2771,7 @@
             updateGrid();
             updateLoopRegionUI();
             renderTimeline();
+            updateFullProjectDataField();
         });
 
         function handleImport(textarea, trackNum) {
@@ -2883,6 +2949,8 @@
         });
 
         updateGrid();
+        
+        updateFullProjectDataField();
     }
 
     function updateTimelineWidth() {
@@ -3155,29 +3223,68 @@
 
     function copyTextToClipboard(text, btn, defaultText) {
         if (!text) return;
-        navigator.clipboard.writeText(text).then(() => {
-            btn.textContent = "Copied!";
-            const oldBg = btn.style.backgroundColor;
-            btn.style.backgroundColor = "#7adaff";
-            setTimeout(() => {
-                btn.textContent = defaultText;
-                btn.style.backgroundColor = oldBg; 
-            }, 1500);
-        }).catch(err => {
-            console.error('Failed to copy: ', err);
-        });
+        
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(() => {
+                btn.textContent = "Copied!";
+                const oldBg = btn.style.backgroundColor;
+                btn.style.backgroundColor = "#7adaff";
+                setTimeout(() => {
+                    btn.textContent = defaultText;
+                    btn.style.backgroundColor = oldBg; 
+                }, 1500);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                fallbackCopyTextToClipboard(text, btn, defaultText);
+            });
+        } else {
+            fallbackCopyTextToClipboard(text, btn, defaultText);
+        }
+    }
+
+    function fallbackCopyTextToClipboard(text, btn, defaultText) {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.position = "fixed";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+            const successful = document.execCommand('copy');
+            if (successful) {
+                btn.textContent = "Copied!";
+                const oldBg = btn.style.backgroundColor;
+                btn.style.backgroundColor = "#7adaff";
+                setTimeout(() => {
+                    btn.textContent = defaultText;
+                    btn.style.backgroundColor = oldBg; 
+                }, 1500);
+            } else {
+                alert("Copy failed. Please manually select the text and copy.");
+            }
+        } catch (err) {
+            console.error('Fallback copy error', err);
+            alert("Copy failed. Please manually select the text and copy.");
+        }
+        document.body.removeChild(textArea);
     }
 
     async function pasteFromClipboard(textarea) {
-        try {
-            const text = await navigator.clipboard.readText();
-            if (text) {
-                textarea.value = text;
-                textarea.dispatchEvent(new Event('input'));
+        if (navigator.clipboard && navigator.clipboard.readText && window.isSecureContext) {
+            try {
+                const text = await navigator.clipboard.readText();
+                if (text) {
+                    textarea.value = text;
+                    textarea.dispatchEvent(new Event('input'));
+                }
+            } catch (err) {
+                console.error('Failed to paste: ', err);
+                alert('Clipboard access denied. Please long-press the text field and Paste to import manually.');
             }
-        } catch (err) {
-            console.error('Failed to paste: ', err);
-            alert('Clipboard access denied. Please click the text field and use Ctrl+V (or long-press and Paste) to import manually.');
+        } else {
+            alert('Automated pasting is blocked by your browser environment. Please click the text box and use Ctrl+V or long-press to Paste manually.');
         }
     }
 
@@ -3191,37 +3298,31 @@
 
     exportBtn1.addEventListener('click', () => {
         const notes = getNotesFromTextarea(outputData1);
-        if (notes.length) {
-            const exportData = {
-                loopDuration: getTotalDurationMs(),
-                notes: notes
-            };
-            copyTextToClipboard(JSON.stringify(exportData), exportBtn1, "COPY");
-        }
+        const exportData = {
+            loopDuration: getTotalDurationMs(),
+            notes: notes || []
+        };
+        copyTextToClipboard(JSON.stringify(exportData), exportBtn1, "COPY");
     });
     importBtn1.addEventListener('click', () => pasteFromClipboard(outputData1));
 
     exportBtn2.addEventListener('click', () => {
         const notes = getNotesFromTextarea(outputData2);
-        if (notes.length) {
-            const exportData = {
-                loopDuration: getTotalDurationMs(),
-                notes: notes
-            };
-            copyTextToClipboard(JSON.stringify(exportData), exportBtn2, "COPY");
-        }
+        const exportData = {
+            loopDuration: getTotalDurationMs(),
+            notes: notes || []
+        };
+        copyTextToClipboard(JSON.stringify(exportData), exportBtn2, "COPY");
     });
     importBtn2.addEventListener('click', () => pasteFromClipboard(outputData2));
 
     exportBtn3.addEventListener('click', () => {
         const notes = getNotesFromTextarea(outputData3);
-        if (notes.length) {
-            const exportData = {
-                loopDuration: getTotalDurationMs(),
-                notes: notes
-            };
-            copyTextToClipboard(JSON.stringify(exportData), exportBtn3, "COPY");
-        }
+        const exportData = {
+            loopDuration: getTotalDurationMs(),
+            notes: notes || []
+        };
+        copyTextToClipboard(JSON.stringify(exportData), exportBtn3, "COPY");
     });
     importBtn3.addEventListener('click', () => pasteFromClipboard(outputData3));
 
