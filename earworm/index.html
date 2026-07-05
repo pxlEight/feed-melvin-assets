@@ -537,31 +537,44 @@
 
         <div class="recording-section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <strong style="color: #4ed9ff; font-size: 14px;">Full Project Data</strong>
+            </div>
+
+            <div id="fullProjectContainer" style="display: flex; flex-direction: column; margin-bottom: 25px;">
+                <textarea id="outputDataFull" placeholder="Full song project data..."></textarea>
+                <div style="display: flex; gap: 5px; margin-top: 5px;">
+                    <button id="exportBtnFull" class="btn" style="padding: 4px 8px; font-size: 11px; flex: 1; background-color: #ffb84d; color: #1e1e24;">COPY</button>
+                    <button id="importBtnFull" class="btn" style="padding: 4px 8px; font-size: 11px; flex: 1; background-color: #4ed9ff; color: #1e1e24;">PASTE</button>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                 <strong id="trackDataLabel" style="color: #4ed9ff; font-size: 14px;">Track Data 1</strong>
             </div>
 
             <div id="track1Container" style="display: flex; flex-direction: column;">
                 <textarea id="outputData1" placeholder="Track 1 sequence data..."></textarea>
                 <div style="display: flex; gap: 5px; margin-top: 5px;">
-                    <button id="exportBtn1" class="btn" style="padding: 4px 8px; font-size: 11px; width: 100%; background-color: #ffb84d; color: #1e1e24;">COPY</button>
+                    <button id="exportBtn1" class="btn" style="padding: 4px 8px; font-size: 11px; flex: 1; background-color: #ffb84d; color: #1e1e24;">COPY</button>
+                    <button id="importBtn1" class="btn" style="padding: 4px 8px; font-size: 11px; flex: 1; background-color: #4ed9ff; color: #1e1e24;">PASTE</button>
                 </div>
             </div>
 
             <div id="track2Container" style="display: none; flex-direction: column;">
                 <textarea id="outputData2" placeholder="Track 2 sequence data..."></textarea>
                 <div style="display: flex; gap: 5px; margin-top: 5px;">
-                    <button id="exportBtn2" class="btn" style="padding: 4px 8px; font-size: 11px; width: 100%; background-color: #ffb84d; color: #1e1e24;">COPY</button>
+                    <button id="exportBtn2" class="btn" style="padding: 4px 8px; font-size: 11px; flex: 1; background-color: #ffb84d; color: #1e1e24;">COPY</button>
+                    <button id="importBtn2" class="btn" style="padding: 4px 8px; font-size: 11px; flex: 1; background-color: #4ed9ff; color: #1e1e24;">PASTE</button>
                 </div>
             </div>
 
             <div id="track3Container" style="display: none; flex-direction: column;">
                 <textarea id="outputData3" placeholder="Track 3 sequence data..."></textarea>
                 <div style="display: flex; gap: 5px; margin-top: 5px;">
-                    <button id="exportBtn3" class="btn" style="padding: 4px 8px; font-size: 11px; width: 100%; background-color: #ffb84d; color: #1e1e24;">COPY</button>
+                    <button id="exportBtn3" class="btn" style="padding: 4px 8px; font-size: 11px; flex: 1; background-color: #ffb84d; color: #1e1e24;">COPY</button>
+                    <button id="importBtn3" class="btn" style="padding: 4px 8px; font-size: 11px; flex: 1; background-color: #4ed9ff; color: #1e1e24;">PASTE</button>
                 </div>
             </div>
-            
-            <button id="copyFullSongBtn" class="btn" style="background-color: #ffb84d; color: #1e1e24; margin-top: 15px; width: 100%;">Copy Full Song</button>
         </div>
     </div>
 </div>
@@ -668,8 +681,15 @@
     const countInBtn = document.getElementById('countInBtn');
     
     const exportBtn1 = document.getElementById('exportBtn1');
+    const importBtn1 = document.getElementById('importBtn1');
     const exportBtn2 = document.getElementById('exportBtn2');
+    const importBtn2 = document.getElementById('importBtn2');
     const exportBtn3 = document.getElementById('exportBtn3');
+    const importBtn3 = document.getElementById('importBtn3');
+    
+    const exportBtnFull = document.getElementById('exportBtnFull');
+    const importBtnFull = document.getElementById('importBtnFull');
+    
     const exportDropdownBtn = document.getElementById('exportDropdownBtn');
     const exportDropdownMenu = document.getElementById('exportDropdownMenu');
     
@@ -678,6 +698,7 @@
     const track2Container = document.getElementById('track2Container');
     const track3Container = document.getElementById('track3Container');
     
+    const outputDataFull = document.getElementById('outputDataFull');
     const outputData1 = document.getElementById('outputData1');
     const outputData2 = document.getElementById('outputData2');
     const outputData3 = document.getElementById('outputData3');
@@ -770,15 +791,8 @@
     const saveProjectBtn = document.getElementById('saveProjectBtn');
     const fileInput = document.getElementById('fileInput');
 
-    saveProjectBtn.addEventListener('click', () => {
-        let defaultName = `synth_project_${new Date().getTime()}`;
-        let fileName = prompt("Name your project file:", defaultName);
-        
-        if (fileName === null) return; 
-        if (fileName.trim() === "") fileName = defaultName;
-        if (!fileName.endsWith('.json')) fileName += '.json';
-
-        const projectData = {
+    function generateFullProjectJSON() {
+        return {
             isProject: true,
             loopDuration: getTotalDurationMs(),
             tempo: parseInt(bpmInput.value, 10),
@@ -805,6 +819,17 @@
                 notes: getNotesFromTextarea(outputData3)
             }
         };
+    }
+
+    saveProjectBtn.addEventListener('click', () => {
+        let defaultName = `synth_project_${new Date().getTime()}`;
+        let fileName = prompt("Name your project file:", defaultName);
+        
+        if (fileName === null) return; 
+        if (fileName.trim() === "") fileName = defaultName;
+        if (!fileName.endsWith('.json')) fileName += '.json';
+
+        const projectData = generateFullProjectJSON();
 
         const dataStr = JSON.stringify(projectData, null, 2);
         const blob = new Blob([dataStr], { type: "application/json" });
@@ -818,39 +843,77 @@
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
     });
-    
-    const copyFullSongBtn = document.getElementById('copyFullSongBtn');
-    copyFullSongBtn.addEventListener('click', () => {
-        const projectData = {
-            isProject: true,
-            loopDuration: getTotalDurationMs(),
-            tempo: parseInt(bpmInput.value, 10),
-            measures: parseInt(document.getElementById('measuresInput').value, 10) || 1,
-            track1: {
-                instrument: trackSettings['1'].instrument,
-                waveform: trackSettings['1'].waveform,
-                volume: trackSettings['1'].volume,
-                quantize: trackSettings['1'].quantize,
-                notes: getNotesFromTextarea(outputData1)
-            },
-            track2: {
-                instrument: trackSettings['2'].instrument,
-                waveform: trackSettings['2'].waveform,
-                volume: trackSettings['2'].volume,
-                quantize: trackSettings['2'].quantize,
-                notes: getNotesFromTextarea(outputData2)
-            },
-            track3: {
-                instrument: trackSettings['3'].instrument,
-                waveform: trackSettings['3'].waveform,
-                volume: trackSettings['3'].volume,
-                quantize: trackSettings['3'].quantize,
-                notes: getNotesFromTextarea(outputData3)
-            }
-        };
+
+    function loadProjectData(data) {
+        if (!data.isProject) return false;
         
-        copyTextToClipboard(JSON.stringify(projectData), copyFullSongBtn, "Copy Full Song");
-    });
+        undoStack = [];
+        redoStack = [];
+        updateUndoRedoUI();
+
+        if (isLoopPlaying) {
+            stopLoopPlayback();
+        }
+
+        if (data.tempo) {
+            bpmInput.value = data.tempo;
+            bpmDisplay.value = data.tempo;
+            metronomeBPM = data.tempo;
+        }
+        if (data.measures) document.getElementById('measuresInput').value = data.measures;
+        
+        if (data.track1) {
+            if (data.track1.instrument) trackSettings['1'].instrument = data.track1.instrument;
+            if (data.track1.waveform) trackSettings['1'].waveform = data.track1.waveform;
+            if (data.track1.volume !== undefined) trackSettings['1'].volume = data.track1.volume;
+            if (data.track1.quantize) trackSettings['1'].quantize = data.track1.quantize;
+            writeTrackData('1', data.track1.notes || []);
+        }
+        
+        if (data.track2) {
+            if (data.track2.instrument) trackSettings['2'].instrument = data.track2.instrument;
+            if (data.track2.waveform) trackSettings['2'].waveform = data.track2.waveform;
+            if (data.track2.volume !== undefined) trackSettings['2'].volume = data.track2.volume;
+            if (data.track2.quantize) trackSettings['2'].quantize = data.track2.quantize;
+            writeTrackData('2', data.track2.notes || []);
+        }
+
+        if (data.track3) {
+            if (data.track3.instrument) trackSettings['3'].instrument = data.track3.instrument;
+            if (data.track3.waveform) trackSettings['3'].waveform = data.track3.waveform;
+            if (data.track3.volume !== undefined) trackSettings['3'].volume = data.track3.volume;
+            if (data.track3.quantize) trackSettings['3'].quantize = data.track3.quantize;
+            writeTrackData('3', data.track3.notes || []);
+        }
+
+        const currentTrack = trackSelect.value;
+        instrumentSelect.value = trackSettings[currentTrack].instrument;
+        waveformSelect.value = trackSettings[currentTrack].waveform;
+        volumeSlider.value = trackSettings[currentTrack].volume;
+        quantizeSelect.value = trackSettings[currentTrack].quantize;
+        
+        if (trackSettings[currentTrack].instrument === 'drums') {
+            document.getElementById('keyboard').style.display = 'none';
+            document.getElementById('drumPad').style.display = 'grid';
+        } else {
+            document.getElementById('keyboard').style.display = 'flex';
+            document.getElementById('drumPad').style.display = 'none';
+        }
+
+        loopStartMs = 0;
+        loopEndMs = getMeasureDurationMs();
+        manualPlayheadTime = 0;
+        savedPlayheadTime = 0;
+
+        updateTimelineWidth();
+        updateGrid();
+        updateLoopRegionUI();
+        updateUIStates();
+        renderTimeline();
+        updatePlayhead();
+        
+        return true;
+    }
 
     fileInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
@@ -861,71 +924,8 @@
             try {
                 const data = JSON.parse(event.target.result);
                 if (data.isProject) {
-                    
-                    undoStack = [];
-                    redoStack = [];
-                    updateUndoRedoUI();
-
-                    if (isLoopPlaying) {
-                        stopLoopPlayback();
-                    }
-
-                    if (data.tempo) {
-                        bpmInput.value = data.tempo;
-                        bpmDisplay.value = data.tempo;
-                        metronomeBPM = data.tempo;
-                    }
-                    if (data.measures) document.getElementById('measuresInput').value = data.measures;
-                    
-                    if (data.track1) {
-                        if (data.track1.instrument) trackSettings['1'].instrument = data.track1.instrument;
-                        if (data.track1.waveform) trackSettings['1'].waveform = data.track1.waveform;
-                        if (data.track1.volume !== undefined) trackSettings['1'].volume = data.track1.volume;
-                        if (data.track1.quantize) trackSettings['1'].quantize = data.track1.quantize;
-                        writeTrackData('1', data.track1.notes || []);
-                    }
-                    
-                    if (data.track2) {
-                        if (data.track2.instrument) trackSettings['2'].instrument = data.track2.instrument;
-                        if (data.track2.waveform) trackSettings['2'].waveform = data.track2.waveform;
-                        if (data.track2.volume !== undefined) trackSettings['2'].volume = data.track2.volume;
-                        if (data.track2.quantize) trackSettings['2'].quantize = data.track2.quantize;
-                        writeTrackData('2', data.track2.notes || []);
-                    }
-
-                    if (data.track3) {
-                        if (data.track3.instrument) trackSettings['3'].instrument = data.track3.instrument;
-                        if (data.track3.waveform) trackSettings['3'].waveform = data.track3.waveform;
-                        if (data.track3.volume !== undefined) trackSettings['3'].volume = data.track3.volume;
-                        if (data.track3.quantize) trackSettings['3'].quantize = data.track3.quantize;
-                        writeTrackData('3', data.track3.notes || []);
-                    }
-
-                    const currentTrack = trackSelect.value;
-                    instrumentSelect.value = trackSettings[currentTrack].instrument;
-                    waveformSelect.value = trackSettings[currentTrack].waveform;
-                    volumeSlider.value = trackSettings[currentTrack].volume;
-                    quantizeSelect.value = trackSettings[currentTrack].quantize;
-                    
-                    if (trackSettings[currentTrack].instrument === 'drums') {
-                        document.getElementById('keyboard').style.display = 'none';
-                        document.getElementById('drumPad').style.display = 'grid';
-                    } else {
-                        document.getElementById('keyboard').style.display = 'flex';
-                        document.getElementById('drumPad').style.display = 'none';
-                    }
-
-                    loopStartMs = 0;
-                    loopEndMs = getMeasureDurationMs();
-                    manualPlayheadTime = 0;
-                    savedPlayheadTime = 0;
-
-                    updateTimelineWidth();
-                    updateGrid();
-                    updateLoopRegionUI();
-                    updateUIStates();
-                    renderTimeline();
-                    updatePlayhead();
+                    loadProjectData(data);
+                    outputDataFull.value = JSON.stringify(data);
                 } else {
                     alert("Invalid project file.");
                 }
@@ -1142,7 +1142,7 @@
         return { osc: clickOsc, gain: clickGain, stopTime: time + duration };
     }
 
-    // --- NEW DRUM ENGINE MASTER BUILDER ---
+    // --- DRUM ENGINE MASTER BUILDER ---
     function buildDrumSound(ctx, destination, noteName, time, volume) {
         const t = time;
         const masterGain = ctx.createGain();
@@ -1578,11 +1578,9 @@
 
     function initAudio() {
         if (!audioCtx) {
-            // --- iOS AUDIO BYPASS (W3C AUDIO SESSION API) ---
             if ('audioSession' in navigator) {
                 navigator.audioSession.type = 'playback';
             }
-            // ------------------------------------------------
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
         if (audioCtx.state === 'suspended') {
@@ -2368,7 +2366,6 @@
             renderTimeline();
         }
 
-        // === KILLS LINGERING SUSTAINED NOTES TO ALLOW CLEAN RE-TRIGGERS ===
         if (activeOscillators[note]) {
             const activeNode = activeOscillators[note];
             if (activeNode.isDrums) {
@@ -2454,9 +2451,6 @@
             }
         }
 
-        // === RECORD NOTE IMMEDIATELY UPON PHYSICAL KEY RELEASE ===
-        // We evaluate and record the sequence block here *before* audio sustain 
-        // checks to ensure the timeline data remains entirely decoupled from audio hold.
         if (isRecording && noteStartTimes[note] !== undefined) {
             const now = performance.now();
             const duration = now - noteStartTimes[note].absTime;
@@ -2494,10 +2488,9 @@
             renderTimeline(); 
         }
 
-        // === SUSTAIN AUDIO HOLD OVERRIDE ===
         if (isSustainActive) {
             pendingSustainReleases.add(note);
-            return; // Hold the audio out without affecting the recording.
+            return; 
         }
 
         const activeNode = activeOscillators[note];
@@ -2757,6 +2750,13 @@
         outputData1.addEventListener('input', () => handleImport(outputData1, '1'));
         outputData2.addEventListener('input', () => handleImport(outputData2, '2'));
         outputData3.addEventListener('input', () => handleImport(outputData3, '3'));
+        
+        outputDataFull.addEventListener('input', () => {
+            try {
+                const data = JSON.parse(outputDataFull.value);
+                loadProjectData(data);
+            } catch(e) {}
+        });
 
         function handleNotesDown(e, clientX, clientY) {
             if(e.target.classList.contains('note-block')) {
@@ -3168,6 +3168,27 @@
         });
     }
 
+    async function pasteFromClipboard(textarea) {
+        try {
+            const text = await navigator.clipboard.readText();
+            if (text) {
+                textarea.value = text;
+                textarea.dispatchEvent(new Event('input'));
+            }
+        } catch (err) {
+            console.error('Failed to paste: ', err);
+            alert('Clipboard access denied. Please click the text field and use Ctrl+V (or long-press and Paste) to import manually.');
+        }
+    }
+
+    exportBtnFull.addEventListener('click', () => {
+        const projectData = generateFullProjectJSON();
+        const str = JSON.stringify(projectData);
+        outputDataFull.value = str; 
+        copyTextToClipboard(str, exportBtnFull, "COPY");
+    });
+    importBtnFull.addEventListener('click', () => pasteFromClipboard(outputDataFull));
+
     exportBtn1.addEventListener('click', () => {
         const notes = getNotesFromTextarea(outputData1);
         if (notes.length) {
@@ -3178,6 +3199,7 @@
             copyTextToClipboard(JSON.stringify(exportData), exportBtn1, "COPY");
         }
     });
+    importBtn1.addEventListener('click', () => pasteFromClipboard(outputData1));
 
     exportBtn2.addEventListener('click', () => {
         const notes = getNotesFromTextarea(outputData2);
@@ -3189,6 +3211,7 @@
             copyTextToClipboard(JSON.stringify(exportData), exportBtn2, "COPY");
         }
     });
+    importBtn2.addEventListener('click', () => pasteFromClipboard(outputData2));
 
     exportBtn3.addEventListener('click', () => {
         const notes = getNotesFromTextarea(outputData3);
@@ -3200,6 +3223,8 @@
             copyTextToClipboard(JSON.stringify(exportData), exportBtn3, "COPY");
         }
     });
+    importBtn3.addEventListener('click', () => pasteFromClipboard(outputData3));
+
 </script>
 
 <script>
