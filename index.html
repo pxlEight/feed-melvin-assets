@@ -14,6 +14,7 @@
     <meta name="apple-mobile-web-app-title" content="Feed Melvin">
     
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gZ33IqhgqRQ8RbQ/x7k19m5b2a03r/24j2T5X13wB2u/UOhFww==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <style>
         * { font-family: 'VT323', monospace !important; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; touch-action: none; }
         :root { --bg-wall: #aed9e0; --bg-floor: #d4a373; --ui-panel: #3d5a80; --ui-border: #293241; --sparkle-gold: #ffec51; }
@@ -145,12 +146,12 @@
 
         #global-ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999999; }
         
-        #custom-bmc-btn { position: absolute; bottom: 26px; right: 0; width: 68px; height: 50px; padding-right: 18px; box-sizing: border-box; background-color: #FB9052; border-radius: 0; display: flex; align-items: center; justify-content: center; font-size: 28px; text-decoration: none; box-shadow: 0 4px 0 #000; pointer-events: auto; cursor: pointer; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease, box-shadow 0.1s; transform: translateX(200%) translateZ(0); opacity: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+        #custom-bmc-btn { position: absolute; bottom: 26px; right: 0; width: 68px; height: 50px; padding-right: 18px; box-sizing: border-box; background-color: #FB9052; border-radius: 0; display: flex; align-items: center; justify-content: center; font-size: 28px; text-decoration: none; box-shadow: 0 4px 0 #E3754D; pointer-events: auto; cursor: pointer; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease, box-shadow 0.1s; transform: translateX(200%) translateZ(0); opacity: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
         #custom-bmc-btn.in-place { transform: translateX(0) translateZ(0); opacity: 1; }
-        #custom-bmc-btn.in-place:active { transform: translateY(2px) translateZ(0); box-shadow: 0 2px 0 #000; transition: transform 0.05s, box-shadow 0.05s; }
+        #custom-bmc-btn.in-place:active { transform: translateY(2px) translateZ(0); box-shadow: 0 2px 0 #E3754D; transition: transform 0.05s, box-shadow 0.05s; }
 
         #landing-bmc-left { position: absolute; bottom: 26px; left: 0; pointer-events: auto; transform: translateX(-200%) translateZ(0); opacity: 0; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
-        #left-story-btn:active { transform: translateY(2px) translateZ(0); box-shadow: 0 2px 0 #000; }
+        #left-story-btn:active { transform: translateY(2px) translateZ(0); box-shadow: 0 2px 0 #E3754D; }
 
         #bmc-tooltip { position: absolute; bottom: 22px; right: 75px; background: #fff; color: #3d5a80; padding: 4px 8px; border: none; box-shadow: none; font-size: 1.4rem; line-height: 1.0; width: 170px; text-align: center; pointer-events: none; transform-origin: right center; transform: scale(0); opacity: 0; visibility: hidden; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease, visibility 0.4s; }
         #bmc-tooltip.show { transform: scale(1); opacity: 1; visibility: visible; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease, visibility 0s; }
@@ -176,6 +177,10 @@
         .checkup-btn-row { position: relative; display: flex; justify-content: center; gap: 15px; width: 100%; margin-bottom: 10px; z-index: 2; }
         .resume-btn { position: relative; z-index: 2; background: #fff; border: 8.5px solid #5ea1fd; color: #326efc; padding: 7.5px 15px; width: fit-content; min-width: 96px; font-size: 2.64rem; cursor: pointer; box-shadow: 6px 6px 0 #fee5d4; transition: transform 0.05s, box-shadow 0.05s; transform: translate(0px, 0px) translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden; }
         .resume-btn.pressed { transform: translate(6px, 6px) translateZ(0); box-shadow: 0px 0px 0 #fee5d4; }
+        
+        .share-report-btn { position: relative; z-index: 2; background: #FB9052; border: 6.5px solid #fff; padding: 5px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 6px 6px 0 #E3754D; transition: transform 0.05s, box-shadow 0.05s; transform: translate(0px, 0px) translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+        .share-report-btn.pressed { transform: translate(6px, 6px) translateZ(0); box-shadow: 0px 0px 0 #E3754D; }
+        .share-report-btn svg { width: 38px; height: 38px; fill: white; }
 
         /* Victory Mode Overrides (Applied when game is won) */
         #checkup-screen.victory-layout #checkup-title-container { padding: 10px 30px; margin-bottom: 10px; }
@@ -261,7 +266,7 @@
 
     <div id="global-ui-layer">
         <div id="bmc-tooltip">Thanks for playing! Care to buy us some baby formula?</div>
-        <a id="custom-bmc-btn" href="https://www.buymeacoffee.com/pixelmover" target="_blank" rel="noopener noreferrer" title="Buy me a coffee!"><img src="https://feedmelvin.com/bottle_Icon_alt_web.png" style="width: 44px; height: 44px; image-rendering: pixelated; filter: drop-shadow(2px 2px 0 #000);" alt="Coffee"></a>
+        <a id="custom-bmc-btn" href="https://www.buymeacoffee.com/pixelmover" target="_blank" rel="noopener noreferrer" title="Buy me a coffee!"><img src="https://feedmelvin.com/bottle_Icon_alt_web.png" style="width: 44px; height: 44px; image-rendering: pixelated; filter: drop-shadow(2px 2px 0 #E3754D);" alt="Coffee"></a>
         
         <button id="sound-toggle-main" class="sound-btn-landing" style="display: none; pointer-events: auto;" onclick="toggleSoundMenu()">
             <svg viewBox="0 0 24 24">
@@ -366,7 +371,7 @@
         <button id="play-btn" class="play-btn" style="position: absolute; bottom: 142.8px; margin: 0; display: none; transform: scale(0); z-index: 20; pointer-events: auto;">PLAY!</button>
 
         <div id="landing-bmc-left" style="position: absolute; bottom: 26px; left: 0; pointer-events: auto; transform: translateX(-200%); opacity: 0; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease;">
-            <a id="left-story-btn" href="https://www.pixel-mover.com/blog" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; justify-content: center; background-color: #FB9052; color: white; text-decoration: none; font-size: 2.2rem; padding: 0 15px 0 33px; height: 50px; box-sizing: border-box; box-shadow: 0 4px 0 #000; text-shadow: 2px 2px 0 #000; transition: transform 0.05s, box-shadow 0.05s;">
+            <a id="left-story-btn" href="https://www.pixel-mover.com/blog" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; justify-content: center; background-color: #FB9052; color: white; text-decoration: none; font-size: 2.2rem; padding: 0 15px 0 33px; height: 50px; box-sizing: border-box; box-shadow: 0 4px 0 #E3754D; text-shadow: 2px 2px 0 #E3754D; transition: transform 0.05s, box-shadow 0.05s;">
                 <svg viewBox="0 0 48 48" style="width: 28px; height: 28px; margin-right: 8px;">
                     <image href="https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.png" width="192" height="48" />
                 </svg>
@@ -457,6 +462,11 @@
         
         <div class="checkup-btn-row">
             <button class="resume-btn" onclick="resumeGame(this)">RESUME</button>
+            <button class="share-report-btn" onclick="shareWeeklyReport(this)" title="Share Weekly Report">
+                <svg viewBox="0 0 24 24">
+                    <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/>
+                </svg>
+            </button>
         </div>
             
         <div id="random-tip-msg-container">
@@ -895,6 +905,9 @@
     let isClassicSpittingUp = false;
     let classicSpitUpFrame = 0;
     
+    let weekOuncesFed = 0;
+    let weekSpitups = false;
+    
     let mobileAnimFrameIndex = 0;
     let isMobileAnimActive = false;
     let mobileFpsTransitionStart = 0;
@@ -1120,6 +1133,7 @@
 
         assetUrls.forEach(url => {
             const img = new Image();
+            img.crossOrigin = "anonymous";
             img.src = url;
             if (typeof img.decode === 'function') {
                 img.decode().then(() => {
@@ -1813,6 +1827,7 @@
             
             isClassicSpittingUp = false; classicSpitUpFrame = 0;
             isSuperSpittingUp = false; superSpitUpFrame = 0;
+            weekOuncesFed = 0; weekSpitups = false;
             
             updateUI();
             
@@ -1887,6 +1902,7 @@
                 
                 isClassicSpittingUp = false; classicSpitUpFrame = 0;
                 isSuperSpittingUp = false; superSpitUpFrame = 0;
+                weekOuncesFed = 0; weekSpitups = false;
 
                 petEl.innerHTML = '<canvas id="pet-canvas" width="48" height="48" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; transform: translateZ(0); -webkit-transform: translateZ(0);"></canvas>'; 
                 createSparklePool('sparkle-wrap');
@@ -1915,6 +1931,8 @@
             if (dayCount % 7 === 1) {
                 superCooldownDays = 0; 
                 gammaCooldownDays = 0;
+                weekOuncesFed = 0; 
+                weekSpitups = false;
                 
                 if (isSuperModeGame) {
                     spitupsAverted = 4;
@@ -2005,6 +2023,7 @@
         const effectiveLimit = (gammaMelvinActive ? Infinity : (superMelvinActive ? (ozLimit * 2) : ozLimit)) * capacityMultiplier;
         
         if (currentSessionOunces >= effectiveLimit) {
+            weekSpitups = true;
             let penaltyRate = (difficultyMode === 'easy') ? 0.25 : 0.5;
             totalOuncesSpitUp += foodStored * penaltyRate; 
             foodStored -= foodStored * penaltyRate;
@@ -2028,6 +2047,7 @@
             triggerSpitup(); rollNewLimit();
         } else {
             foodStored += 0.5; currentSessionOunces += 0.5; 
+            weekOuncesFed += 0.5;
             playSound(800, 'square', 0.08, 0.00825);
             
             if (!isBigBurpAnimating) {
@@ -3047,6 +3067,79 @@
         }
         timerBar.style.height = (timeLeft / GROWTH_INTERVAL) * 100 + '%';
     }, 1000);
+    
+    // --- SHARE LOGIC ---
+    async function shareWeeklyReport(btnEl) {
+        if(btnEl) btnEl.classList.add('pressed');
+        
+        const checkupScreen = document.getElementById('checkup-screen');
+        const currentWeek = Math.floor((dayCount - 1) / 7) || 1;
+        
+        // Hide the buttons momentarily so they don't appear in the screenshot
+        const btnRow = document.querySelector('.checkup-btn-row');
+        const originalBtnDisplay = btnRow.style.display;
+        btnRow.style.display = 'none';
+
+        // Generate dynamic text
+        const spitText = weekSpitups ? "spit-up" : "didn't even spit-up";
+        const shareText = `I fed Melvin ${weekOuncesFed} ounces on week ${currentWeek} and he ${spitText} on me! Play here: https://feedmelvin.com`;
+
+        try {
+            // Take the snapshot
+            const canvas = await html2canvas(checkupScreen, {
+                backgroundColor: '#fcb38b',
+                scale: 2 // Boost resolution
+            });
+            
+            // Restore buttons immediately after capture
+            btnRow.style.display = originalBtnDisplay;
+            if(btnEl) btnEl.classList.remove('pressed');
+
+            canvas.toBlob(async (blob) => {
+                if (!blob) return;
+                const fileName = `Melvin_Week_${currentWeek}_Report.png`;
+                const file = new File([blob], fileName, { type: 'image/png' });
+                
+                // Primary: Web Share API
+                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                    try {
+                        await navigator.share({
+                            title: 'Feed Melvin Weekly Report',
+                            text: shareText,
+                            files: [file]
+                        });
+                    } catch (err) {
+                        console.log("Share API rejected/failed", err);
+                        fallbackShare(blob, fileName, shareText);
+                    }
+                } else {
+                    // Fallback: Desktop / Unsupported
+                    fallbackShare(blob, fileName, shareText);
+                }
+            }, 'image/png');
+
+        } catch (err) {
+            console.error("html2canvas error:", err);
+            btnRow.style.display = originalBtnDisplay;
+            if(btnEl) btnEl.classList.remove('pressed');
+        }
+    }
+
+    function fallbackShare(blob, fileName, shareText) {
+        // 1. Force Download Image
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        // 2. Trigger Mailto Link
+        const mailBody = encodeURIComponent(`${shareText}\n\n(Don't forget to attach your Weekly Report image that just downloaded!)`);
+        window.location.href = `mailto:?subject=Feed Melvin Weekly Report&body=${mailBody}`;
+    }
     
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
