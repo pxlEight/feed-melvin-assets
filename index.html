@@ -1448,6 +1448,9 @@
         let musicVol = noteData.volume * 0.5;
         let duration = Math.max(0.015, noteData.duration / 1000);
 
+        // Prevent iOS Safari InvalidStateError by strictly enforcing future scheduling
+        time = Math.max(time, audioCtx.currentTime + 0.005);
+
         // Route drum instrument instructions directly to the synthesis engine
         if (noteData.instrument === 'drums') {
             let drumData = buildDrumSound(audioCtx, musicMasterGain, noteData.note, time, musicVol);
@@ -1508,7 +1511,11 @@
             let noteData = allNotes[currentNoteIndex];
             let scheduleTime = currentLoopStartTime + noteData.time / 1000;
             
-            scheduleNewNote(noteData, scheduleTime);
+            try {
+                scheduleNewNote(noteData, scheduleTime);
+            } catch (e) {
+                console.warn("Audio scheduling error:", e);
+            }
             currentNoteIndex++;
         }
 
@@ -1581,11 +1588,14 @@
     }
 
     async function pasteCustomMusic() {
+        const inputField = document.getElementById('custom-music-input');
         try {
             const text = await navigator.clipboard.readText();
-            document.getElementById('custom-music-input').value = text;
+            inputField.value = text;
         } catch (err) {
-            setTimeout(() => alert('Clipboard access denied. Please tap the text field and paste manually.'), 10);
+            inputField.focus();
+            inputField.value = '';
+            inputField.placeholder = "Long-press here to paste...";
         }
     }
 
@@ -1600,9 +1610,11 @@
     }
 
     function swapCustomMusic() {
-        const dataStr = document.getElementById('custom-music-input').value;
+        const inputField = document.getElementById('custom-music-input');
+        const dataStr = inputField.value;
+        
         if (!dataStr) {
-            setTimeout(() => alert("Please paste or load a music file first."), 10);
+            inputField.placeholder = "Paste JSON first!";
             return;
         }
 
@@ -1633,30 +1645,41 @@
                 newTrack1.forEach(n => { if (n.time + n.duration > maxTime) maxTime = n.time + n.duration; });
                 newLoopDuration = (maxTime > 0 ? maxTime : 22500) / 1000;
             } else {
-                setTimeout(() => alert("Unrecognized music format."), 10);
+                inputField.value = '';
+                inputField.placeholder = "Unrecognized format.";
                 return;
             }
 
             allNotes = [...newTrack1, ...newTrack2, ...newTrack3].sort((a, b) => a.time - b.time);
             LOOP_DURATION = newLoopDuration;
 
-            if (audioCtx && audioCtx.state === 'suspended') {
-                audioCtx.resume();
+            const startFresh = () => {
+                if (musicStarted && audioCtx && audioCtx.state === 'running') {
+                    currentLoopStartTime = audioCtx.currentTime + 0.05;
+                    currentNoteIndex = 0;
+                    clearTimeout(musicTimeoutId);
+                    scheduler();
+                }
+                
+                document.getElementById('sound-view-custom').style.display = 'none';
+                document.getElementById('sound-view-main').style.display = 'flex';
+                inputField.value = '';
+                inputField.placeholder = "Paste JSON...";
+            };
+
+            if (audioCtx) {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume().then(startFresh).catch(e => console.log(e));
+                } else {
+                    startFresh();
+                }
+            } else {
+                startFresh();
             }
 
-            if (musicStarted && audioCtx && audioCtx.state === 'running') {
-                currentLoopStartTime = audioCtx.currentTime + 0.05;
-                currentNoteIndex = 0;
-                clearTimeout(musicTimeoutId);
-                scheduler();
-            }
-
-            document.getElementById('sound-view-custom').style.display = 'none';
-            document.getElementById('sound-view-main').style.display = 'flex';
-            document.getElementById('custom-music-input').value = '';
-            setTimeout(() => alert("Custom music loaded successfully!"), 10);
         } catch(e) {
-            setTimeout(() => alert("Invalid JSON data. Ensure you copied the full export string."), 10);
+            inputField.value = '';
+            inputField.placeholder = "Invalid JSON data.";
         }
     }
 
