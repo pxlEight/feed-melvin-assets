@@ -1577,7 +1577,6 @@
         }
     }
     // --- END MUSIC SEQUENCER ---
-    
     // --- SOUND UI LOGIC ---
     function toggleSoundMenu() {
         let overlay = document.getElementById('sound-overlay');
@@ -2131,6 +2130,7 @@
     }
 
     async function renderStatsView(view) {
+        pregeneratedShareBlob = null; 
         currentRenderId++;
         const myRenderId = currentRenderId;
         const statsArea = document.getElementById('stats-area');
@@ -2363,6 +2363,7 @@
             const checkupScreen = document.getElementById('checkup-screen');
             const btnRow = document.querySelector('.checkup-btn-row');
             const toggleBtns = document.querySelectorAll('.toggle-arrow-btn');
+            const shareBtn = document.querySelector('.share-report-btn'); 
             
             // Temporarily hide elements not meant for screenshot
             const originalBtnRowDisplay = btnRow ? btnRow.style.display : '';
@@ -2373,20 +2374,36 @@
                 originalToggleDisplays.push(btn.style.display);
                 btn.style.display = 'none';
             });
+
+            // Visually disable the share button so the user knows it is loading
+            if (shareBtn) {
+                shareBtn.style.opacity = '0.5';
+                shareBtn.style.pointerEvents = 'none'; 
+            }
             
             try {
                 const canvas = await html2canvas(checkupScreen, {
                     backgroundColor: '#fcb38b',
-                    scale: 2,
+                    scale: 1, 
                     useCORS: true,
                     logging: false
                 });
                 
                 canvas.toBlob((blob) => {
                     pregeneratedShareBlob = blob;
+                    // Re-enable the share button once generation is complete
+                    if (shareBtn) {
+                        shareBtn.style.opacity = '1';
+                        shareBtn.style.pointerEvents = 'auto';
+                    }
                 }, 'image/png');
             } catch (err) {
                 console.error("Background pre-render failed:", err);
+                // Re-enable the share button even on fail so the UI doesn't soft-lock
+                if (shareBtn) {
+                    shareBtn.style.opacity = '1';
+                    shareBtn.style.pointerEvents = 'auto';
+                }
             }
             
             // Restore hidden elements
@@ -3122,7 +3139,8 @@
 
         // 2. Check for pre-generated blob 
         if (!pregeneratedShareBlob) {
-            alert("Please wait a moment while your report finishes generating...");
+            // FIX: Clarified the instructions so the user doesn't wait indefinitely
+            alert("Still generating your image! Please wait a few more seconds, then tap the Share button again.");
             return;
         }
 
