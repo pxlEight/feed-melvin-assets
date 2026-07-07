@@ -3090,7 +3090,8 @@
                 backgroundColor: '#fcb38b',
                 scale: 2, // Boost resolution
                 useCORS: true, // CRITICAL: Tells html2canvas to respect our anonymous cross-origin images
-                logging: true // Helpful if we need to check the console again
+                allowTaint: true, // CRITICAL FIX: prevents SecurityError if mobile browser strips CORS
+                logging: false 
             });
             
             // Restore buttons immediately after capture
@@ -3099,7 +3100,7 @@
 
             canvas.toBlob(async (blob) => {
                 if (!blob) {
-                    alert("Failed to generate image blob.");
+                    fallbackShareTextOnly(shareText);
                     return;
                 }
                 const fileName = `Melvin_Week_${currentWeek}_Report.png`;
@@ -3115,7 +3116,8 @@
                         });
                     } catch (err) {
                         console.log("Share API rejected/failed", err);
-                        fallbackShare(blob, fileName, shareText);
+                        // Using text-only fallback to bypass the "Async Trap"
+                        fallbackShareTextOnly(shareText);
                     }
                 } else {
                     // Fallback: Desktop / Unsupported
@@ -3125,9 +3127,22 @@
 
         } catch (err) {
             console.error("html2canvas error:", err);
-            alert("Share failed. Please check the browser console for details.");
+            // Replace hard alert with seamless text fallback
             btnRow.style.display = originalBtnDisplay;
             if(btnEl) btnEl.classList.remove('pressed');
+            fallbackShareTextOnly(shareText);
+        }
+    }
+
+    function fallbackShareTextOnly(shareText) {
+        if (navigator.share) {
+            navigator.share({
+                title: 'Feed Melvin Weekly Report',
+                text: shareText
+            }).catch(err => console.log("Text share failed:", err));
+        } else {
+            const mailBody = encodeURIComponent(shareText);
+            window.location.href = `mailto:?subject=Feed Melvin Weekly Report&body=${mailBody}`;
         }
     }
 
@@ -3174,7 +3189,8 @@
     });
 
     document.addEventListener('keyup', function(event) {
-        const key = event.key.toLowerCase();
+        const key = event
+.key.toLowerCase();
         
         if (key === 'f') {
             document.querySelector('.feed-btn').classList.remove('key-pressed');
