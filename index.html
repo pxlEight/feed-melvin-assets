@@ -2357,6 +2357,7 @@
 
         updateArrowsVisibility();
     }
+    
     function updateUI() {
         document.getElementById('food-val').innerText = foodStored.toFixed(1);
         weightReadout.innerText = Math.floor(totalOunces / 16) + 'lb ' + Math.floor(totalOunces % 16) + 'oz';
@@ -2403,7 +2404,6 @@
         
         let petCvs = document.getElementById('pet-canvas');
         if (petCvs) {
-            // Restricted exclusively to Super Melvin active states. Gamma Melvin sits steadily on the scale fixture.
             if (superMelvinActive) petCvs.classList.add('super-drift');
             else petCvs.classList.remove('super-drift');
         }
@@ -2514,7 +2514,7 @@
             renderCanvasSprite('landing-melvin-canvas', landingActiveSprite, landingFrameX, 0, 48, 48, 48, 48);
         }
 
-        if (!gameRunning) return; // Fix: Removed pause barrier so drawing continues while paused
+        if (!gameRunning) return; 
 
         let currentWeekForCap = Math.floor((dayCount - 1) / 7) + 1;
         let capMult = (difficultyMode === 'easy' && currentWeekForCap > 1) ? 2.0 : 1.0;
@@ -2563,7 +2563,6 @@
 
     setInterval(() => {
         if (!assetsLoaded) return;
-        // Fix: Only advance animation step if game is actively unpaused
         if (!gameRunning || (gameRunning && !isPaused)) {
             frameIndex = (frameIndex + 1) % 8;
         }
@@ -2937,7 +2936,6 @@
 
                         document.getElementById('checkup-screen').style.display = 'flex';
                         
-                        // Synchronously force redraw layout and character graphics on visibility change
                         updateAllCanvasSprites(); 
                         updateLogoSpritePosition();
                         
@@ -2947,7 +2945,6 @@
                 } else {
                     document.getElementById('checkup-screen').style.display = 'flex';
                     
-                    // Synchronously force redraw layout and character graphics on visibility change
                     updateAllCanvasSprites(); 
                     updateLogoSpritePosition();
                     
@@ -3081,73 +3078,59 @@
         const shareText = `I fed Melvin ${weekOuncesFed} ounces on week ${currentWeek} and he ${spitText} on me! Play here: https://feedmelvin.com`;
         const fileName = `Melvin_Week_${currentWeek}_Report.png`;
 
+        // 1. Text-only Clipboard copy (Immediate & Secure)
         try {
-            // 1. Create a singular Promise that orchestrates html2canvas & Blob conversion
-            const canvasBlobPromise = html2canvas(checkupScreen, {
+            if (navigator.clipboard) {
+                await navigator.clipboard.writeText(shareText);
+                console.log("Text successfully copied to clipboard!");
+            }
+        } catch (clipboardErr) {
+            console.warn("Clipboard text copy rejected by browser:", clipboardErr);
+        }
+
+        try {
+            // 2. Generate the Canvas Image
+            const canvas = await html2canvas(checkupScreen, {
                 backgroundColor: '#fcb38b',
                 scale: 2, // Boost resolution
-                useCORS: true, // CRITICAL: Tells html2canvas to respect our anonymous cross-origin images
-                logging: true // Helpful if we need to check the console again
-            }).then(canvas => {
-                return new Promise((resolve, reject) => {
-                    try {
-                        canvas.toBlob(blob => {
-                            if (blob) resolve(blob);
-                            else reject(new Error("Canvas toBlob failed"));
-                        }, 'image/png');
-                    } catch(e) {
-                        reject(e);
-                    }
-                });
+                useCORS: true, 
+                logging: false 
             });
 
-            // 2. Safely initialize Clipboard write to preserve the user gesture (synchronously)
-            if (navigator.clipboard && window.ClipboardItem) {
-                try {
-                    const item = new ClipboardItem({
-                        'text/plain': new Blob([shareText], { type: 'text/plain' }),
-                        'image/png': canvasBlobPromise
-                    });
-                    // Fire write immediately to keep the gesture context valid
-                    navigator.clipboard.write([item]).then(() => {
-                        console.log("Successfully copied PNG and text to clipboard!");
-                    }).catch(clipboardErr => {
-                        console.error("Clipboard write rejected (expected on some devices/configs):", clipboardErr);
-                    });
-                } catch (clipboardInitErr) {
-                    console.error("Clipboard setup failed (likely browser constraint):", clipboardInitErr);
-                }
-            }
-
-            // 3. Wait for the blob to finish for the standard share routine
-            const blob = await canvasBlobPromise;
-            
             // Restore buttons visually as soon as canvas is drawn
             btnRow.style.display = originalBtnDisplay;
             if(btnEl) btnEl.classList.remove('pressed');
 
-            const file = new File([blob], fileName, { type: 'image/png' });
-            
-            // Primary: Web Share API
-            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-                try {
-                    await navigator.share({
-                        title: 'Feed Melvin Weekly Report',
-                        text: shareText,
-                        files: [file]
-                    });
-                } catch (err) {
-                    console.log("Share API rejected/failed", err);
+            canvas.toBlob(async (blob) => {
+                if (!blob) throw new Error("Blob generation failed.");
+                
+                const file = new File([blob], fileName, { type: 'image/png' });
+                
+                // 3. Native Share (Mobile) or Download (Desktop)
+                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                    try {
+                        await navigator.share({
+                            title: 'Feed Melvin Weekly Report',
+                            text: shareText,
+                            files: [file]
+                        });
+                    } catch (err) {
+                        console.log("Share API cancelled/failed:", err);
+                        // Fallback only if it wasn't just the user hitting "cancel" on the share sheet
+                        if (err.name !== 'AbortError') {
+                            fallbackShare(blob, fileName, shareText);
+                        }
+                    }
+                } else {
+                    // Desktop / Unsupported Fallback
                     fallbackShare(blob, fileName, shareText);
                 }
-            } else {
-                // Fallback: Desktop / Unsupported
-                fallbackShare(blob, fileName, shareText);
-            }
+            }, 'image/png');
 
         } catch (err) {
-            console.error("html2canvas or share process error:", err);
+            console.error("Image generation or share process error:", err);
             alert("Share failed. Please check the browser console for details.");
+            
             // Failsafe UI restore
             btnRow.style.display = originalBtnDisplay;
             if(btnEl) btnEl.classList.remove('pressed');
