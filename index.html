@@ -592,12 +592,13 @@
     window.addEventListener('orientationchange', resizeMasterContainer);
     resizeMasterContainer();
 
+    let pregeneratedShareBlob = null;
+    let lastTouchTime = 0;
+
     // --- UNIVERSAL TOUCH HANDLING ---
     document.addEventListener('contextmenu', event => event.preventDefault());
     document.addEventListener('gesturestart', function(e) { e.preventDefault(); });
     
-    let lastTouchTime = 0;
-
     // Prevent multi-touch pinch zoom and catch double-taps early for iOS Safari
     document.addEventListener('touchstart', function(event) {
         if (event.touches.length > 1) {
@@ -2207,10 +2208,10 @@
             document.getElementById('next-stats-btn').style.display = 'none';
         }
         
-        const bottleIcon = '<img src="https://www.feedmelvin.com/feed_bottle_sprite_web.png" class="stat-bullet" />';
-        const scaleIcon = '<img src="https://www.feedmelvin.com/scale_icon_web.png" class="stat-bullet" />';
-        const spitUpIcon = '<img src="https://www.feedmelvin.com/spit_up_icon_web.png" class="stat-bullet" />';
-        const fullIcon = '<img src="https://www.feedmelvin.com/full_icon_web.png" class="stat-bullet" />';
+        const bottleIcon = '<img src="https://www.feedmelvin.com/feed_bottle_sprite_web.png" class="stat-bullet" crossorigin="anonymous" />';
+        const scaleIcon = '<img src="https://www.feedmelvin.com/scale_icon_web.png" class="stat-bullet" crossorigin="anonymous" />';
+        const spitUpIcon = '<img src="https://www.feedmelvin.com/spit_up_icon_web.png" class="stat-bullet" crossorigin="anonymous" />';
+        const fullIcon = '<img src="https://www.feedmelvin.com/full_icon_web.png" class="stat-bullet" crossorigin="anonymous" />';
 
         let rowsData = [];
 
@@ -2223,15 +2224,15 @@
             const diffIconUrl = difficultyMode === 'easy' ? 'https://www.feedmelvin.com/easy_mode_icon_web.png' : 'https://www.feedmelvin.com/normal_mode_icon_web.png';
             const gammaIconStr = gammaCount === 0 
                 ? '<span class="stat-bullet"><span style="color:#ffffff;font-size:2.5rem;display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;line-height:1;vertical-align:middle;">?</span></span>'
-                : '<img src="https://www.feedmelvin.com/gamma_icon_web.png" class="stat-bullet" />';
+                : '<img src="https://www.feedmelvin.com/gamma_icon_web.png" class="stat-bullet" crossorigin="anonymous" />';
 
             rowsData = [
-                { icon: `<img src="${diffIconUrl}" class="stat-bullet" />`, label: 'Difficulty Level: ', value: difficultyMode.toUpperCase() },
+                { icon: `<img src="${diffIconUrl}" class="stat-bullet" crossorigin="anonymous" />`, label: 'Difficulty Level: ', value: difficultyMode.toUpperCase() },
                 { icon: scaleIcon, label: 'Final Weight: ', value: finalLb + 'lb ' + finalOz + 'oz' },
                 { icon: bottleIcon, label: 'Best Daily Avg.: ', value: bestDailyAvg.toFixed(1) + ' oz' },
-                { icon: '<img src="https://www.feedmelvin.com/super_icon_web.png" class="stat-bullet" />', label: 'Super Melvins: ', value: superCount },
+                { icon: '<img src="https://www.feedmelvin.com/super_icon_web.png" class="stat-bullet" crossorigin="anonymous" />', label: 'Super Melvins: ', value: superCount },
                 { icon: gammaIconStr, label: gammaText + ': ', value: gammaCount },
-                { icon: '<img src="https://www.feedmelvin.com/time_icon_web.png" class="stat-bullet" />', label: 'Minutes Played: ', value: minsPlayed }
+                { icon: '<img src="https://www.feedmelvin.com/time_icon_web.png" class="stat-bullet" crossorigin="anonymous" />', label: 'Minutes Played: ', value: minsPlayed }
             ];
         } else {
             rowsData = [
@@ -2356,6 +2357,45 @@
         if (view === 'standard') standardAnimated = true;
 
         updateArrowsVisibility();
+        
+        // --- Pre-render share canvas silently in the background ---
+        setTimeout(async () => {
+            const checkupScreen = document.getElementById('checkup-screen');
+            const btnRow = document.querySelector('.checkup-btn-row');
+            const toggleBtns = document.querySelectorAll('.toggle-arrow-btn');
+            
+            // Temporarily hide elements not meant for screenshot
+            const originalBtnRowDisplay = btnRow ? btnRow.style.display : '';
+            if (btnRow) btnRow.style.display = 'none';
+            
+            const originalToggleDisplays = [];
+            toggleBtns.forEach(btn => {
+                originalToggleDisplays.push(btn.style.display);
+                btn.style.display = 'none';
+            });
+            
+            try {
+                const canvas = await html2canvas(checkupScreen, {
+                    backgroundColor: '#fcb38b',
+                    scale: 2,
+                    useCORS: true,
+                    logging: false
+                });
+                
+                canvas.toBlob((blob) => {
+                    pregeneratedShareBlob = blob;
+                }, 'image/png');
+            } catch (err) {
+                console.error("Background pre-render failed:", err);
+            }
+            
+            // Restore hidden elements
+            if (btnRow) btnRow.style.display = originalBtnRowDisplay;
+            toggleBtns.forEach((btn, index) => {
+                btn.style.display = originalToggleDisplays[index];
+            });
+            
+        }, 1500);
     }
     
     function updateUI() {
@@ -3064,76 +3104,48 @@
     // --- SHARE LOGIC ---
     async function shareWeeklyReport(btnEl) {
         if(btnEl) btnEl.classList.add('pressed');
+        setTimeout(() => { if(btnEl) btnEl.classList.remove('pressed'); }, 150);
         
-        const checkupScreen = document.getElementById('checkup-screen');
         const currentWeek = Math.floor((dayCount - 1) / 7) || 1;
-        
-        // Hide the buttons momentarily so they don't appear in the screenshot
-        const btnRow = document.querySelector('.checkup-btn-row');
-        const originalBtnDisplay = btnRow.style.display;
-        btnRow.style.display = 'none';
-
-        // Generate dynamic text
         const spitText = weekSpitups ? "spit-up" : "didn't even spit-up";
         const shareText = `I fed Melvin ${weekOuncesFed} ounces on week ${currentWeek} and he ${spitText} on me! Play here: https://feedmelvin.com`;
         const fileName = `Melvin_Week_${currentWeek}_Report.png`;
 
-        // 1. Text-only Clipboard copy (Immediate & Secure)
+        // 1. Immediately attempt to copy text to clipboard securely
         try {
-            if (navigator.clipboard) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
                 await navigator.clipboard.writeText(shareText);
-                console.log("Text successfully copied to clipboard!");
             }
         } catch (clipboardErr) {
             console.warn("Clipboard text copy rejected by browser:", clipboardErr);
         }
 
-        try {
-            // 2. Generate the Canvas Image
-            const canvas = await html2canvas(checkupScreen, {
-                backgroundColor: '#fcb38b',
-                scale: 2, // Boost resolution
-                useCORS: true, 
-                logging: false 
-            });
+        // 2. Check for pre-generated blob 
+        if (!pregeneratedShareBlob) {
+            alert("Please wait a moment while your report finishes generating...");
+            return;
+        }
 
-            // Restore buttons visually as soon as canvas is drawn
-            btnRow.style.display = originalBtnDisplay;
-            if(btnEl) btnEl.classList.remove('pressed');
-
-            canvas.toBlob(async (blob) => {
-                if (!blob) throw new Error("Blob generation failed.");
-                
-                const file = new File([blob], fileName, { type: 'image/png' });
-                
-                // 3. Native Share (Mobile) or Download (Desktop)
-                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-                    try {
-                        await navigator.share({
-                            title: 'Feed Melvin Weekly Report',
-                            text: shareText,
-                            files: [file]
-                        });
-                    } catch (err) {
-                        console.log("Share API cancelled/failed:", err);
-                        // Fallback only if it wasn't just the user hitting "cancel" on the share sheet
-                        if (err.name !== 'AbortError') {
-                            fallbackShare(blob, fileName, shareText);
-                        }
-                    }
-                } else {
-                    // Desktop / Unsupported Fallback
-                    fallbackShare(blob, fileName, shareText);
+        // 3. Directly utilize the pregenerated blob for sharing or fallback
+        const file = new File([pregeneratedShareBlob], fileName, { type: 'image/png' });
+        
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+                await navigator.share({
+                    title: 'Feed Melvin Weekly Report',
+                    text: shareText,
+                    files: [file]
+                });
+            } catch (err) {
+                console.log("Share API cancelled/failed:", err);
+                // Fallback only if it wasn't just the user hitting "cancel" on the share sheet
+                if (err.name !== 'AbortError') {
+                    fallbackShare(pregeneratedShareBlob, fileName, shareText);
                 }
-            }, 'image/png');
-
-        } catch (err) {
-            console.error("Image generation or share process error:", err);
-            alert("Share failed. Please check the browser console for details.");
-            
-            // Failsafe UI restore
-            btnRow.style.display = originalBtnDisplay;
-            if(btnEl) btnEl.classList.remove('pressed');
+            }
+        } else {
+            // Desktop / Unsupported Fallback
+            fallbackShare(pregeneratedShareBlob, fileName, shareText);
         }
     }
 
