@@ -1154,7 +1154,6 @@
     let musicMasterGain;
     let fxMasterGain;
     let petAnimTimeout = null, isBigBurpAnimating = false;
-
     // --- NEW LAYERED MUSIC SEQUENCER ---
     let track1 = [{"note":"B4","time":0,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D5","time":335,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G4","time":667,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B4","time":832,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G5","time":1168,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D5","time":1498,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B4","time":2665,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D5","time":3000,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G4","time":3333,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B4","time":3499,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"A4","time":3834,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B4","time":5333,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D5","time":5668,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G4","time":6002,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B4","time":6166,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G5","time":6499,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D5","time":6834,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B4","time":8336,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G5","time":8669,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"A4","time":8834,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G4","time":9167,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B5","time":7999,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":10668,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":11000,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"F4","time":11333,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":11499,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D4","time":11834,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":12166,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"F4","time":12501,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":12669,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D4","time":13002,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"C4","time":13331,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"C4","time":13666,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D4","time":13997,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":14167,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D4","time":14501,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":15999,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":16336,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"F4","time":16663,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":16835,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D4","time":17166,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":17502,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"F4","time":17832,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":18001,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D4","time":18332,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"C6","time":19835,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"C4","time":20667,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G4","time":18668,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"A4","time":19002,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D5","time":19332,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G5","time":19498,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"C2","time":22500,"duration":166.66666666666666,"instrument":"synth","waveform":"sine","volume":0.3}];
     let track2 = [{"note":"B4","time":0,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D5","time":335,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G4","time":667,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B4","time":832,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G5","time":1168,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D5","time":1498,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B4","time":2665,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D5","time":3000,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G4","time":3333,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B4","time":3499,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"A4","time":3834,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B4","time":5333,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D5","time":5668,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G4","time":6002,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B4","time":6166,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G5","time":6499,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D5","time":6834,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B4","time":8336,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G5","time":8669,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"A4","time":8834,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G4","time":9167,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B5","time":7999,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":10668,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":11000,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"F4","time":11333,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":11499,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D4","time":11834,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":12166,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"F4","time":12501,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":12669,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D4","time":13002,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"C4","time":13331,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"C4","time":13666,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D4","time":13997,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":14167,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D4","time":14501,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":15999,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":16336,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"F4","time":16663,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":16835,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D4","time":17166,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":17502,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"F4","time":17832,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":18001,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D4","time":18332,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"C6","time":19835,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"C4","time":20667,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G4","time":18668,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"A4","time":19002,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D5","time":19332,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G5","time":19498,"duration":168,"instrument":"synth","waveform":"square","volume":0.05}];
@@ -2358,7 +2357,6 @@
 
         updateArrowsVisibility();
     }
-    
     function updateUI() {
         document.getElementById('food-val').innerText = foodStored.toFixed(1);
         weightReadout.innerText = Math.floor(totalOunces / 16) + 'lb ' + Math.floor(totalOunces % 16) + 'oz';
@@ -3081,65 +3079,76 @@
         // Generate dynamic text
         const spitText = weekSpitups ? "spit-up" : "didn't even spit-up";
         const shareText = `I fed Melvin ${weekOuncesFed} ounces on week ${currentWeek} and he ${spitText} on me! Play here: https://feedmelvin.com`;
+        const fileName = `Melvin_Week_${currentWeek}_Report.png`;
 
         try {
-            // Take the snapshot
-            const canvas = await html2canvas(checkupScreen, {
+            // 1. Create a singular Promise that orchestrates html2canvas & Blob conversion
+            const canvasBlobPromise = html2canvas(checkupScreen, {
                 backgroundColor: '#fcb38b',
                 scale: 2, // Boost resolution
                 useCORS: true, // CRITICAL: Tells html2canvas to respect our anonymous cross-origin images
                 logging: true // Helpful if we need to check the console again
+            }).then(canvas => {
+                return new Promise((resolve, reject) => {
+                    try {
+                        canvas.toBlob(blob => {
+                            if (blob) resolve(blob);
+                            else reject(new Error("Canvas toBlob failed"));
+                        }, 'image/png');
+                    } catch(e) {
+                        reject(e);
+                    }
+                });
             });
+
+            // 2. Safely initialize Clipboard write to preserve the user gesture (synchronously)
+            if (navigator.clipboard && window.ClipboardItem) {
+                try {
+                    const item = new ClipboardItem({
+                        'text/plain': new Blob([shareText], { type: 'text/plain' }),
+                        'image/png': canvasBlobPromise
+                    });
+                    // Fire write immediately to keep the gesture context valid
+                    navigator.clipboard.write([item]).then(() => {
+                        console.log("Successfully copied PNG and text to clipboard!");
+                    }).catch(clipboardErr => {
+                        console.error("Clipboard write rejected (expected on some devices/configs):", clipboardErr);
+                    });
+                } catch (clipboardInitErr) {
+                    console.error("Clipboard setup failed (likely browser constraint):", clipboardInitErr);
+                }
+            }
+
+            // 3. Wait for the blob to finish for the standard share routine
+            const blob = await canvasBlobPromise;
             
-            // Restore buttons immediately after capture
+            // Restore buttons visually as soon as canvas is drawn
             btnRow.style.display = originalBtnDisplay;
             if(btnEl) btnEl.classList.remove('pressed');
 
-            canvas.toBlob(async (blob) => {
-                if (!blob) {
-                    alert("Failed to generate image blob.");
-                    return;
-                }
-                const fileName = `Melvin_Week_${currentWeek}_Report.png`;
-                const file = new File([blob], fileName, { type: 'image/png' });
-                
-                // --- CLIPBOARD FIX ---
+            const file = new File([blob], fileName, { type: 'image/png' });
+            
+            // Primary: Web Share API
+            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
                 try {
-                    if (navigator.clipboard && window.ClipboardItem) {
-                        const textBlob = new Blob([shareText], { type: 'text/plain' });
-                        const item = new ClipboardItem({ 
-                            'image/png': blob,
-                            'text/plain': textBlob 
-                        });
-                        await navigator.clipboard.write([item]);
-                        console.log("Successfully copied PNG and text to clipboard!");
-                    }
-                } catch (clipboardErr) {
-                    console.error("Clipboard write failed:", clipboardErr);
-                }
-                // ---------------------
-                
-                // Primary: Web Share API
-                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-                    try {
-                        await navigator.share({
-                            title: 'Feed Melvin Weekly Report',
-                            text: shareText,
-                            files: [file]
-                        });
-                    } catch (err) {
-                        console.log("Share API rejected/failed", err);
-                        fallbackShare(blob, fileName, shareText);
-                    }
-                } else {
-                    // Fallback: Desktop / Unsupported
+                    await navigator.share({
+                        title: 'Feed Melvin Weekly Report',
+                        text: shareText,
+                        files: [file]
+                    });
+                } catch (err) {
+                    console.log("Share API rejected/failed", err);
                     fallbackShare(blob, fileName, shareText);
                 }
-            }, 'image/png');
+            } else {
+                // Fallback: Desktop / Unsupported
+                fallbackShare(blob, fileName, shareText);
+            }
 
         } catch (err) {
-            console.error("html2canvas error:", err);
+            console.error("html2canvas or share process error:", err);
             alert("Share failed. Please check the browser console for details.");
+            // Failsafe UI restore
             btnRow.style.display = originalBtnDisplay;
             if(btnEl) btnEl.classList.remove('pressed');
         }
