@@ -958,9 +958,9 @@
         "https://www.feedmelvin.com/feed_melvin_logo_sprite_web.png",
         "https://www.feedmelvin.com/classic_melvin_sprite_web.png",
         "https://www.feedmelvin.com/classic_melvin_FULL_sprite_web.png",
-        "https://pxleight.github.io/feed-melvin-assets/super_levi_sprite_web.png",
-        "https://pxleight.github.io/feed-melvin-assets/super_levi_FULL_sprite_web.png",
-        "https://pxleight.github.io/feed-melvin-assets/gamma_levi_sprite_web.png",
+        "https://www.feedmelvin.com/super_melvin_sprite_web.png",
+        "https://www.feedmelvin.com/super_melvin_FULL_sprite_web.png",
+        "https://www.feedmelvin.com/gamma_melvin_sprite_web.png",
         "https://pxleight.github.io/feed-melvin-assets/feed_bottle_sprite_web.png",
         "https://pxleight.github.io/feed-melvin-assets/burp_hand_sprite_web.png",
         "https://pxleight.github.io/feed-melvin-assets/levi_scale_sprite_web.png",
@@ -2500,7 +2500,7 @@
                     landingFreezeFrame = false;
                 }
             } else if (isLandingSuperSpittingUp) {
-                landingActiveSprite = "https://pxleight.github.io/feed-melvin-assets/super_levi_FULL_sprite_web.png";
+                landingActiveSprite = "https://www.feedmelvin.com/super_melvin_FULL_sprite_web.png";
                 landingFrameX = landingSuperSpitUpFrame * 48;
                 let tintOpacity = 0.75 * (1 - (landingSuperSpitUpFrame / 7));
                 if (tintOpacity < 0) tintOpacity = 0;
@@ -2527,10 +2527,10 @@
         let activeFrameX = frameIndex * 48;
 
         if (gammaMelvinActive) {
-            activeImgUrl = "https://pxleight.github.io/feed-melvin-assets/gamma_levi_sprite_web.png";
+            activeImgUrl = "https://www.feedmelvin.com/gamma_melvin_sprite_web.png";
         } else if (superMelvinActive) {
             if (isSuperSpittingUp) {
-                activeImgUrl = "https://pxleight.github.io/feed-melvin-assets/super_levi_FULL_sprite_web.png";
+                activeImgUrl = "https://www.feedmelvin.com/super_melvin_FULL_sprite_web.png";
                 activeFrameX = superSpitUpFrame * 48;
                 if (!isPaused) superSpitUpFrame++;
                 updateUI();
@@ -2538,10 +2538,10 @@
             } else {
                 const isSuperFull = currentSessionOunces >= superLimit;
                 if (isSuperFull) {
-                    activeImgUrl = "https://pxleight.github.io/feed-melvin-assets/super_levi_FULL_sprite_web.png";
+                    activeImgUrl = "https://www.feedmelvin.com/super_melvin_FULL_sprite_web.png";
                     activeFrameX = 0;
                 } else {
-                    activeImgUrl = "https://pxleight.github.io/feed-melvin-assets/super_levi_sprite_web.png";
+                    activeImgUrl = "https://www.feedmelvin.com/super_melvin_sprite_web.png";
                 }
             }
         } else {
@@ -2683,7 +2683,7 @@
                 landingSparkle.style.display = 'none';
                 landingSparkle.innerHTML = '';
                 
-                landingActiveSprite = "https://pxleight.github.io/feed-melvin-assets/super_levi_sprite_web.png";
+                landingActiveSprite = "https://www.feedmelvin.com/super_melvin_sprite_web.png";
                 landingFreezeFrame = false;
             } else {
                 landingPet.style.transform = 'scale(1.0001) translateY(-5px) translateZ(0)';
@@ -2699,7 +2699,7 @@
             if (demoStep === 63) globalLandingTintOpacity = 0.375;
             if (demoStep === 64) {
                 globalLandingTintOpacity = 0.75;
-                landingActiveSprite = "https://pxleight.github.io/feed-melvin-assets/super_levi_FULL_sprite_web.png";
+                landingActiveSprite = "https://www.feedmelvin.com/super_melvin_FULL_sprite_web.png";
                 landingFreezeFrame = true;
             }
         } else if (demoStep >= 67 && demoStep <= 68) {
@@ -2710,7 +2710,7 @@
                 setTimeout(() => landingPet.style.transform = 'scale(1.0001) translateY(0px) translateZ(0)', 200);
                 
                 globalLandingTintOpacity = 0;
-                landingActiveSprite = "https://pxleight.github.io/feed-melvin-assets/super_levi_sprite_web.png";
+                landingActiveSprite = "https://www.feedmelvin.com/super_melvin_sprite_web.png";
                 landingFreezeFrame = false;
             } else {
                 landingPet.style.transform = 'scale(1.0001) translateY(-5px) translateZ(0)';
@@ -2726,7 +2726,7 @@
             if (demoStep === 75) globalLandingTintOpacity = 0.375;
             if (demoStep === 76) {
                 globalLandingTintOpacity = 0.75;
-                landingActiveSprite = "https://pxleight.github.io/feed-melvin-assets/super_levi_FULL_sprite_web.png";
+                landingActiveSprite = "https://www.feedmelvin.com/super_melvin_FULL_sprite_web.png";
                 landingFreezeFrame = true;
             }
         } else if (demoStep === 86) {
@@ -3088,7 +3088,9 @@
             // Take the snapshot
             const canvas = await html2canvas(checkupScreen, {
                 backgroundColor: '#fcb38b',
-                scale: 2 // Boost resolution
+                scale: 2, // Boost resolution
+                useCORS: true, // CRITICAL: Tells html2canvas to respect our anonymous cross-origin images
+                logging: true // Helpful if we need to check the console again
             });
             
             // Restore buttons immediately after capture
@@ -3096,7 +3098,10 @@
             if(btnEl) btnEl.classList.remove('pressed');
 
             canvas.toBlob(async (blob) => {
-                if (!blob) return;
+                if (!blob) {
+                    alert("Failed to generate image blob.");
+                    return;
+                }
                 const fileName = `Melvin_Week_${currentWeek}_Report.png`;
                 const file = new File([blob], fileName, { type: 'image/png' });
                 
@@ -3120,6 +3125,7 @@
 
         } catch (err) {
             console.error("html2canvas error:", err);
+            alert("Share failed. Please check the browser console for details.");
             btnRow.style.display = originalBtnDisplay;
             if(btnEl) btnEl.classList.remove('pressed');
         }
