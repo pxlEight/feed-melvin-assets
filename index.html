@@ -683,7 +683,6 @@
             }
         }
     }
-
     function setDrSprite(state) {
         if (state === 'happy') currentDrReportState = "https://www.feedmelvin.com/dr_swadlzworth_HAPPY_sprite_web.png";
         else if (state === 'upset') currentDrReportState = "https://www.feedmelvin.com/dr_swadlzworth_UPSET_sprite_web.png";
@@ -1967,7 +1966,6 @@
             timerBar.style.height = '100%';
         }, 150);
     }
-    
     function rollNewLimit() {
         let currentWeek = Math.floor((dayCount - 1) / 7) + 1;
         let level = currentWeek === 1 ? 0 : Math.max(1, Math.floor((totalOunces - 104) / 8) + 1);
@@ -3090,8 +3088,7 @@
                 backgroundColor: '#fcb38b',
                 scale: 2, // Boost resolution
                 useCORS: true, // CRITICAL: Tells html2canvas to respect our anonymous cross-origin images
-                allowTaint: true, // CRITICAL FIX: prevents SecurityError if mobile browser strips CORS
-                logging: false 
+                logging: true // Helpful if we need to check the console again
             });
             
             // Restore buttons immediately after capture
@@ -3100,11 +3097,27 @@
 
             canvas.toBlob(async (blob) => {
                 if (!blob) {
-                    fallbackShareTextOnly(shareText);
+                    alert("Failed to generate image blob.");
                     return;
                 }
                 const fileName = `Melvin_Week_${currentWeek}_Report.png`;
                 const file = new File([blob], fileName, { type: 'image/png' });
+                
+                // --- CLIPBOARD FIX ---
+                try {
+                    if (navigator.clipboard && window.ClipboardItem) {
+                        const textBlob = new Blob([shareText], { type: 'text/plain' });
+                        const item = new ClipboardItem({ 
+                            'image/png': blob,
+                            'text/plain': textBlob 
+                        });
+                        await navigator.clipboard.write([item]);
+                        console.log("Successfully copied PNG and text to clipboard!");
+                    }
+                } catch (clipboardErr) {
+                    console.error("Clipboard write failed:", clipboardErr);
+                }
+                // ---------------------
                 
                 // Primary: Web Share API
                 if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
@@ -3116,8 +3129,7 @@
                         });
                     } catch (err) {
                         console.log("Share API rejected/failed", err);
-                        // Using text-only fallback to bypass the "Async Trap"
-                        fallbackShareTextOnly(shareText);
+                        fallbackShare(blob, fileName, shareText);
                     }
                 } else {
                     // Fallback: Desktop / Unsupported
@@ -3127,22 +3139,9 @@
 
         } catch (err) {
             console.error("html2canvas error:", err);
-            // Replace hard alert with seamless text fallback
+            alert("Share failed. Please check the browser console for details.");
             btnRow.style.display = originalBtnDisplay;
             if(btnEl) btnEl.classList.remove('pressed');
-            fallbackShareTextOnly(shareText);
-        }
-    }
-
-    function fallbackShareTextOnly(shareText) {
-        if (navigator.share) {
-            navigator.share({
-                title: 'Feed Melvin Weekly Report',
-                text: shareText
-            }).catch(err => console.log("Text share failed:", err));
-        } else {
-            const mailBody = encodeURIComponent(shareText);
-            window.location.href = `mailto:?subject=Feed Melvin Weekly Report&body=${mailBody}`;
         }
     }
 
@@ -3189,8 +3188,7 @@
     });
 
     document.addEventListener('keyup', function(event) {
-        const key = event
-.key.toLowerCase();
+        const key = event.key.toLowerCase();
         
         if (key === 'f') {
             document.querySelector('.feed-btn').classList.remove('key-pressed');
