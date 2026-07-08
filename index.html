@@ -600,7 +600,6 @@
     window.addEventListener('orientationchange', resizeMasterContainer);
     resizeMasterContainer();
 
-    let pregeneratedShareBlob = null;
     let lastTouchTime = 0;
 
     // --- UNIVERSAL TOUCH HANDLING ---
@@ -2136,9 +2135,8 @@
             document.getElementById('next-stats-btn').style.display = 'none';
         }
     }
-// Chunk 1 ends here. Reply "continue" to receive Chunk 2.
+
     async function renderStatsView(view) {
-        pregeneratedShareBlob = null; 
         currentRenderId++;
         const myRenderId = currentRenderId;
         const statsArea = document.getElementById('stats-area');
@@ -2146,6 +2144,9 @@
         const congratsWrap = document.getElementById('congrats-text-wrap');
         const docImg = document.getElementById('dr-swadlzworth-img');
         const docBox = document.getElementById('svg-reference-box-red');
+
+        let resumeBtn = document.querySelector('.resume-btn');
+        let shareBtn = document.querySelector('.share-report-btn');
 
         const playCoin = (stepDown = false) => {
             let f1 = stepDown ? 880 : 1109; 
@@ -2188,7 +2189,6 @@
         let needsStatsAnimation = (view === 'victory' && !victoryAnimated) || (view === 'standard' && !standardAnimated);
         let currentWeekForReport = Math.floor((dayCount - 1) / 7) + 1;
         let isFirstReport = (currentWeekForReport === 1 && view === 'standard');
-        let resumeBtn = document.querySelector('.resume-btn');
 
         if (isInitialLoad) {
             reportTitle.style.animation = 'none';
@@ -2199,6 +2199,12 @@
             docImg.style.left = '-132px';
             docBox.style.opacity = '0';
             docBox.style.transform = 'scale(0) translateZ(0)';
+
+            if (shareBtn) {
+                shareBtn.style.opacity = '0';
+                shareBtn.style.pointerEvents = 'none';
+                shareBtn.style.transition = 'opacity 0.3s ease';
+            }
 
             if (isFirstReport) {
                 resumeBtn.style.opacity = '0.5';
@@ -2366,198 +2372,14 @@
 
         updateArrowsVisibility();
         
-        // --- Pre-render share canvas silently in the background ---
-        setTimeout(async () => {
-            const checkupScreen = document.getElementById('checkup-screen');
-            const btnRow = document.querySelector('.checkup-btn-row');
-            const toggleBtns = document.querySelectorAll('.toggle-arrow-btn');
-            const shareBtn = document.querySelector('.share-report-btn'); 
-            
-            // Temporarily hide elements not meant for screenshot
-            const originalBtnRowDisplay = btnRow ? btnRow.style.display : '';
-            if (btnRow) btnRow.style.display = 'none';
-            
-            const originalToggleDisplays = [];
-            toggleBtns.forEach(btn => {
-                originalToggleDisplays.push(btn.style.display);
-                btn.style.display = 'none';
-            });
-
-            // Visually disable the share button so the user knows it is loading
+        // Reveal the Share button only after everything is 100% static
+        setTimeout(() => {
+            if (myRenderId !== currentRenderId) return;
             if (shareBtn) {
-                shareBtn.style.opacity = '0.5';
-                shareBtn.style.pointerEvents = 'none'; 
+                shareBtn.style.opacity = '1';
+                shareBtn.style.pointerEvents = 'auto';
+                shareBtn.style.transition = 'transform 0.05s, box-shadow 0.05s';
             }
-            
-            try {
-                const captureScale = window.devicePixelRatio || 2; 
-
-                const canvas = await html2canvas(checkupScreen, {
-                    backgroundColor: '#fcb38b',
-                    scale: captureScale, 
-                    useCORS: true,
-                    logging: false,
-                    onclone: (clonedDoc) => {
-                        // --- 1. UI BOX-SHADOW DOM INJECTION POLYFILL ---
-                        const injectBoxShadow = (selector, offsetX, offsetY, defaultColor) => {
-                            const origEls = document.querySelectorAll(selector);
-                            const clonedEls = clonedDoc.querySelectorAll(selector);
-                            
-                            origEls.forEach((orig, i) => {
-                                const clone = clonedEls[i];
-                                if (!orig || !clone) return;
-                                
-                                let color = defaultColor;
-                                if (orig.classList.contains('super-mode')) {
-                                    color = '#326efc';
-                                }
-
-                                clone.style.boxShadow = 'none'; 
-                                
-                                const shadowBlock = clonedDoc.createElement('div');
-                                shadowBlock.style.position = 'absolute';
-                                shadowBlock.style.width = orig.offsetWidth + 'px';
-                                shadowBlock.style.height = orig.offsetHeight + 'px';
-                                shadowBlock.style.backgroundColor = color;
-                                
-                                shadowBlock.style.left = (orig.offsetLeft + offsetX) + 'px';
-                                shadowBlock.style.top = (orig.offsetTop + offsetY) + 'px';
-                                
-                                const z = window.getComputedStyle(orig).zIndex;
-                                shadowBlock.style.zIndex = (z && z !== 'auto') ? (parseInt(z) - 1) : 0;
-                                
-                                clone.parentNode.insertBefore(shadowBlock, clone);
-                            });
-                        };
-
-                        injectBoxShadow('#checkup-title-container', 12, 12, '#fee5d4');
-                        injectBoxShadow('#svg-reference-box-red', 9, 9, '#fcb383');
-                        injectBoxShadow('.resume-btn', 6, 6, '#fee5d4');
-                        injectBoxShadow('.share-report-btn', 6, 6, '#E3754D');
-
-
-                        // --- 2. STAT BULLETS (Solid 2px Outline Polyfill) ---
-                        const statBulletsOrig = document.querySelectorAll('#checkup-screen img.stat-bullet');
-                        const statBulletsClone = clonedDoc.querySelectorAll('#checkup-screen img.stat-bullet');
-                        
-                        statBulletsClone.forEach((cImg, index) => {
-                            const origImg = statBulletsOrig[index];
-                            if (!origImg || origImg.naturalWidth === 0) return;
-                            
-                            const wrapper = clonedDoc.createElement('div');
-                            wrapper.className = origImg.className;
-                            wrapper.style.cssText = origImg.style.cssText; 
-                            wrapper.style.position = 'relative'; 
-                            wrapper.style.filter = 'none'; 
-                            wrapper.style.display = 'inline-block';
-                            wrapper.style.overflow = 'visible';
-                            wrapper.style.width = origImg.offsetWidth + 'px';
-                            wrapper.style.height = origImg.offsetHeight + 'px';
-                            wrapper.style.flexShrink = '0';
-                            
-                            const mainCanvas = clonedDoc.createElement('canvas');
-                            mainCanvas.width = origImg.naturalWidth * captureScale;
-                            mainCanvas.height = origImg.naturalHeight * captureScale;
-                            mainCanvas.style.width = '100%';
-                            mainCanvas.style.height = '100%';
-                            mainCanvas.style.position = 'relative';
-                            mainCanvas.style.zIndex = '2';
-                            
-                            const ctx = mainCanvas.getContext('2d');
-                            ctx.imageSmoothingEnabled = false;
-                            ctx.drawImage(origImg, 0, 0, mainCanvas.width, mainCanvas.height);
-                            wrapper.appendChild(mainCanvas);
-                            
-                            const passes = [
-                                [2, 0], [-2, 0], [0, 2], [0, -2], 
-                                [2, 2], [-2, -2], [2, -2], [-2, 2]
-                            ];
-                            
-                            passes.forEach(([x, y]) => {
-                                const sCanvas = clonedDoc.createElement('canvas');
-                                sCanvas.width = origImg.naturalWidth * captureScale;
-                                sCanvas.height = origImg.naturalHeight * captureScale;
-                                sCanvas.style.width = '100%';
-                                sCanvas.style.height = '100%';
-                                sCanvas.style.position = 'absolute';
-                                sCanvas.style.left = x + 'px'; 
-                                sCanvas.style.top = y + 'px';
-                                sCanvas.style.zIndex = '1';
-                                
-                                const sCtx = sCanvas.getContext('2d');
-                                sCtx.imageSmoothingEnabled = false;
-                                sCtx.drawImage(origImg, 0, 0, sCanvas.width, sCanvas.height);
-                                
-                                sCtx.globalCompositeOperation = 'source-in';
-                                sCtx.fillStyle = '#fcb383';
-                                sCtx.fillRect(0, 0, sCanvas.width, sCanvas.height);
-                                wrapper.appendChild(sCanvas);
-                            });
-                            
-                            cImg.parentNode.replaceChild(wrapper, cImg);
-                        });
-
-                        // --- 3. DR SWADLZWORTH (7.6px Drop-Shadow Polyfill) ---
-                        const origDrInner = document.getElementById('dr-swadlzworth-inner');
-                        const clonedDrInner = clonedDoc.getElementById('dr-swadlzworth-inner');
-                        const clonedDrWrapper = clonedDoc.getElementById('dr-swadlzworth-img');
-                        
-                        if (origDrInner && clonedDrInner && clonedDrWrapper) {
-                            clonedDrWrapper.style.filter = 'none'; 
-                            clonedDrWrapper.style.overflow = 'visible'; 
-                            
-                            clonedDrInner.width = origDrInner.width * captureScale;
-                            clonedDrInner.height = origDrInner.height * captureScale;
-                            clonedDrInner.style.position = 'relative';
-                            clonedDrInner.style.zIndex = '2';
-
-                            const ctx = clonedDrInner.getContext('2d');
-                            ctx.imageSmoothingEnabled = false;
-                            ctx.drawImage(origDrInner, 0, 0, clonedDrInner.width, clonedDrInner.height);
-                            
-                            const shadow = clonedDoc.createElement('canvas');
-                            shadow.width = origDrInner.width * captureScale;
-                            shadow.height = origDrInner.height * captureScale;
-                            shadow.style.cssText = clonedDrInner.style.cssText; 
-                            shadow.style.position = 'absolute';
-                            shadow.style.left = '7.6px'; 
-                            shadow.style.top = '0px';
-                            shadow.style.zIndex = '1';
-                            
-                            const sCtx = shadow.getContext('2d');
-                            sCtx.imageSmoothingEnabled = false;
-                            sCtx.drawImage(origDrInner, 0, 0, shadow.width, shadow.height);
-                            
-                            sCtx.globalCompositeOperation = 'source-in';
-                            sCtx.fillStyle = '#fcb38b';
-                            sCtx.fillRect(0, 0, shadow.width, shadow.height);
-                            
-                            clonedDrWrapper.insertBefore(shadow, clonedDrInner);
-                        }
-                    }
-                });
-                
-                canvas.toBlob((blob) => {
-                    pregeneratedShareBlob = blob;
-                    if (shareBtn) {
-                        shareBtn.style.opacity = '1';
-                        shareBtn.style.pointerEvents = 'auto';
-                    }
-                }, 'image/png');
-            } catch (err) {
-                console.error("Background pre-render failed:", err);
-                if (shareBtn) {
-                    shareBtn.style.opacity = '1';
-                    shareBtn.style.pointerEvents = 'auto';
-                }
-            }
-            
-            // Restore hidden elements
-            if (btnRow) btnRow.style.display = originalBtnRowDisplay;
-            toggleBtns.forEach((btn, index) => {
-                btn.style.display = originalToggleDisplays[index];
-            });
-            
         }, 1500);
     }
     
@@ -2764,7 +2586,7 @@
         renderCanvasSprite('pet-canvas', activeImgUrl, activeFrameX, 0, 48, 48, 48, 48);
     }
 
-    setInterval(() => {
+    let canvasRenderLoop = setInterval(() => {
         if (!assetsLoaded) return;
         if (!gameRunning || (gameRunning && !isPaused)) {
             frameIndex = (frameIndex + 1) % 8;
@@ -3283,14 +3105,209 @@
             console.warn("Clipboard text copy rejected by browser:", clipboardErr);
         }
 
-        // 2. Check for pre-generated blob 
-        if (!pregeneratedShareBlob) {
-            alert("Still generating your image! Please wait a few more seconds, then tap the Share button again.");
-            return;
+        // Visually disable the share button so the user knows it is loading
+        if (btnEl) {
+            btnEl.style.opacity = '0.5';
+            btnEl.style.pointerEvents = 'none'; 
         }
 
-        // 3. Directly utilize the pregenerated blob for sharing or fallback
-        const file = new File([pregeneratedShareBlob], fileName, { type: 'image/png' });
+        const checkupScreen = document.getElementById('checkup-screen');
+        const btnRow = document.querySelector('.checkup-btn-row');
+        const toggleBtns = document.querySelectorAll('.toggle-arrow-btn');
+        
+        // Temporarily hide elements not meant for screenshot
+        const originalBtnRowDisplay = btnRow ? btnRow.style.display : '';
+        if (btnRow) btnRow.style.display = 'none';
+        
+        const originalToggleDisplays = [];
+        toggleBtns.forEach(btn => {
+            originalToggleDisplays.push(btn.style.display);
+            btn.style.display = 'none';
+        });
+
+        let generatedBlob = null;
+
+        // FREEZE THE RENDER LOOP (0 FPS State)
+        clearInterval(canvasRenderLoop);
+
+        try {
+            const captureScale = window.devicePixelRatio || 2; 
+
+            const canvas = await html2canvas(checkupScreen, {
+                backgroundColor: '#fcb38b',
+                scale: captureScale, 
+                useCORS: true,
+                logging: false,
+                onclone: (clonedDoc) => {
+
+                    // --- 1. UI BOX-SHADOW DOM INJECTION POLYFILL ---
+                    const injectBoxShadow = (selector, offsetX, offsetY, defaultColor) => {
+                        const origEls = document.querySelectorAll(selector);
+                        const clonedEls = clonedDoc.querySelectorAll(selector);
+                        
+                        origEls.forEach((orig, i) => {
+                            const clone = clonedEls[i];
+                            if (!orig || !clone) return;
+                            
+                            let color = defaultColor;
+                            if (orig.classList.contains('super-mode')) color = '#326efc';
+                            
+                            clone.style.boxShadow = 'none'; 
+                            
+                            const shadowBlock = clonedDoc.createElement('div');
+                            shadowBlock.style.position = 'absolute';
+                            shadowBlock.style.width = orig.offsetWidth + 'px';
+                            shadowBlock.style.height = orig.offsetHeight + 'px';
+                            shadowBlock.style.backgroundColor = color;
+                            
+                            shadowBlock.style.left = (orig.offsetLeft + offsetX) + 'px';
+                            shadowBlock.style.top = (orig.offsetTop + offsetY) + 'px';
+                            
+                            const z = window.getComputedStyle(orig).zIndex;
+                            shadowBlock.style.zIndex = (z && z !== 'auto') ? (parseInt(z) - 1) : 0;
+                            
+                            clone.parentNode.insertBefore(shadowBlock, clone);
+                        });
+                    };
+
+                    injectBoxShadow('#checkup-title-container', 12, 12, '#fee5d4');
+                    injectBoxShadow('#svg-reference-box-red', 9, 9, '#fcb383');
+                    injectBoxShadow('.resume-btn', 6, 6, '#fee5d4');
+                    injectBoxShadow('.share-report-btn', 6, 6, '#E3754D');
+
+
+                    // --- 2. STAT BULLETS (Solid 2px Outline Polyfill) ---
+                    const statBulletsOrig = document.querySelectorAll('#checkup-screen img.stat-bullet');
+                    const statBulletsClone = clonedDoc.querySelectorAll('#checkup-screen img.stat-bullet');
+                    
+                    statBulletsClone.forEach((cImg, index) => {
+                        const origImg = statBulletsOrig[index];
+                        if (!origImg || origImg.naturalWidth === 0) return;
+                        
+                        const wrapper = clonedDoc.createElement('div');
+                        wrapper.className = origImg.className;
+                        wrapper.style.cssText = origImg.style.cssText; 
+                        wrapper.style.position = 'relative'; 
+                        wrapper.style.filter = 'none'; 
+                        wrapper.style.display = 'inline-block';
+                        wrapper.style.overflow = 'visible';
+                        wrapper.style.width = origImg.offsetWidth + 'px';
+                        wrapper.style.height = origImg.offsetHeight + 'px';
+                        wrapper.style.flexShrink = '0'; 
+                        
+                        const mainCanvas = clonedDoc.createElement('canvas');
+                        mainCanvas.width = origImg.naturalWidth * captureScale;
+                        mainCanvas.height = origImg.naturalHeight * captureScale;
+                        mainCanvas.style.width = '100%';
+                        mainCanvas.style.height = '100%';
+                        mainCanvas.style.position = 'relative';
+                        mainCanvas.style.zIndex = '2';
+                        
+                        const ctx = mainCanvas.getContext('2d');
+                        ctx.imageSmoothingEnabled = false;
+                        ctx.drawImage(origImg, 0, 0, mainCanvas.width, mainCanvas.height);
+                        wrapper.appendChild(mainCanvas);
+                        
+                        const passes = [
+                            [2, 0], [-2, 0], [0, 2], [0, -2], 
+                            [2, 2], [-2, -2], [2, -2], [-2, 2]
+                        ];
+                        
+                        passes.forEach(([x, y]) => {
+                            const sCanvas = clonedDoc.createElement('canvas');
+                            sCanvas.width = origImg.naturalWidth * captureScale;
+                            sCanvas.height = origImg.naturalHeight * captureScale;
+                            sCanvas.style.width = '100%';
+                            sCanvas.style.height = '100%';
+                            sCanvas.style.position = 'absolute';
+                            sCanvas.style.left = x + 'px'; 
+                            sCanvas.style.top = y + 'px';
+                            sCanvas.style.zIndex = '1';
+                            
+                            const sCtx = sCanvas.getContext('2d');
+                            sCtx.imageSmoothingEnabled = false;
+                            sCtx.drawImage(origImg, 0, 0, sCanvas.width, sCanvas.height);
+                            
+                            sCtx.globalCompositeOperation = 'source-in';
+                            sCtx.fillStyle = '#fcb383';
+                            sCtx.fillRect(0, 0, sCanvas.width, sCanvas.height);
+                            wrapper.appendChild(sCanvas);
+                        });
+                        
+                        cImg.parentNode.replaceChild(wrapper, cImg);
+                    });
+
+                    // --- 3. DR SWADLZWORTH (7.6px Drop-Shadow Polyfill) ---
+                    const origDrInner = document.getElementById('dr-swadlzworth-inner');
+                    const clonedDrInner = clonedDoc.getElementById('dr-swadlzworth-inner');
+                    const clonedDrWrapper = clonedDoc.getElementById('dr-swadlzworth-img');
+                    
+                    if (origDrInner && clonedDrInner && clonedDrWrapper) {
+                        clonedDrWrapper.style.filter = 'none'; 
+                        clonedDrWrapper.style.overflow = 'visible'; 
+                        
+                        clonedDrInner.width = origDrInner.width * captureScale;
+                        clonedDrInner.height = origDrInner.height * captureScale;
+                        clonedDrInner.style.position = 'relative';
+                        clonedDrInner.style.zIndex = '2';
+
+                        const ctx = clonedDrInner.getContext('2d');
+                        ctx.imageSmoothingEnabled = false;
+                        ctx.drawImage(origDrInner, 0, 0, clonedDrInner.width, clonedDrInner.height);
+                        
+                        const shadow = clonedDoc.createElement('canvas');
+                        shadow.width = origDrInner.width * captureScale;
+                        shadow.height = origDrInner.height * captureScale;
+                        shadow.style.cssText = clonedDrInner.style.cssText; 
+                        shadow.style.position = 'absolute';
+                        shadow.style.left = '7.6px'; 
+                        shadow.style.top = '0px';
+                        shadow.style.zIndex = '1';
+                        
+                        const sCtx = shadow.getContext('2d');
+                        sCtx.imageSmoothingEnabled = false;
+                        sCtx.drawImage(origDrInner, 0, 0, shadow.width, shadow.height);
+                        
+                        sCtx.globalCompositeOperation = 'source-in';
+                        sCtx.fillStyle = '#fcb38b';
+                        sCtx.fillRect(0, 0, shadow.width, shadow.height);
+                        
+                        clonedDrWrapper.insertBefore(shadow, clonedDrInner);
+                    }
+                }
+            });
+            
+            generatedBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+            
+        } catch (err) {
+            console.error("Render failed:", err);
+            alert("Error generating image: " + err.message);
+        }
+        
+        // RESUME THE RENDER LOOP
+        canvasRenderLoop = setInterval(() => {
+            if (!assetsLoaded) return;
+            if (!gameRunning || (gameRunning && !isPaused)) {
+                frameIndex = (frameIndex + 1) % 8;
+            }
+            updateAllCanvasSprites();
+        }, 1000 / 8);
+
+        // Restore hidden elements
+        if (btnRow) btnRow.style.display = originalBtnRowDisplay;
+        toggleBtns.forEach((btn, index) => {
+            btn.style.display = originalToggleDisplays[index];
+        });
+        
+        if (btnEl) {
+            btnEl.style.opacity = '1';
+            btnEl.style.pointerEvents = 'auto';
+        }
+
+        if (!generatedBlob) return;
+
+        // Share or Fallback
+        const file = new File([generatedBlob], fileName, { type: 'image/png' });
         
         if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
             try {
@@ -3301,14 +3318,12 @@
                 });
             } catch (err) {
                 console.log("Share API cancelled/failed:", err);
-                // Fallback only if it wasn't just the user hitting "cancel" on the share sheet
                 if (err.name !== 'AbortError') {
-                    fallbackShare(pregeneratedShareBlob, fileName, shareText);
+                    fallbackShare(generatedBlob, fileName, shareText);
                 }
             }
         } else {
-            // Desktop / Unsupported Fallback
-            fallbackShare(pregeneratedShareBlob, fileName, shareText);
+            fallbackShare(generatedBlob, fileName, shareText);
         }
     }
 
