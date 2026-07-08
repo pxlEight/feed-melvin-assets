@@ -264,6 +264,14 @@
 
 <div id="master-container">
 
+    <div id="share-reminder-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999999; flex-direction: column; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; text-align: center; pointer-events: auto;">
+        <div style="background: #FB9052; border: 6px solid #fff; padding: 25px; box-shadow: 0 8px 0 #E3754D; max-width: 400px;">
+            <h2 style="color: white; font-size: 3rem; margin-top: 0; text-shadow: 2px 2px 0 #E3754D;">IMAGE DOWNLOADED!</h2>
+            <p style="color: white; font-size: 1.8rem; line-height: 1.2;">Your email app is opening. <br><br><span style="color: var(--sparkle-gold);">Don't forget to attach the downloaded Weekly Report image to the email!</span></p>
+            <button onclick="document.getElementById('share-reminder-overlay').style.display='none'" style="background: #5ea1fd; color: white; border: 4px solid #326efc; padding: 10px 20px; font-size: 2rem; margin-top: 20px; cursor: pointer; box-shadow: 0 4px 0 #326efc;">GOT IT</button>
+        </div>
+    </div>
+
     <div id="global-ui-layer">
         <div id="bmc-tooltip">Thanks for playing! Care to buy us some baby formula?</div>
         <a id="custom-bmc-btn" href="https://www.buymeacoffee.com/pixelmover" target="_blank" rel="noopener noreferrer" title="Buy me a coffee!"><img src="https://feedmelvin.com/bottle_Icon_alt_web.png" style="width: 44px; height: 44px; image-rendering: pixelated; filter: drop-shadow(2px 2px 0 #E3754D);" alt="Coffee"></a>
@@ -2128,7 +2136,7 @@
             document.getElementById('next-stats-btn').style.display = 'none';
         }
     }
-
+// Chunk 1 ends here. Reply "continue" to receive Chunk 2.
     async function renderStatsView(view) {
         pregeneratedShareBlob = null; 
         currentRenderId++;
@@ -2382,16 +2390,155 @@
             }
             
             try {
+                const captureScale = window.devicePixelRatio || 2; 
+
                 const canvas = await html2canvas(checkupScreen, {
                     backgroundColor: '#fcb38b',
-                    scale: 1, 
+                    scale: captureScale, 
                     useCORS: true,
-                    logging: false
+                    logging: false,
+                    onclone: (clonedDoc) => {
+                        // --- 1. UI BOX-SHADOW DOM INJECTION POLYFILL ---
+                        const injectBoxShadow = (selector, offsetX, offsetY, defaultColor) => {
+                            const origEls = document.querySelectorAll(selector);
+                            const clonedEls = clonedDoc.querySelectorAll(selector);
+                            
+                            origEls.forEach((orig, i) => {
+                                const clone = clonedEls[i];
+                                if (!orig || !clone) return;
+                                
+                                let color = defaultColor;
+                                if (orig.classList.contains('super-mode')) {
+                                    color = '#326efc';
+                                }
+
+                                clone.style.boxShadow = 'none'; 
+                                
+                                const shadowBlock = clonedDoc.createElement('div');
+                                shadowBlock.style.position = 'absolute';
+                                shadowBlock.style.width = orig.offsetWidth + 'px';
+                                shadowBlock.style.height = orig.offsetHeight + 'px';
+                                shadowBlock.style.backgroundColor = color;
+                                
+                                shadowBlock.style.left = (orig.offsetLeft + offsetX) + 'px';
+                                shadowBlock.style.top = (orig.offsetTop + offsetY) + 'px';
+                                
+                                const z = window.getComputedStyle(orig).zIndex;
+                                shadowBlock.style.zIndex = (z && z !== 'auto') ? (parseInt(z) - 1) : 0;
+                                
+                                clone.parentNode.insertBefore(shadowBlock, clone);
+                            });
+                        };
+
+                        injectBoxShadow('#checkup-title-container', 12, 12, '#fee5d4');
+                        injectBoxShadow('#svg-reference-box-red', 9, 9, '#fcb383');
+                        injectBoxShadow('.resume-btn', 6, 6, '#fee5d4');
+                        injectBoxShadow('.share-report-btn', 6, 6, '#E3754D');
+
+
+                        // --- 2. STAT BULLETS (Solid 2px Outline Polyfill) ---
+                        const statBulletsOrig = document.querySelectorAll('#checkup-screen img.stat-bullet');
+                        const statBulletsClone = clonedDoc.querySelectorAll('#checkup-screen img.stat-bullet');
+                        
+                        statBulletsClone.forEach((cImg, index) => {
+                            const origImg = statBulletsOrig[index];
+                            if (!origImg || origImg.naturalWidth === 0) return;
+                            
+                            const wrapper = clonedDoc.createElement('div');
+                            wrapper.className = origImg.className;
+                            wrapper.style.cssText = origImg.style.cssText; 
+                            wrapper.style.position = 'relative'; 
+                            wrapper.style.filter = 'none'; 
+                            wrapper.style.display = 'inline-block';
+                            wrapper.style.overflow = 'visible';
+                            wrapper.style.width = origImg.offsetWidth + 'px';
+                            wrapper.style.height = origImg.offsetHeight + 'px';
+                            wrapper.style.flexShrink = '0';
+                            
+                            const mainCanvas = clonedDoc.createElement('canvas');
+                            mainCanvas.width = origImg.naturalWidth * captureScale;
+                            mainCanvas.height = origImg.naturalHeight * captureScale;
+                            mainCanvas.style.width = '100%';
+                            mainCanvas.style.height = '100%';
+                            mainCanvas.style.position = 'relative';
+                            mainCanvas.style.zIndex = '2';
+                            
+                            const ctx = mainCanvas.getContext('2d');
+                            ctx.imageSmoothingEnabled = false;
+                            ctx.drawImage(origImg, 0, 0, mainCanvas.width, mainCanvas.height);
+                            wrapper.appendChild(mainCanvas);
+                            
+                            const passes = [
+                                [2, 0], [-2, 0], [0, 2], [0, -2], 
+                                [2, 2], [-2, -2], [2, -2], [-2, 2]
+                            ];
+                            
+                            passes.forEach(([x, y]) => {
+                                const sCanvas = clonedDoc.createElement('canvas');
+                                sCanvas.width = origImg.naturalWidth * captureScale;
+                                sCanvas.height = origImg.naturalHeight * captureScale;
+                                sCanvas.style.width = '100%';
+                                sCanvas.style.height = '100%';
+                                sCanvas.style.position = 'absolute';
+                                sCanvas.style.left = x + 'px'; 
+                                sCanvas.style.top = y + 'px';
+                                sCanvas.style.zIndex = '1';
+                                
+                                const sCtx = sCanvas.getContext('2d');
+                                sCtx.imageSmoothingEnabled = false;
+                                sCtx.drawImage(origImg, 0, 0, sCanvas.width, sCanvas.height);
+                                
+                                sCtx.globalCompositeOperation = 'source-in';
+                                sCtx.fillStyle = '#fcb383';
+                                sCtx.fillRect(0, 0, sCanvas.width, sCanvas.height);
+                                wrapper.appendChild(sCanvas);
+                            });
+                            
+                            cImg.parentNode.replaceChild(wrapper, cImg);
+                        });
+
+                        // --- 3. DR SWADLZWORTH (7.6px Drop-Shadow Polyfill) ---
+                        const origDrInner = document.getElementById('dr-swadlzworth-inner');
+                        const clonedDrInner = clonedDoc.getElementById('dr-swadlzworth-inner');
+                        const clonedDrWrapper = clonedDoc.getElementById('dr-swadlzworth-img');
+                        
+                        if (origDrInner && clonedDrInner && clonedDrWrapper) {
+                            clonedDrWrapper.style.filter = 'none'; 
+                            clonedDrWrapper.style.overflow = 'visible'; 
+                            
+                            clonedDrInner.width = origDrInner.width * captureScale;
+                            clonedDrInner.height = origDrInner.height * captureScale;
+                            clonedDrInner.style.position = 'relative';
+                            clonedDrInner.style.zIndex = '2';
+
+                            const ctx = clonedDrInner.getContext('2d');
+                            ctx.imageSmoothingEnabled = false;
+                            ctx.drawImage(origDrInner, 0, 0, clonedDrInner.width, clonedDrInner.height);
+                            
+                            const shadow = clonedDoc.createElement('canvas');
+                            shadow.width = origDrInner.width * captureScale;
+                            shadow.height = origDrInner.height * captureScale;
+                            shadow.style.cssText = clonedDrInner.style.cssText; 
+                            shadow.style.position = 'absolute';
+                            shadow.style.left = '7.6px'; 
+                            shadow.style.top = '0px';
+                            shadow.style.zIndex = '1';
+                            
+                            const sCtx = shadow.getContext('2d');
+                            sCtx.imageSmoothingEnabled = false;
+                            sCtx.drawImage(origDrInner, 0, 0, shadow.width, shadow.height);
+                            
+                            sCtx.globalCompositeOperation = 'source-in';
+                            sCtx.fillStyle = '#fcb38b';
+                            sCtx.fillRect(0, 0, shadow.width, shadow.height);
+                            
+                            clonedDrWrapper.insertBefore(shadow, clonedDrInner);
+                        }
+                    }
                 });
                 
                 canvas.toBlob((blob) => {
                     pregeneratedShareBlob = blob;
-                    // Re-enable the share button once generation is complete
                     if (shareBtn) {
                         shareBtn.style.opacity = '1';
                         shareBtn.style.pointerEvents = 'auto';
@@ -2399,7 +2546,6 @@
                 }, 'image/png');
             } catch (err) {
                 console.error("Background pre-render failed:", err);
-                // Re-enable the share button even on fail so the UI doesn't soft-lock
                 if (shareBtn) {
                     shareBtn.style.opacity = '1';
                     shareBtn.style.pointerEvents = 'auto';
@@ -3139,7 +3285,6 @@
 
         // 2. Check for pre-generated blob 
         if (!pregeneratedShareBlob) {
-            // FIX: Clarified the instructions so the user doesn't wait indefinitely
             alert("Still generating your image! Please wait a few more seconds, then tap the Share button again.");
             return;
         }
@@ -3181,6 +3326,9 @@
         // 2. Trigger Mailto Link
         const mailBody = encodeURIComponent(`${shareText}\n\n(Don't forget to attach your Weekly Report image that just downloaded!)`);
         window.location.href = `mailto:?subject=Feed Melvin Weekly Report&body=${mailBody}`;
+        
+        // 3. Show reminder overlay
+        document.getElementById('share-reminder-overlay').style.display = 'flex';
     }
     
     if ('serviceWorker' in navigator) {
