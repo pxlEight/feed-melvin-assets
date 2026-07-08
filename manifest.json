@@ -1,22 +1,35 @@
+
+Jacob Hilton <jcob.hilton@gmail.com>
+11:33 PM (3 minutes ago)
+to me
+
 {
   "name": "Feed Melvin",
   "short_name": "Feed Melvin",
-  "description": "Help Melvin grow to 9lbs!",
-  "start_url": "./",
+  "description": "Adventures In Triple Feeding",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#3d5a80",
-  "theme_color": "#3d5a80",
+  "background_color": "#fcb38b",
+  "theme_color": "#fcb38b",
+  "orientation": "portrait",
   "icons": [
     {
-      "src": "https://pxleight.github.io/feed-melvin-assets/melvin_icon_web_app.png",
-      "sizes": "192x192",
+      "src": "https://www.feedmelvin.com/melvin_icon_web_app.png",
+      "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
-    },
+    }
+  ],
+  "shortcuts": [
     {
-      "src": "https://pxleight.github.io/feed-melvin-assets/melvin_icon_web_app.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "name": "Feed Melvin",
+      "url": "/",
+      "icons": [
+        {
+          "src": "https://www.feedmelvin.com/melvin_icon_web_app.png",
+          "sizes": "512x512"
+        }
+      ]
     }
   ]
 }
