@@ -172,10 +172,10 @@
         #dr-swadlzworth-inner { height: 100%; width: auto; max-width: none; flex-shrink: 0; display: block; filter: drop-shadow(20px 0px 0px #fcb38b); -webkit-filter: drop-shadow(20px 0px 0px #fcb38b); transform: translateZ(0); -webkit-transform: translateZ(0); }
         
         .checkup-btn-row { position: relative; display: flex; align-items: center; width: 100%; margin-bottom: 10px; z-index: 2; padding: 0 15px; box-sizing: border-box; }
-        .resume-btn { position: relative; z-index: 2; background: #fff; border: 8.5px solid #5ea1fd; color: #326efc; padding: 7.5px 15px; width: fit-content; min-width: 96px; font-size: 2.64rem; cursor: pointer; box-shadow: 6px 6px 0 #fee5d4; transition: transform 0.05s, box-shadow 0.05s; transform: translate(0px, 0px) translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+        .resume-btn { position: relative; z-index: 2; background: #fff; border: 8.5px solid #5ea1fd; color: #326efc; padding: 7.5px 15px; width: fit-content; min-width: 96px; font-size: 2.64rem; cursor: pointer; box-shadow: 6px 6px 0 #fee5d4; transition: transform 0.05s, box-shadow 0.05s; transform: translate(0px, 0px) translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden; margin: 0 auto; }
         .resume-btn.pressed { transform: translate(6px, 6px) translateZ(0); box-shadow: 0px 0px 0 #fee5d4; }
         
-        .share-report-btn { position: relative; z-index: 2; background: #FB9052; border: none; padding: 5px 10px; display: flex; flex-direction: row; align-items: center; justify-content: center; cursor: pointer; box-shadow: 5px 5px 0 #E3754D; transition: transform 0.05s, box-shadow 0.05s, opacity 0.3s ease; transform: translate(0px, 0px) translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden; opacity: 0; pointer-events: none; }
+        .share-report-btn { position: absolute; right: 15px; z-index: 2; background: #FB9052; border: none; padding: 5px 10px; display: flex; flex-direction: row; align-items: center; justify-content: center; cursor: pointer; box-shadow: 5px 5px 0 #E3754D; transition: transform 0.05s, box-shadow 0.05s, opacity 0.3s ease; transform: translate(0px, 0px) translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden; opacity: 0; pointer-events: none; }
         .share-report-btn.pressed { transform: translate(5px, 5px) translateZ(0); box-shadow: 0px 0px 0 #E3754D; }
         .share-report-btn svg { width: 20px; height: 20px; fill: white; filter: drop-shadow(2px 2px 0px #E3754D); }
         .share-report-text { color: white; font-size: 1.53rem; font-weight: bold; line-height: 1; text-shadow: 2px 2px 0 #E3754D; margin-right: 6px; padding-top: 2px; }
@@ -482,6 +482,8 @@
         <div id="random-tip-msg-container">
             <div id="random-tip-msg"></div>
         </div>
+        
+        <img id="share-url-logo" src="https://www.feedmelvin.com/feed_melvin_url_logo_web.png" crossorigin="anonymous" style="display: none; position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); height: 32px; width: auto; image-rendering: pixelated; z-index: 10;" />
     </div>
     <div id="game-container" style="display: none;">
         <img class="game-bg-svg" src="https://www.feedmelvin.com/Nursery_background_rev002.png" alt="Nursery Background" />
@@ -986,7 +988,8 @@
         "https://www.feedmelvin.com/super_icon_web.png",
         "https://www.feedmelvin.com/gamma_icon_web.png",
         "https://www.feedmelvin.com/time_icon_web.png",
-        "https://www.feedmelvin.com/Nursery_background_rev002.png"
+        "https://www.feedmelvin.com/Nursery_background_rev002.png",
+        "https://www.feedmelvin.com/feed_melvin_url_logo_web.png"
     ];
 
     let assetsLoaded = false;
@@ -3132,6 +3135,7 @@
                         #dr-swadlzworth-img { left: 5.9px !important; }
                         #svg-reference-box-red { opacity: 1 !important; transform: scale(1) !important; }
                         .share-report-btn { visibility: hidden !important; }
+                        #share-url-logo { display: block !important; }
                     `;
                     clonedDoc.head.appendChild(style);
 
@@ -3272,6 +3276,20 @@
                         
                         clonedDrWrapper.insertBefore(shadow, clonedDrInner);
                     }
+                    
+                    // --- 4. INJECT URL LOGO FOR SCREENSHOT ---
+                    const urlLogo = clonedDoc.createElement('img');
+                    urlLogo.crossOrigin = 'anonymous';
+                    urlLogo.src = 'https://www.feedmelvin.com/feed_melvin_url_logo_web.png';
+                    urlLogo.style.position = 'absolute';
+                    urlLogo.style.bottom = '15px';
+                    urlLogo.style.left = '50%';
+                    urlLogo.style.transform = 'translateX(-50%)';
+                    urlLogo.style.height = '28px';
+                    urlLogo.style.width = 'auto';
+                    urlLogo.style.zIndex = '100';
+                    urlLogo.style.imageRendering = 'pixelated';
+                    clonedDoc.getElementById('checkup-screen').appendChild(urlLogo);
                 }
             });
             
