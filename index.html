@@ -60,7 +60,7 @@
 
         .instr-row { display: flex; align-items: center; margin: 12px 0; font-size: 1.3rem; line-height: 1.05; padding: 0 10px; }
         .instr-icon { width: 44px; height: 44px; flex-shrink: 0; object-fit: cover; object-position: left center; filter: drop-shadow(-2px 2px 0 #fcb38b); }
-        
+
         #game-container { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-wall); margin: 0; overflow: hidden; }
         .game-bg-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; object-fit: cover; object-position: center; }
         .game-title { position: absolute; top: 5px; width: 100%; text-align: center; font-size: 4rem; color: #293241; text-shadow: 2px 2px 0px #fff; z-index: 150; margin: 0; }
@@ -168,17 +168,17 @@
         #svg-reference-box-red { position: absolute; top: 418.4px; left: 129.7px; width: 235.5px; height: auto; background-color: #ffffff; border: 4px solid #5ea1fd; box-shadow: 9px 9px 0 #fcb383; box-sizing: border-box; z-index: 1; display: flex; align-items: center; justify-content: center; padding: 6px 4px; opacity: 0; transform: scale(0) translateZ(0); transition: opacity 0.3s, transform 0.3s; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
         #dr-swadlzworth-msg { color: #5ea1fd; font-size: 1.2rem; text-align: center; line-height: 1; width: 100%; }
         
-        #dr-swadlzworth-img { position: absolute; top: 410.6px; left: -250px; height: 196px; z-index: 10; pointer-events: none; filter: drop-shadow(12px 0 0 #fcb38b); transition: left 0.2s ease-out; display: flex; overflow: hidden; -webkit-backface-visibility: hidden; backface-visibility: hidden; transform: translateZ(0); }
+        #dr-swadlzworth-img { position: absolute; top: 410.6px; left: -250px; height: 196px; z-index: 10; pointer-events: none; filter: drop-shadow(20px 0 0 #fcb38b); transition: left 0.2s ease-out; display: flex; overflow: hidden; -webkit-backface-visibility: hidden; backface-visibility: hidden; transform: translateZ(0); }
         #dr-swadlzworth-inner { height: 100%; width: auto; max-width: none; flex-shrink: 0; display: block; }
         
-        .checkup-btn-row { position: relative; display: flex; justify-content: center; gap: 15px; width: 100%; margin-bottom: 10px; z-index: 2; }
+        .checkup-btn-row { position: relative; display: flex; align-items: center; width: 100%; margin-bottom: 10px; z-index: 2; padding: 0 15px; box-sizing: border-box; }
         .resume-btn { position: relative; z-index: 2; background: #fff; border: 8.5px solid #5ea1fd; color: #326efc; padding: 7.5px 15px; width: fit-content; min-width: 96px; font-size: 2.64rem; cursor: pointer; box-shadow: 6px 6px 0 #fee5d4; transition: transform 0.05s, box-shadow 0.05s; transform: translate(0px, 0px) translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden; }
         .resume-btn.pressed { transform: translate(6px, 6px) translateZ(0); box-shadow: 0px 0px 0 #fee5d4; }
         
-        .share-report-btn { position: relative; z-index: 2; background: #FB9052; border: none; padding: 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; box-shadow: 6px 6px 0 #E3754D; transition: transform 0.05s, box-shadow 0.05s, opacity 0.3s ease; transform: translate(0px, 0px) translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden; width: 70px; height: 70px; opacity: 0; pointer-events: none; }
+        .share-report-btn { position: relative; z-index: 2; background: #FB9052; border: none; padding: 6px 12px; display: flex; flex-direction: row; align-items: center; justify-content: center; cursor: pointer; box-shadow: 6px 6px 0 #E3754D; transition: transform 0.05s, box-shadow 0.05s, opacity 0.3s ease; transform: translate(0px, 0px) translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden; opacity: 0; pointer-events: none; }
         .share-report-btn.pressed { transform: translate(6px, 6px) translateZ(0); box-shadow: 0px 0px 0 #E3754D; }
-        .share-report-btn svg { width: 34px; height: 34px; fill: white; filter: drop-shadow(2px 2px 0px #E3754D); margin-bottom: 2px; }
-        .share-report-text { color: white; font-size: 1.6rem; font-weight: bold; line-height: 1; text-shadow: 2px 2px 0 #E3754D; }
+        .share-report-btn svg { width: 24px; height: 24px; fill: white; filter: drop-shadow(2px 2px 0px #E3754D); }
+        .share-report-text { color: white; font-size: 1.8rem; font-weight: bold; line-height: 1; text-shadow: 2px 2px 0 #E3754D; margin-right: 4px; padding-top: 2px; }
 
         /* Victory Mode Overrides (Applied when game is won) */
         #checkup-screen.victory-layout #checkup-title-container { padding: 10px 30px; margin-bottom: 10px; }
@@ -467,20 +467,22 @@
         </div>
         
         <div class="checkup-btn-row">
+            <div style="flex: 1;"></div>
             <button class="resume-btn" onclick="resumeGame(this)">RESUME</button>
-            <button class="share-report-btn" onclick="shareWeeklyReport(this)" title="Share Weekly Report">
-                <svg viewBox="0 0 24 24">
-                    <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/>
-                </svg>
-                <div class="share-report-text">SHARE</div>
-            </button>
+            <div style="flex: 1; display: flex; justify-content: flex-start; padding-left: 15px;">
+                <button class="share-report-btn" onclick="shareWeeklyReport(this)" title="Share Weekly Report">
+                    <div class="share-report-text">SHARE!</div>
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+                    </svg>
+                </button>
+            </div>
         </div>
             
         <div id="random-tip-msg-container">
             <div id="random-tip-msg"></div>
         </div>
     </div>
-    
     <div id="game-container" style="display: none;">
         <img class="game-bg-svg" src="https://www.feedmelvin.com/Nursery_background_rev002.png" alt="Nursery Background" />
         
@@ -1164,6 +1166,7 @@
     // --- NEW LAYERED MUSIC SEQUENCER ---
     let track1 = [{"note":"B4","time":0,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D5","time":335,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G4","time":667,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B4","time":832,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G5","time":1168,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D5","time":1498,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B4","time":2665,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D5","time":3000,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G4","time":3333,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B4","time":3499,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"A4","time":3834,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B4","time":5333,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D5","time":5668,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G4","time":6002,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B4","time":6166,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G5","time":6499,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D5","time":6834,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B4","time":8336,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G5","time":8669,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"A4","time":8834,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G4","time":9167,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"B5","time":7999,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":10668,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":11000,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"F4","time":11333,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":11499,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D4","time":11834,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":12166,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"F4","time":12501,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":12669,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D4","time":13002,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"C4","time":13331,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"C4","time":13666,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D4","time":13997,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":14167,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D4","time":14501,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":15999,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":16336,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"F4","time":16663,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":16835,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D4","time":17166,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":17502,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"F4","time":17832,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"E4","time":18001,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D4","time":18332,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"C6","time":19835,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"C4","time":20667,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G4","time":18668,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"A4","time":19002,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"D5","time":19332,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"G5","time":19498,"duration":168,"instrument":"synth","waveform":"sine","volume":0.3},{"note":"C2","time":22500,"duration":166.66666666666666,"instrument":"synth","waveform":"sine","volume":0.3}];
     let track2 = [{"note":"B4","time":0,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D5","time":335,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G4","time":667,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B4","time":832,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G5","time":1168,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D5","time":1498,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B4","time":2665,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D5","time":3000,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G4","time":3333,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B4","time":3499,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"A4","time":3834,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B4","time":5333,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D5","time":5668,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G4","time":6002,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B4","time":6166,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G5","time":6499,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D5","time":6834,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B4","time":8336,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G5","time":8669,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"A4","time":8834,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G4","time":9167,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"B5","time":7999,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":10668,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":11000,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"F4","time":11333,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":11499,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D4","time":11834,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":12166,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"F4","time":12501,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":12669,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D4","time":13002,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"C4","time":13331,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"C4","time":13666,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D4","time":13997,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":14167,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D4","time":14501,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":15999,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":16336,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"F4","time":16663,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":16835,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D4","time":17166,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":17502,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"F4","time":17832,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"E4","time":18001,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D4","time":18332,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"C6","time":19835,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"C4","time":20667,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G4","time":18668,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"A4","time":19002,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"D5","time":19332,"duration":168,"instrument":"synth","waveform":"square","volume":0.05},{"note":"G5","time":19498,"duration":168,"instrument":"synth","waveform":"square","volume":0.05}];
+
     let allNotes = [...track1, ...track2].sort((a, b) => a.time - b.time);
     let LOOP_DURATION = 22.500;
 
@@ -3232,7 +3235,7 @@
                         cImg.parentNode.replaceChild(wrapper, cImg);
                     });
 
-                    // --- 3. DR SWADLZWORTH (12px Drop-Shadow Polyfill) ---
+                    // --- 3. DR SWADLZWORTH (20px Drop-Shadow Polyfill) ---
                     const origDrInner = document.getElementById('dr-swadlzworth-inner');
                     const clonedDrInner = clonedDoc.getElementById('dr-swadlzworth-inner');
                     const clonedDrWrapper = clonedDoc.getElementById('dr-swadlzworth-img');
@@ -3255,7 +3258,7 @@
                         shadow.height = origDrInner.height * captureScale;
                         shadow.style.cssText = clonedDrInner.style.cssText; 
                         shadow.style.position = 'absolute';
-                        shadow.style.left = '12px'; 
+                        shadow.style.left = '20px'; 
                         shadow.style.top = '0px';
                         shadow.style.zIndex = '1';
                         
