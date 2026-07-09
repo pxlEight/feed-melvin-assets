@@ -171,7 +171,7 @@
         #svg-reference-box-red { position: absolute; top: 418.4px; left: 129.7px; width: 235.5px; height: auto; background-color: #ffffff; border: 4px solid #5ea1fd; box-shadow: 9px 9px 0 #fcb383; box-sizing: border-box; z-index: 1; display: flex; align-items: center; justify-content: center; padding: 6px 4px; opacity: 0; transform: scale(0) translateZ(0); transition: opacity 0.3s, transform 0.3s; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
         #dr-swadlzworth-msg { color: #5ea1fd; font-size: 1.2rem; text-align: center; line-height: 1; width: 100%; }
         
-        #dr-swadlzworth-img { position: absolute; top: 410.6px; left: -132px; height: 196px; z-index: 10; pointer-events: none; filter: drop-shadow(7.6px 0 0 #fcb38b); transition: left 0.2s ease-out; display: flex; overflow: hidden; -webkit-backface-visibility: hidden; backface-visibility: hidden; transform: translateZ(0); }
+        #dr-swadlzworth-img { position: absolute; top: 410.6px; left: -132px; height: 196px; z-index: 10; pointer-events: none; filter: drop-shadow(12px 0 0 #fcb38b); transition: left 0.2s ease-out; display: flex; overflow: hidden; -webkit-backface-visibility: hidden; backface-visibility: hidden; transform: translateZ(0); }
         #dr-swadlzworth-inner { height: 100%; width: auto; max-width: none; flex-shrink: 0; display: block; }
         
         .checkup-btn-row { position: relative; display: flex; justify-content: center; gap: 15px; width: 100%; margin-bottom: 10px; z-index: 2; }
@@ -1685,7 +1685,6 @@
             inputField.placeholder = "Invalid JSON data.";
         }
     }
-
     // --- MOBILE ANIMATION LOGIC ---
     function updateMobileAnim() {
         let imgUrl = "https://www.feedmelvin.com/mobile_animation_web.png";
@@ -3125,11 +3124,12 @@
                     style.innerHTML = `
                         * { animation: none !important; transition: none !important; }
                         #checkup-title { transform: translateY(0) !important; }
-                        #congrats-text-wrap { transform: scale(1) !important; display: block !important; }
+                        #congrats-text-wrap { transform: scale(1) !important; }
                         .land-hard-anim { transform: scale(1) !important; opacity: 1 !important; }
                         .fade-in { transform: scale(1) !important; opacity: 1 !important; }
                         #dr-swadlzworth-img { left: 5.9px !important; }
                         #svg-reference-box-red { opacity: 1 !important; transform: scale(1) !important; }
+                        .share-report-btn { display: none !important; }
                     `;
                     clonedDoc.head.appendChild(style);
 
@@ -3231,7 +3231,7 @@
                         cImg.parentNode.replaceChild(wrapper, cImg);
                     });
 
-                    // --- 3. DR SWADLZWORTH (7.6px Drop-Shadow Polyfill) ---
+                    // --- 3. DR SWADLZWORTH (12px Drop-Shadow Polyfill) ---
                     const origDrInner = document.getElementById('dr-swadlzworth-inner');
                     const clonedDrInner = clonedDoc.getElementById('dr-swadlzworth-inner');
                     const clonedDrWrapper = clonedDoc.getElementById('dr-swadlzworth-img');
@@ -3254,7 +3254,7 @@
                         shadow.height = origDrInner.height * captureScale;
                         shadow.style.cssText = clonedDrInner.style.cssText; 
                         shadow.style.position = 'absolute';
-                        shadow.style.left = '7.6px'; 
+                        shadow.style.left = '12px'; 
                         shadow.style.top = '0px';
                         shadow.style.zIndex = '1';
                         
