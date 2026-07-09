@@ -989,7 +989,7 @@
         "https://www.feedmelvin.com/gamma_icon_web.png",
         "https://www.feedmelvin.com/time_icon_web.png",
         "https://www.feedmelvin.com/Nursery_background_rev002.png",
-        "https://www.feedmelvin.com/feed_melvin_logo_url_web.png"
+        "https://www.feedmelvin.com/feed_melvin_url_logo_web.png"
     ];
 
     let assetsLoaded = false;
@@ -3135,7 +3135,8 @@
                         #dr-swadlzworth-img { left: 5.9px !important; }
                         #svg-reference-box-red { opacity: 1 !important; transform: scale(1) !important; }
                         .share-report-btn { visibility: hidden !important; }
-                        #share-url-logo { visibility: visible !important; opacity: 1 !important; }
+                        #random-tip-msg-container { display: none !important; }
+                        #share-url-logo { visibility: visible !important; opacity: 1 !important; width: 85% !important; height: auto !important; bottom: 20px !important; left: 50% !important; transform: translateX(-50%) !important; }
                     `;
                     clonedDoc.head.appendChild(style);
 
@@ -3148,8 +3149,8 @@
                             const clone = clonedEls[i];
                             if (!orig || !clone) return;
                             
-                            // Exclude the hidden share button from box-shadow polyfill
-                            if (orig.classList.contains('share-report-btn')) return;
+                            // Don't render shadows for hidden elements
+                            if (window.getComputedStyle(orig).display === 'none' || clone.style.display === 'none' || clone.classList.contains('share-report-btn')) return;
 
                             let color = defaultColor;
                             if (orig.classList.contains('super-mode')) color = '#326efc';
@@ -3175,7 +3176,6 @@
                     injectBoxShadow('#checkup-title-container', 12, 12, '#fee5d4');
                     injectBoxShadow('#svg-reference-box-red', 9, 9, '#fcb383');
                     injectBoxShadow('.resume-btn', 6, 6, '#fee5d4');
-                    injectBoxShadow('#random-tip-msg-container', 8, 8, '#326efc');
 
 
                     // --- 2. STAT BULLETS (Solid 2px Outline Polyfill) ---
