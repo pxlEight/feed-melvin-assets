@@ -1570,6 +1570,7 @@
         }
     }
     // --- END MUSIC SEQUENCER ---
+
     // --- SOUND UI LOGIC ---
     function toggleSoundMenu() {
         let overlay = document.getElementById('sound-overlay');
@@ -3279,24 +3280,16 @@
                     if (urlLogoImg && urlLogoImg.naturalWidth > 0) {
                         const wrapper = clonedDoc.createElement('div');
                         wrapper.style.position = 'absolute';
-                        wrapper.style.top = '606px'; // Starts right where the tip box was
-                        wrapper.style.bottom = '20px';
-                        wrapper.style.left = '0';
-                        wrapper.style.width = '100%';
-                        wrapper.style.display = 'flex';
-                        wrapper.style.alignItems = 'center';
-                        wrapper.style.justifyContent = 'center';
+                        wrapper.style.top = '606px';
+                        wrapper.style.left = '15%'; // Increased padding
+                        wrapper.style.width = '70%'; // Uniform horizontal fill with padding
                         wrapper.style.zIndex = '100';
                         
-                        // Drive the size by the available vertical space to guarantee side padding
-                        const isVictory = clonedDoc.getElementById('checkup-screen').classList.contains('victory-layout');
-                        const pxHeight = isVictory ? 30 : 125; // Scales it down safely if they are on the victory layout
-                        const pxWidth = pxHeight * (urlLogoImg.naturalWidth / urlLogoImg.naturalHeight);
-                        
-                        const innerWrap = clonedDoc.createElement('div');
-                        innerWrap.style.position = 'relative';
-                        innerWrap.style.width = pxWidth + 'px';
-                        innerWrap.style.height = pxHeight + 'px';
+                        // Calculate exact height based on aspect ratio
+                        const containerWidth = 439.875;
+                        const pxWidth = containerWidth * 0.70;
+                        const pxHeight = pxWidth * (urlLogoImg.naturalHeight / urlLogoImg.naturalWidth);
+                        wrapper.style.height = pxHeight + 'px';
                         
                         const mainCanvas = clonedDoc.createElement('canvas');
                         mainCanvas.width = urlLogoImg.naturalWidth * captureScale;
@@ -3319,20 +3312,19 @@
                         shadowCanvas.style.width = '100%';
                         shadowCanvas.style.height = '100%';
                         shadowCanvas.style.position = 'absolute';
-                        shadowCanvas.style.left = '9px';
-                        shadowCanvas.style.top = '9px';
+                        shadowCanvas.style.left = '9px'; // 9px offset
+                        shadowCanvas.style.top = '9px';  // 9px offset
                         shadowCanvas.style.zIndex = '1';
                         
                         const sCtx = shadowCanvas.getContext('2d');
                         sCtx.imageSmoothingEnabled = false;
                         sCtx.drawImage(urlLogoImg, 0, 0, shadowCanvas.width, shadowCanvas.height);
                         sCtx.globalCompositeOperation = 'source-in';
-                        sCtx.fillStyle = '#fcb383';
+                        sCtx.fillStyle = '#fcb383'; // Drop shadow color match
                         sCtx.fillRect(0, 0, shadowCanvas.width, shadowCanvas.height);
                         
-                        innerWrap.appendChild(shadowCanvas);
-                        innerWrap.appendChild(mainCanvas);
-                        wrapper.appendChild(innerWrap);
+                        wrapper.appendChild(shadowCanvas);
+                        wrapper.appendChild(mainCanvas);
                         clonedDoc.getElementById('checkup-screen').appendChild(wrapper);
                     }
                 }
