@@ -987,7 +987,7 @@
         "https://www.feedmelvin.com/gamma_icon_web.png",
         "https://www.feedmelvin.com/time_icon_web.png",
         "https://www.feedmelvin.com/Nursery_background_rev002.png",
-        "https://www.feedmelvin.com/feed_melvin_url_logo_web.png"
+        "https://www.feedmelvin.com/feed_melvin_logo_url_web.png"
     ];
 
     let assetsLoaded = false;
@@ -3275,20 +3275,28 @@
                     }
                     
                     // --- 4. URL LOGO & SHADOW CANVAS POLYFILL ---
-                    const urlLogoImg = loadedImages['https://www.feedmelvin.com/feed_melvin_url_logo_web.png'];
+                    const urlLogoImg = loadedImages['https://www.feedmelvin.com/feed_melvin_logo_url_web.png'];
                     if (urlLogoImg && urlLogoImg.naturalWidth > 0) {
                         const wrapper = clonedDoc.createElement('div');
                         wrapper.style.position = 'absolute';
-                        wrapper.style.bottom = '25px';
-                        wrapper.style.left = '7.5%'; // (100% - 85%) / 2 for perfect centering
-                        wrapper.style.width = '85%';
+                        wrapper.style.top = '606px'; // Starts right where the tip box was
+                        wrapper.style.bottom = '20px';
+                        wrapper.style.left = '0';
+                        wrapper.style.width = '100%';
+                        wrapper.style.display = 'flex';
+                        wrapper.style.alignItems = 'center';
+                        wrapper.style.justifyContent = 'center';
                         wrapper.style.zIndex = '100';
                         
-                        // Calculate exact height based on aspect ratio
-                        const containerWidth = 439.875;
-                        const pxWidth = containerWidth * 0.85;
-                        const pxHeight = pxWidth * (urlLogoImg.naturalHeight / urlLogoImg.naturalWidth);
-                        wrapper.style.height = pxHeight + 'px';
+                        // Drive the size by the available vertical space to guarantee side padding
+                        const isVictory = clonedDoc.getElementById('checkup-screen').classList.contains('victory-layout');
+                        const pxHeight = isVictory ? 30 : 125; // Scales it down safely if they are on the victory layout
+                        const pxWidth = pxHeight * (urlLogoImg.naturalWidth / urlLogoImg.naturalHeight);
+                        
+                        const innerWrap = clonedDoc.createElement('div');
+                        innerWrap.style.position = 'relative';
+                        innerWrap.style.width = pxWidth + 'px';
+                        innerWrap.style.height = pxHeight + 'px';
                         
                         const mainCanvas = clonedDoc.createElement('canvas');
                         mainCanvas.width = urlLogoImg.naturalWidth * captureScale;
@@ -3322,8 +3330,9 @@
                         sCtx.fillStyle = '#fcb383';
                         sCtx.fillRect(0, 0, shadowCanvas.width, shadowCanvas.height);
                         
-                        wrapper.appendChild(shadowCanvas);
-                        wrapper.appendChild(mainCanvas);
+                        innerWrap.appendChild(shadowCanvas);
+                        innerWrap.appendChild(mainCanvas);
+                        wrapper.appendChild(innerWrap);
                         clonedDoc.getElementById('checkup-screen').appendChild(wrapper);
                     }
                 }
