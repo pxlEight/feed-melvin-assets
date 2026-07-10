@@ -483,7 +483,7 @@
             <div id="random-tip-msg"></div>
         </div>
         
-        <img id="share-url-logo" src="https://www.feedmelvin.com/feed_melvin_logo_url_web.png" crossorigin="anonymous" style="visibility: hidden; opacity: 0; position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); height: 32px; width: auto; image-rendering: pixelated; pointer-events: none; z-index: 10;" />
+        <img id="share-url-logo" src="https://www.feedmelvin.com/feed_melvin_url_logo_web.png" crossorigin="anonymous" style="visibility: hidden; opacity: 0; position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); height: 32px; width: auto; image-rendering: pixelated; pointer-events: none; z-index: 10;" />
     </div>
     <div id="game-container" style="display: none;">
         <img class="game-bg-svg" src="https://www.feedmelvin.com/Nursery_background_rev002.png" alt="Nursery Background" />
@@ -3136,7 +3136,6 @@
                         #svg-reference-box-red { opacity: 1 !important; transform: scale(1) !important; }
                         .share-report-btn { visibility: hidden !important; }
                         #random-tip-msg-container { display: none !important; }
-                        #share-url-logo { visibility: visible !important; opacity: 1 !important; width: 85% !important; height: auto !important; bottom: 20px !important; left: 50% !important; transform: translateX(-50%) !important; }
                     `;
                     clonedDoc.head.appendChild(style);
 
@@ -3149,8 +3148,8 @@
                             const clone = clonedEls[i];
                             if (!orig || !clone) return;
                             
-                            // Don't render shadows for hidden elements
-                            if (window.getComputedStyle(orig).display === 'none' || clone.style.display === 'none' || clone.classList.contains('share-report-btn')) return;
+                            // Exclude the hidden share button from box-shadow polyfill
+                            if (orig.classList.contains('share-report-btn')) return;
 
                             let color = defaultColor;
                             if (orig.classList.contains('super-mode')) color = '#326efc';
@@ -3275,6 +3274,62 @@
                         sCtx.fillRect(0, 0, shadow.width, shadow.height);
                         
                         clonedDrWrapper.insertBefore(shadow, clonedDrInner);
+                    }
+                    
+                    // --- 4. URL LOGO (9px Drop-Shadow Polyfill) ---
+                    const origUrlLogo = document.getElementById('share-url-logo');
+                    const clonedUrlLogo = clonedDoc.getElementById('share-url-logo');
+                    
+                    if (origUrlLogo && clonedUrlLogo && origUrlLogo.naturalWidth > 0) {
+                        const wrapper = clonedDoc.createElement('div');
+                        wrapper.style.position = 'absolute';
+                        wrapper.style.bottom = '20px';
+                        wrapper.style.left = '50%';
+                        wrapper.style.transform = 'translateX(-50%)';
+                        wrapper.style.width = '85%';
+                        
+                        // Calculate explicit height to maintain aspect ratio during canvas clone injection
+                        const containerWidth = 439.875;
+                        const pxWidth = containerWidth * 0.85;
+                        const pxHeight = pxWidth * (origUrlLogo.naturalHeight / origUrlLogo.naturalWidth);
+                        wrapper.style.height = pxHeight + 'px';
+                        wrapper.style.zIndex = '100';
+                        
+                        const mainCanvas = clonedDoc.createElement('canvas');
+                        mainCanvas.width = origUrlLogo.naturalWidth * captureScale;
+                        mainCanvas.height = origUrlLogo.naturalHeight * captureScale;
+                        mainCanvas.style.width = '100%';
+                        mainCanvas.style.height = '100%';
+                        mainCanvas.style.position = 'absolute';
+                        mainCanvas.style.top = '0';
+                        mainCanvas.style.left = '0';
+                        mainCanvas.style.zIndex = '2';
+                        
+                        const ctx = mainCanvas.getContext('2d');
+                        ctx.imageSmoothingEnabled = false;
+                        ctx.drawImage(origUrlLogo, 0, 0, mainCanvas.width, mainCanvas.height);
+                        
+                        const shadow = clonedDoc.createElement('canvas');
+                        shadow.width = origUrlLogo.naturalWidth * captureScale;
+                        shadow.height = origUrlLogo.naturalHeight * captureScale;
+                        shadow.style.width = '100%';
+                        shadow.style.height = '100%';
+                        shadow.style.position = 'absolute';
+                        shadow.style.left = '9px';
+                        shadow.style.top = '9px';
+                        shadow.style.zIndex = '1';
+                        
+                        const sCtx = shadow.getContext('2d');
+                        sCtx.imageSmoothingEnabled = false;
+                        sCtx.drawImage(origUrlLogo, 0, 0, shadow.width, shadow.height);
+                        sCtx.globalCompositeOperation = 'source-in';
+                        sCtx.fillStyle = '#fcb383';
+                        sCtx.fillRect(0, 0, shadow.width, shadow.height);
+                        
+                        wrapper.appendChild(shadow);
+                        wrapper.appendChild(mainCanvas);
+                        
+                        clonedUrlLogo.parentNode.replaceChild(wrapper, clonedUrlLogo);
                     }
                 }
             });
