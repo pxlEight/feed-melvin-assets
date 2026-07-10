@@ -3278,18 +3278,42 @@
                     // --- 4. URL LOGO & SHADOW CANVAS POLYFILL ---
                     const urlLogoImg = loadedImages['https://www.feedmelvin.com/feed_melvin_logo_url_web.png'];
                     if (urlLogoImg && urlLogoImg.naturalWidth > 0) {
+                        const isVictory = clonedDoc.getElementById('checkup-screen').classList.contains('victory-layout');
+                        // Use the precise bounds to center vertically
+                        const drBottom = isVictory ? 759 : 606.6;
+                        
                         const wrapper = clonedDoc.createElement('div');
                         wrapper.style.position = 'absolute';
-                        wrapper.style.top = '606px';
-                        wrapper.style.left = '15%'; // Increased padding
-                        wrapper.style.width = '70%'; // Uniform horizontal fill with padding
+                        wrapper.style.top = drBottom + 'px'; 
+                        wrapper.style.bottom = '0px';
+                        wrapper.style.left = '0';
+                        wrapper.style.width = '100%';
+                        wrapper.style.display = 'flex';
+                        wrapper.style.alignItems = 'center';
+                        wrapper.style.justifyContent = 'center';
                         wrapper.style.zIndex = '100';
+                        wrapper.style.overflow = 'visible'; // Keep shadows intact
                         
-                        // Calculate exact height based on aspect ratio
+                        // Limit width and height strictly based on 10px padding requirements
                         const containerWidth = 439.875;
-                        const pxWidth = containerWidth * 0.70;
-                        const pxHeight = pxWidth * (urlLogoImg.naturalHeight / urlLogoImg.naturalWidth);
-                        wrapper.style.height = pxHeight + 'px';
+                        const maxWidth = containerWidth - 20; 
+                        const maxHeight = 782 - drBottom; 
+                        
+                        const imgRatio = urlLogoImg.naturalWidth / urlLogoImg.naturalHeight;
+                        let pxWidth = maxWidth;
+                        let pxHeight = pxWidth / imgRatio;
+                        
+                        // If it scales too high, fit it strictly to height
+                        if (pxHeight > maxHeight) {
+                            pxHeight = maxHeight;
+                            pxWidth = pxHeight * imgRatio;
+                        }
+                        
+                        const innerWrap = clonedDoc.createElement('div');
+                        innerWrap.style.position = 'relative';
+                        innerWrap.style.width = pxWidth + 'px';
+                        innerWrap.style.height = pxHeight + 'px';
+                        innerWrap.style.overflow = 'visible';
                         
                         const mainCanvas = clonedDoc.createElement('canvas');
                         mainCanvas.width = urlLogoImg.naturalWidth * captureScale;
@@ -3305,26 +3329,27 @@
                         ctx.imageSmoothingEnabled = false;
                         ctx.drawImage(urlLogoImg, 0, 0, mainCanvas.width, mainCanvas.height);
                         
-                        // Clone the 9px drop-shadow logic
+                        // Drop-shadow logic using correct color (#fcb383) and 9px offsets
                         const shadowCanvas = clonedDoc.createElement('canvas');
                         shadowCanvas.width = urlLogoImg.naturalWidth * captureScale;
                         shadowCanvas.height = urlLogoImg.naturalHeight * captureScale;
                         shadowCanvas.style.width = '100%';
                         shadowCanvas.style.height = '100%';
                         shadowCanvas.style.position = 'absolute';
-                        shadowCanvas.style.left = '9px'; // 9px offset
-                        shadowCanvas.style.top = '9px';  // 9px offset
+                        shadowCanvas.style.left = '9px';
+                        shadowCanvas.style.top = '9px';
                         shadowCanvas.style.zIndex = '1';
                         
                         const sCtx = shadowCanvas.getContext('2d');
                         sCtx.imageSmoothingEnabled = false;
                         sCtx.drawImage(urlLogoImg, 0, 0, shadowCanvas.width, shadowCanvas.height);
                         sCtx.globalCompositeOperation = 'source-in';
-                        sCtx.fillStyle = '#fcb383'; // Drop shadow color match
+                        sCtx.fillStyle = '#fcb383'; 
                         sCtx.fillRect(0, 0, shadowCanvas.width, shadowCanvas.height);
                         
-                        wrapper.appendChild(shadowCanvas);
-                        wrapper.appendChild(mainCanvas);
+                        innerWrap.appendChild(shadowCanvas);
+                        innerWrap.appendChild(mainCanvas);
+                        wrapper.appendChild(innerWrap);
                         clonedDoc.getElementById('checkup-screen').appendChild(wrapper);
                     }
                 }
