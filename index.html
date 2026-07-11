@@ -1571,6 +1571,7 @@
         }
     }
     // --- END MUSIC SEQUENCER ---
+
     // --- SOUND UI LOGIC ---
     function toggleSoundMenu() {
         let overlay = document.getElementById('sound-overlay');
@@ -2000,7 +2001,7 @@
         if (audioCtx.state === 'suspended') audioCtx.resume();
         const o = audioCtx.createOscillator(), g = audioCtx.createGain();
         o.type = t; o.frequency.setValueAtTime(f, audioCtx.currentTime);
-        g.gain.setValueAtTime(v * 1.35, audioCtx.currentTime); o.connect(g); g.connect(fxMasterGain);
+        g.gain.setValueAtTime(v * 1.62, audioCtx.currentTime); o.connect(g); g.connect(fxMasterGain);
         o.onended = () => { o.disconnect(); g.disconnect(); };
         o.start(); o.stop(audioCtx.currentTime + d);
     }
@@ -2163,7 +2164,7 @@
             o.type = 'triangle';
             o.frequency.setValueAtTime(150, audioCtx.currentTime);
             o.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.2);
-            g.gain.setValueAtTime(0.08 * 1.35, audioCtx.currentTime);
+            g.gain.setValueAtTime(0.08 * 1.62, audioCtx.currentTime);
             g.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
             o.connect(g); g.connect(fxMasterGain);
             o.onended = () => { o.disconnect(); g.disconnect(); };
@@ -2177,7 +2178,7 @@
             o.type = 'square';
             o.frequency.setValueAtTime(440, audioCtx.currentTime);
             o.frequency.exponentialRampToValueAtTime(330, audioCtx.currentTime + 0.2);
-            g.gain.setValueAtTime(0.02 * 1.35, audioCtx.currentTime);
+            g.gain.setValueAtTime(0.02 * 1.62, audioCtx.currentTime);
             g.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
             o.connect(g); g.connect(fxMasterGain);
             o.onended = () => { o.disconnect(); g.disconnect(); };
