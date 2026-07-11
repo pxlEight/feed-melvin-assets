@@ -187,6 +187,7 @@
         #checkup-screen.victory-layout #svg-reference-box-red { top: 571px; }
         #checkup-screen.victory-layout #dr-swadlzworth-img { top: 563px; }
         #checkup-screen.victory-layout .checkup-btn-row { position: absolute; top: 203.3px; margin-bottom: 0; }
+        #checkup-screen.victory-layout .resume-btn { font-size: 2.376rem; padding: 6.75px 13.5px; border-width: 7.65px; }
 
         @keyframes superFlash {
             0%, 49.99% { color: #fff; text-shadow: none; }
@@ -1838,7 +1839,6 @@
             }
         }, 150);
     }
-    
     function resumeGame(btnEl) {
         if(btnEl) btnEl.classList.add('pressed');
         setTimeout(() => {
@@ -1849,6 +1849,21 @@
             if (tooltip) tooltip.classList.remove('show');
             
             document.getElementById('checkup-screen').style.display = 'none'; 
+            
+            // Reset report animations while the screen is hidden so they don't flash next week
+            document.getElementById('checkup-title').style.animation = 'none';
+            document.getElementById('checkup-title').style.transform = 'translateY(250%) translateZ(0)';
+            document.getElementById('congrats-text-wrap').style.animation = 'none';
+            document.getElementById('congrats-text-wrap').style.transform = 'scale(0) translateZ(0)';
+            document.getElementById('dr-swadlzworth-img').style.left = '-250px';
+            document.getElementById('svg-reference-box-red').style.opacity = '0';
+            document.getElementById('svg-reference-box-red').style.transform = 'scale(0) translateZ(0)';
+            
+            let shareBtn = document.querySelector('.share-report-btn');
+            if (shareBtn) {
+                shareBtn.style.opacity = '0';
+                shareBtn.style.pointerEvents = 'none';
+            }
             
             musicPausedForReport = false;
             if (audioCtx && audioCtx.state === 'running' && musicStarted && !isTabHidden) {
@@ -3078,7 +3093,7 @@
         if(btnEl) btnEl.classList.add('pressed');
         setTimeout(() => { if(btnEl) btnEl.classList.remove('pressed'); }, 150);
         
-        const currentWeek = Math.floor((dayCount - 1) / 7) || 1;
+        const currentWeek = Math.floor((dayCount - 1) / 7) + 1;
         const spitText = weekSpitups ? "spit-up" : "didn't even spit-up";
         const shareText = `I fed Melvin ${weekOuncesFed} ounces on week ${currentWeek} and he ${spitText} on me! Play here: https://feedmelvin.com`;
         const fileName = `Melvin_Week_${currentWeek}_Report.png`;
@@ -3134,7 +3149,6 @@
                         #dr-swadlzworth-img { left: 5.9px !important; }
                         #svg-reference-box-red { opacity: 1 !important; transform: scale(1) !important; }
                         .share-report-btn { visibility: hidden !important; }
-                        #random-tip-msg-container { display: none !important; }
                     `;
                     clonedDoc.head.appendChild(style);
 
@@ -3148,7 +3162,7 @@
                             if (!orig || !clone) return;
                             
                             // Exclude elements that shouldn't have polyfill shadows
-                            if (orig.id === 'random-tip-msg-container' || clone.classList.contains('share-report-btn')) return;
+                            if (clone.classList.contains('share-report-btn')) return;
 
                             let color = defaultColor;
                             if (orig.classList.contains('super-mode')) color = '#326efc';
@@ -3174,6 +3188,7 @@
                     injectBoxShadow('#checkup-title-container', 12, 12, '#fee5d4');
                     injectBoxShadow('#svg-reference-box-red', 9, 9, '#fcb383');
                     injectBoxShadow('.resume-btn', 6, 6, '#fee5d4');
+                    injectBoxShadow('#random-tip-msg-container', 8, 8, '#326efc');
 
 
                     // --- 2. STAT BULLETS (Solid 2px Outline Polyfill) ---
@@ -3278,47 +3293,32 @@
                     // --- 4. URL LOGO & SHADOW CANVAS POLYFILL ---
                     const urlLogoImg = loadedImages['https://www.feedmelvin.com/feed_melvin_logo_url_web.png'];
                     if (urlLogoImg && urlLogoImg.naturalWidth > 0) {
-                        const isVictory = clonedDoc.getElementById('checkup-screen').classList.contains('victory-layout');
-                        // Use the precise bounds to center vertically
-                        const drBottom = isVictory ? 759 : 606.6;
                         
                         const wrapper = clonedDoc.createElement('div');
                         wrapper.style.position = 'absolute';
-                        wrapper.style.top = drBottom + 'px'; 
-                        wrapper.style.bottom = '0px';
+                        wrapper.style.bottom = '10px'; 
                         wrapper.style.left = '0';
                         wrapper.style.width = '100%';
                         wrapper.style.display = 'flex';
-                        wrapper.style.alignItems = 'center';
+                        wrapper.style.alignItems = 'flex-end';
                         wrapper.style.justifyContent = 'center';
-                        wrapper.style.zIndex = '100';
+                        wrapper.style.zIndex = '9999';
                         wrapper.style.overflow = 'visible'; 
                         
-                        // Limit width strictly based on 10px padding requirements (20px total)
+                        // Limit width based on 10px padding requirements (20px total)
                         const containerWidth = 439.875;
-                        const maxWidth = containerWidth - 20; 
-                        const maxHeight = 782 - drBottom; 
-                        
+                        const pxWidth = containerWidth - 20; 
                         const imgRatio = urlLogoImg.naturalWidth / urlLogoImg.naturalHeight;
-                        let pxWidth = maxWidth;
-                        let pxHeight = pxWidth / imgRatio;
-                        
-                        // If it scales too high, fit it strictly to height (minus a little for the 9px shadow)
-                        if (pxHeight > (maxHeight - 9)) {
-                            pxHeight = maxHeight - 9;
-                            pxWidth = pxHeight * imgRatio;
-                        }
+                        const pxHeight = pxWidth / imgRatio;
                         
                         const innerWrap = clonedDoc.createElement('div');
                         innerWrap.style.position = 'relative';
-                        // Give the wrapper the exact dimensions of the scaled image PLUS the 9px shadow
                         innerWrap.style.width = (pxWidth + 9) + 'px';
                         innerWrap.style.height = (pxHeight + 9) + 'px';
                         innerWrap.style.overflow = 'visible';
                         
                         // SINGLE CANVAS METHOD
                         const singleCanvas = clonedDoc.createElement('canvas');
-                        // The internal resolution needs to account for the base size + the 9px offset (scaled)
                         singleCanvas.width = (urlLogoImg.naturalWidth + 9) * captureScale;
                         singleCanvas.height = (urlLogoImg.naturalHeight + 9) * captureScale;
                         singleCanvas.style.width = '100%';
