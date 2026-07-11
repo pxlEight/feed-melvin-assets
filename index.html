@@ -56,7 +56,7 @@
         
         #instructions-box-left { position: absolute; top: 611.7px; left: 57.4px; width: 120px; height: 50px; background-color: #5ea1fd; z-index: 4; border: 4px solid #326efc; box-shadow: -5px 5px 0 #326efc; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.3rem; font-style: italic; cursor: pointer; transition: transform 0.05s, box-shadow 0.05s; transform: translate(0px, 0px); }
         #instructions-box-right { position: absolute; top: 611.7px; left: 262.4px; width: 120px; height: 50px; background-color: #5ea1fd; z-index: 4; border: 4px solid #326efc; box-shadow: -5px 5px 0 #326efc; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.3rem; font-style: italic; cursor: pointer; transition: transform 0.05s, box-shadow 0.05s; transform: translate(0px, 0px); }
-        #instructions-box-left.pressed, #instructions-box-right.pressed { transform: translate(-5px, 5px); box-shadow: 0px 0px 0 #326efc; }
+        #instructions-box-left.pressed, #instructions-box-right.pressed { transform: translate(-5px, 5px); box-shadow: 0px 0px 0 #326efc; transition: none; }
 
         .instr-row { display: flex; align-items: center; margin: 12px 0; font-size: 1.3rem; line-height: 1.05; padding: 0 10px; }
         .instr-icon { width: 44px; height: 44px; flex-shrink: 0; object-fit: cover; object-position: left center; filter: drop-shadow(-2px 2px 0 #fcb38b); }
@@ -95,13 +95,13 @@
             animation: superDrift 3s ease-in-out infinite;
         }
 
-        .action-btns { position: absolute; bottom: 73.8px; width: 100%; display: flex; justify-content: center; gap: 15px; padding: 0 15px; box-sizing: border-box; touch-action: manipulation; }
+        .action-btns { position: absolute; bottom: 73.8px; width: 100%; display: flex; justify-content: center; gap: 15px; padding: 0 15px; box-sizing: border-box; touch-action: none; }
         .btn-wrapper { flex: 1; max-width: 170px; position: relative; }
-        .feed-btn, .burp-btn { width: 100%; height: 90px; margin: 0; padding: 0; background: #5ea1fd; border: 4px solid #326efc; cursor: pointer; outline: none; position: relative; z-index: 120; display: block; transform: translate(0px, 0px); transition: transform 0.05s, box-shadow 0.05s; box-shadow: -5px 5px 0 #326efc; touch-action: manipulation; }
+        .feed-btn, .burp-btn { width: 100%; height: 90px; margin: 0; padding: 0; background: #5ea1fd; border: 4px solid #326efc; cursor: pointer; outline: none; position: relative; z-index: 120; display: block; transform: translate(0px, 0px); transition: transform 0.05s, box-shadow 0.05s; box-shadow: -5px 5px 0 #326efc; touch-action: none; }
         .btn-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; pointer-events: none; z-index: 121; filter: drop-shadow(2px 2px 0 #326efc); }
         
-        .feed-btn:active, .feed-btn.key-pressed { transform: translate(-5px, 5px); box-shadow: 0px 0px 0 #326efc; }
-        .burp-btn:active, .burp-btn.key-pressed { transform: translate(-5px, 5px); box-shadow: 0px 0px 0 #326efc; }
+        .feed-btn:active, .feed-btn.key-pressed { transform: translate(-5px, 5px); box-shadow: 0px 0px 0 #326efc; transition: none; }
+        .burp-btn:active, .burp-btn.key-pressed { transform: translate(-5px, 5px); box-shadow: 0px 0px 0 #326efc; transition: none; }
         .feed-btn:active + .btn-icon, .burp-btn:active + .btn-icon, .feed-btn.key-pressed + .btn-icon, .burp-btn.key-pressed + .btn-icon { margin-top: 5px; margin-left: -5px; }
         
         .left-column { position: absolute; top: 135px; left: 20px; bottom: 168.8px; display: flex; flex-direction: column; align-items: center; width: 50px; z-index: 110; }
@@ -115,7 +115,7 @@
         #pause-box { background: rgba(61, 90, 128, 0.7); padding: 18px; width: 60%; max-width: 255px; text-align: center; box-shadow: 0 6px 0 #000; }
         #pause-toggle-btn { position: absolute; top: 460px; right: 30px; background: rgba(0,0,0,0.25); border: none; cursor: pointer; z-index: 160; outline: none; padding: 6px; display: flex; justify-content: center; align-items: center; width: 52px; height: 52px; transition: transform 0.05s; }
         #pause-toggle-btn svg { fill: #eeeeee; filter: drop-shadow(2px 2px 0 #000); }
-        #pause-toggle-btn:active, #pause-toggle-btn.key-pressed { transform: translateY(2px); }
+        #pause-toggle-btn:active, #pause-toggle-btn.key-pressed { transform: translateY(2px); transition: none; }
         .pause-start-over-btn { background: rgba(0,0,0,0.25); color: rgba(255, 255, 255, 0.7); font-size: 1.8rem; text-align: center; margin-top: 20px; cursor: pointer; padding: 8px; width: fit-content; margin-left: auto; margin-right: auto; }
         
         #random-tip-msg-container { position: absolute; top: 606px; left: 36.5px; width: 366.8px; height: auto; display: flex; align-items: center; justify-content: flex-start; padding-top: 4px; padding-bottom: 4px; border: 4px solid #326efc; background: #5ea1fd; box-sizing: border-box; box-shadow: 8px 8px 0 #326efc; z-index: 2; }
@@ -132,23 +132,23 @@
 
         #landing-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #fcb38b; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; justify-content: center; z-index: 300; }
         .play-btn { background: #5ea1fd; border: 6px solid #326efc; padding: 0px 18px; font-size: 4.5rem; cursor: pointer; box-shadow: -8px 8px 0 #326efc; color: var(--sparkle-gold); margin-top: 40px; text-shadow: 4px 4px 0 #234de2; transition: transform 0.05s, box-shadow 0.05s; transform: translate(0px, 0px); }
-        .play-btn.pressed { transform: translate(-8px, 8px); box-shadow: 0px 0px 0 #326efc; }
+        .play-btn.pressed { transform: translate(-8px, 8px); box-shadow: 0px 0px 0 #326efc; transition: none; }
 
         #ios-install-instructions { display: none; position: fixed; top: 0; bottom: 0; left: 0; width: 100%; background: rgba(0, 0, 0, 0.8); z-index: 999999; align-items: flex-end; justify-content: center; }
         .ios-instruction-box { background: #FB9052; color: white; border: 4px solid #fff; padding: 20px; width: 90%; max-width: 400px; text-align: center; font-size: 1.6rem; margin-bottom: 20px; box-shadow: 0 6px 0 #000; }
         .bounce-arrow { font-size: 3rem; color: #ffffff; animation: bounceDown 1s infinite ease-in-out; margin-top: 10px; }
         @keyframes bounceDown { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(15px); } }
-        #install-btn { display: none; position: absolute; top: 15px; left: 15px; background: #fff; border: 4px solid var(--ui-border); padding: 8px 12px; font-size: 1.5rem; cursor: pointer; box-shadow: 0 4px 0 #000; z-index: 310; color: #3d5a80; }
-        #install-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #000; }
+        #install-btn { display: none; position: absolute; top: 15px; left: 15px; background: #fff; border: 4px solid var(--ui-border); padding: 8px 12px; font-size: 1.5rem; cursor: pointer; box-shadow: 0 4px 0 #000; z-index: 310; color: #3d5a80; transition: transform 0.05s, box-shadow 0.05s; }
+        #install-btn:active { transform: translateY(4px); box-shadow: 0 0px 0 #000; transition: none; }
 
         #global-ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999999; }
         
         #custom-bmc-btn { position: absolute; bottom: 26px; right: 0; width: 68px; height: 50px; padding-right: 18px; box-sizing: border-box; background-color: #FB9052; border-radius: 0; display: flex; align-items: center; justify-content: center; font-size: 28px; text-decoration: none; box-shadow: 0 4px 0 #E3754D; pointer-events: auto; cursor: pointer; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease, box-shadow 0.1s; transform: translateX(200%) translateZ(0); opacity: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
         #custom-bmc-btn.in-place { transform: translateX(0) translateZ(0); opacity: 1; }
-        #custom-bmc-btn.in-place:active { transform: translateY(2px) translateZ(0); box-shadow: 0 2px 0 #E3754D; transition: transform 0.05s, box-shadow 0.05s; }
+        #custom-bmc-btn.in-place:active { transform: translateY(4px) translateZ(0); box-shadow: 0 0px 0 #E3754D; transition: none; }
 
         #landing-bmc-left { position: absolute; bottom: 26px; left: 0; pointer-events: auto; transform: translateX(-200%) translateZ(0); opacity: 0; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
-        #left-story-btn:active { transform: translateY(2px) translateZ(0); box-shadow: 0 2px 0 #E3754D; }
+        #left-story-btn:active { transform: translateY(4px) translateZ(0); box-shadow: 0 0px 0 #E3754D; transition: none; }
 
         #bmc-tooltip { position: absolute; bottom: 22px; right: 75px; background: #fff; color: #3d5a80; padding: 4px 8px; border: none; box-shadow: none; font-size: 1.4rem; line-height: 1.0; width: 170px; text-align: center; pointer-events: none; transform-origin: right center; transform: scale(0); opacity: 0; visibility: hidden; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease, visibility 0.4s; }
         #bmc-tooltip.show { transform: scale(1); opacity: 1; visibility: visible; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease, visibility 0s; }
@@ -173,10 +173,10 @@
         
         .checkup-btn-row { position: relative; display: flex; align-items: center; width: 100%; margin-bottom: 10px; z-index: 2; padding: 0 15px; box-sizing: border-box; }
         .resume-btn { position: relative; z-index: 2; background: #fff; border: 8.5px solid #5ea1fd; color: #326efc; padding: 7.5px 15px; width: fit-content; min-width: 96px; font-size: 2.64rem; cursor: pointer; box-shadow: 6px 6px 0 #fee5d4; transition: transform 0.05s, box-shadow 0.05s; transform: translate(0px, 0px) translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden; margin: 0 auto; }
-        .resume-btn.pressed { transform: translate(6px, 6px) translateZ(0); box-shadow: 0px 0px 0 #fee5d4; }
+        .resume-btn.pressed { transform: translate(6px, 6px) translateZ(0); box-shadow: 0px 0px 0 #fee5d4; transition: none; }
         
         .share-report-btn { position: absolute; right: 15px; z-index: 2; background: #FB9052; border: none; padding: 5px 10px; display: flex; flex-direction: row; align-items: center; justify-content: center; cursor: pointer; box-shadow: 5px 5px 0 #E3754D; transition: transform 0.05s, box-shadow 0.05s, opacity 0.3s ease; transform: translate(0px, 0px) translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden; opacity: 0; pointer-events: none; }
-        .share-report-btn.pressed { transform: translate(5px, 5px) translateZ(0); box-shadow: 0px 0px 0 #E3754D; }
+        .share-report-btn.pressed { transform: translate(5px, 5px) translateZ(0); box-shadow: 0px 0px 0 #E3754D; transition: none; }
         .share-report-btn svg { width: 20px; height: 20px; fill: white; filter: drop-shadow(2px 2px 0px #E3754D); }
         .share-report-text { color: white; font-size: 1.53rem; font-weight: bold; line-height: 1; text-shadow: 2px 2px 0 #E3754D; margin-right: 6px; padding-top: 2px; }
 
@@ -194,10 +194,10 @@
             50%, 100% { color: var(--sparkle-gold); text-shadow: none; }
         }
         .resume-btn.super-mode { background: #5ea1fd; border: 8.5px solid #326efc; color: #fff; box-shadow: 6px 6px 0 #326efc; animation: superFlash 0.5s infinite; }
-        .resume-btn.super-mode.pressed { transform: translate(6px, 6px) translateZ(0); box-shadow: 0px 0px 0 #326efc; }
+        .resume-btn.super-mode.pressed { transform: translate(6px, 6px) translateZ(0); box-shadow: 0px 0px 0 #326efc; transition: none; }
 
         .toggle-arrow-btn { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center; z-index: 10; transition: transform 0.05s; }
-        .toggle-arrow-btn:active { transform: translateY(-50%) scale(0.9); }
+        .toggle-arrow-btn:active { transform: translateY(-50%) scale(0.9); transition: none; }
         #prev-stats-btn { left: -38px; display: none; }
         #next-stats-btn { right: -38px; display: none; } 
         .toggle-arrow-btn svg { width: 45px; height: 45px; fill: white; filter: drop-shadow(1px 1px 0 #000); }
@@ -226,7 +226,7 @@
 
         /* SOUND UI CSS */
         #sound-toggle-main { background: rgba(0,0,0,0.25); border: none; cursor: pointer; z-index: 99999; outline: none; padding: 6px; justify-content: center; align-items: center; width: 52px; height: 52px; transition: transform 0.05s; }
-        #sound-toggle-main:active { transform: translateY(2px); }
+        #sound-toggle-main:active { transform: translateY(2px); transition: none; }
         #sound-toggle-main svg { fill: #eeeeee; filter: drop-shadow(2px 2px 0 #000); width: 32px; height: 32px; }
         .sound-btn-landing { position: absolute; bottom: 86px; left: 20px; display: flex; transform: none; }
         .sound-btn-global { position: absolute; bottom: 26px; left: 26px; display: flex; }
@@ -238,8 +238,8 @@
         .sound-slider { width: 90%; height: 15px; background: rgba(255, 255, 255, 0.5); outline: none; -webkit-appearance: none; border: none; }
         .sound-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; background: #ffffff; cursor: pointer; border: none; }
         .sound-slider::-moz-range-thumb { width: 20px; height: 20px; background: #ffffff; cursor: pointer; border: none; }
-        .sound-close-btn { position: absolute; top: -15px; right: -15px; background: #ffffff; color: #3d5a80; border: none; width: 35px; height: 35px; font-size: 1.6rem; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 0 #000; }
-        .sound-close-btn:active { transform: translateY(4px); box-shadow: 0 0px 0 #000; }
+        .sound-close-btn { position: absolute; top: -15px; right: -15px; background: #ffffff; color: #3d5a80; border: none; width: 35px; height: 35px; font-size: 1.6rem; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 0 #000; transition: transform 0.05s, box-shadow 0.05s; }
+        .sound-close-btn:active { transform: translateY(4px); box-shadow: 0 0px 0 #000; transition: none; }
     </style>
 </head>
 <body>
