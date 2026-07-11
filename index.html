@@ -1455,7 +1455,7 @@
     }
 
     function scheduleNewNote(noteData, time) {
-        let musicVol = noteData.volume * 0.5;
+        let musicVol = noteData.volume * 0.5 * 1.25;
         let duration = Math.max(0.015, noteData.duration / 1000);
 
         time = Math.max(time, audioCtx.currentTime + 0.005);
@@ -1571,7 +1571,6 @@
         }
     }
     // --- END MUSIC SEQUENCER ---
-
     // --- SOUND UI LOGIC ---
     function toggleSoundMenu() {
         let overlay = document.getElementById('sound-overlay');
@@ -2001,7 +2000,7 @@
         if (audioCtx.state === 'suspended') audioCtx.resume();
         const o = audioCtx.createOscillator(), g = audioCtx.createGain();
         o.type = t; o.frequency.setValueAtTime(f, audioCtx.currentTime);
-        g.gain.setValueAtTime(v, audioCtx.currentTime); o.connect(g); g.connect(fxMasterGain);
+        g.gain.setValueAtTime(v * 1.35, audioCtx.currentTime); o.connect(g); g.connect(fxMasterGain);
         o.onended = () => { o.disconnect(); g.disconnect(); };
         o.start(); o.stop(audioCtx.currentTime + d);
     }
@@ -2164,7 +2163,7 @@
             o.type = 'triangle';
             o.frequency.setValueAtTime(150, audioCtx.currentTime);
             o.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.2);
-            g.gain.setValueAtTime(0.08, audioCtx.currentTime);
+            g.gain.setValueAtTime(0.08 * 1.35, audioCtx.currentTime);
             g.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
             o.connect(g); g.connect(fxMasterGain);
             o.onended = () => { o.disconnect(); g.disconnect(); };
@@ -2178,7 +2177,7 @@
             o.type = 'square';
             o.frequency.setValueAtTime(440, audioCtx.currentTime);
             o.frequency.exponentialRampToValueAtTime(330, audioCtx.currentTime + 0.2);
-            g.gain.setValueAtTime(0.02, audioCtx.currentTime);
+            g.gain.setValueAtTime(0.02 * 1.35, audioCtx.currentTime);
             g.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
             o.connect(g); g.connect(fxMasterGain);
             o.onended = () => { o.disconnect(); g.disconnect(); };
@@ -2208,14 +2207,10 @@
                 shareBtn.style.transition = 'opacity 0.3s ease';
             }
 
-            if (isFirstReport) {
-                resumeBtn.style.opacity = '0.5';
+            if (resumeBtn) {
+                resumeBtn.style.opacity = '0';
                 resumeBtn.style.pointerEvents = 'none';
                 resumeBtn.style.transition = 'opacity 0.3s ease, transform 0.05s, box-shadow 0.05s';
-            } else {
-                resumeBtn.style.opacity = '1';
-                resumeBtn.style.pointerEvents = 'auto';
-                resumeBtn.style.transition = 'transform 0.05s, box-shadow 0.05s';
             }
         }
 
@@ -2247,7 +2242,7 @@
                 { icon: scaleIcon, label: 'Final Weight: ', value: finalLb + 'lb ' + finalOz + 'oz' },
                 { icon: bottleIcon, label: 'Best Daily Avg.: ', value: bestDailyAvg.toFixed(1) + ' oz' },
                 { icon: '<img src="https://www.feedmelvin.com/super_icon_web.png" class="stat-bullet" crossorigin="anonymous" />', label: 'Super Melvins: ', value: superCount },
-                { icon: gammaIconStr, label: gammaText + ': ', value: gammaCount },
+                { icon: gammaIconStr, label: 'Gamma Melvins: ', value: gammaCount },
                 { icon: '<img src="https://www.feedmelvin.com/time_icon_web.png" class="stat-bullet" crossorigin="anonymous" />', label: 'Minutes Played: ', value: minsPlayed }
             ];
         } else {
@@ -2337,13 +2332,13 @@
             docBox.style.opacity = '1';
             docBox.style.transform = 'scale(1) translateZ(0)';
 
-            if (isFirstReport) {
-                setTimeout(() => {
-                    if (myRenderId !== currentRenderId) return;
+            setTimeout(() => {
+                if (myRenderId !== currentRenderId) return;
+                if (resumeBtn) {
                     resumeBtn.style.opacity = '1';
                     resumeBtn.style.pointerEvents = 'auto';
-                }, 1300); 
-            }
+                }
+            }, 1300); 
 
             const bmcBtn = document.getElementById('custom-bmc-btn');
             if (bmcBtn && !bmcBtn.classList.contains('in-place')) {
@@ -2539,6 +2534,15 @@
             }
 
             renderCanvasSprite('landing-melvin-canvas', landingActiveSprite, landingFrameX, 0, 48, 48, 48, 48);
+            
+            let landingCvs = document.getElementById('landing-melvin-canvas');
+            if (landingCvs) {
+                if (landingActiveSprite.includes('super')) {
+                    landingCvs.classList.add('super-drift');
+                } else {
+                    landingCvs.classList.remove('super-drift');
+                }
+            }
         }
 
         if (!gameRunning) return; 
@@ -3263,6 +3267,8 @@
                         
                         clonedDrInner.width = origDrInner.width * captureScale;
                         clonedDrInner.height = origDrInner.height * captureScale;
+                        clonedDrInner.style.width = origDrInner.offsetWidth + 'px';
+                        clonedDrInner.style.height = origDrInner.offsetHeight + 'px';
                         clonedDrInner.style.position = 'relative';
                         clonedDrInner.style.zIndex = '2';
 
@@ -3274,8 +3280,10 @@
                         shadow.width = origDrInner.width * captureScale;
                         shadow.height = origDrInner.height * captureScale;
                         shadow.style.cssText = clonedDrInner.style.cssText; 
+                        shadow.style.width = origDrInner.offsetWidth + 'px';
+                        shadow.style.height = origDrInner.offsetHeight + 'px';
                         shadow.style.position = 'absolute';
-                        shadow.style.left = '20px'; 
+                        shadow.style.left = '12px'; 
                         shadow.style.top = '0px';
                         shadow.style.zIndex = '1';
                         
@@ -3313,14 +3321,14 @@
                         
                         const innerWrap = clonedDoc.createElement('div');
                         innerWrap.style.position = 'relative';
-                        innerWrap.style.width = (pxWidth + 9) + 'px';
-                        innerWrap.style.height = (pxHeight + 9) + 'px';
+                        innerWrap.style.width = (pxWidth + 5) + 'px';
+                        innerWrap.style.height = (pxHeight + 5) + 'px';
                         innerWrap.style.overflow = 'visible';
                         
                         // SINGLE CANVAS METHOD
                         const singleCanvas = clonedDoc.createElement('canvas');
-                        singleCanvas.width = (urlLogoImg.naturalWidth + 9) * captureScale;
-                        singleCanvas.height = (urlLogoImg.naturalHeight + 9) * captureScale;
+                        singleCanvas.width = (urlLogoImg.naturalWidth + 5) * captureScale;
+                        singleCanvas.height = (urlLogoImg.naturalHeight + 5) * captureScale;
                         singleCanvas.style.width = '100%';
                         singleCanvas.style.height = '100%';
                         singleCanvas.style.position = 'absolute';
@@ -3331,8 +3339,8 @@
                         const ctx = singleCanvas.getContext('2d');
                         ctx.imageSmoothingEnabled = false;
 
-                        // Step 1: Draw the shadow (offset by 9px * scale)
-                        const offset = 9 * captureScale;
+                        // Step 1: Draw the shadow (offset by 5px * scale)
+                        const offset = 5 * captureScale;
                         ctx.drawImage(urlLogoImg, 0, 0, urlLogoImg.naturalWidth, urlLogoImg.naturalHeight, offset, offset, urlLogoImg.naturalWidth * captureScale, urlLogoImg.naturalHeight * captureScale);
                         
                         // Tint the shadow #e59a72
