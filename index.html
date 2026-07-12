@@ -97,7 +97,7 @@
 
         .action-btns { position: absolute; bottom: 73.8px; width: 100%; display: flex; justify-content: center; gap: 15px; padding: 0 15px; box-sizing: border-box; touch-action: none; }
         .btn-wrapper { flex: 1; max-width: 170px; position: relative; }
-        .feed-btn, .burp-btn { width: 100%; height: 90px; margin: 0; padding: 0; background: #5ea1fd; border: 4px solid #326efc; cursor: pointer; outline: none; position: relative; z-index: 120; display: block; transform: translate(0px, 0px); transition: transform 0.05s, box-shadow 0.05s; box-shadow: -5px 5px 0 #326efc; touch-action: none; }
+        .feed-btn, .burp-btn { width: 100%; height: 90px; margin: 0; padding: 0; background: #5ea1fd; border: 4px solid #326efc; cursor: pointer; outline: none; position: relative; z-index: 120; display: block; transform: translate(0px, 0px); transition: none; box-shadow: -5px 5px 0 #326efc; touch-action: none; }
         .btn-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; pointer-events: none; z-index: 121; filter: drop-shadow(2px 2px 0 #326efc); }
         
         .feed-btn:active, .feed-btn.key-pressed { transform: translate(-5px, 5px); box-shadow: 0px 0px 0 #326efc; transition: none; }
@@ -172,7 +172,7 @@
         #dr-swadlzworth-inner { height: 100%; width: auto; max-width: none; flex-shrink: 0; display: block; filter: drop-shadow(20px 0px 0px #fcb38b); -webkit-filter: drop-shadow(20px 0px 0px #fcb38b); transform: translateZ(0); -webkit-transform: translateZ(0); }
         
         .checkup-btn-row { position: relative; display: flex; align-items: center; width: 100%; margin-bottom: 10px; z-index: 2; padding: 0 15px; box-sizing: border-box; }
-        .resume-btn { position: relative; z-index: 2; background: #fff; border: 8.5px solid #5ea1fd; color: #326efc; padding: 7.5px 15px; width: fit-content; min-width: 96px; font-size: 2.64rem; cursor: pointer; box-shadow: 6px 6px 0 #fee5d4; transition: transform 0.05s, box-shadow 0.05s; transform: translate(0px, 0px) translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden; margin: 0 auto; }
+        .resume-btn { position: relative; z-index: 2; background: #fff; border: 8.5px solid #5ea1fd; color: #326efc; padding: 7.5px 15px; width: fit-content; min-width: 96px; font-size: 2.64rem; cursor: pointer; box-shadow: 6px 6px 0 #fee5d4; transition: opacity 0.3s ease, transform 0.05s, box-shadow 0.05s; transform: translate(0px, 0px) translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden; margin: 0 auto; opacity: 0; pointer-events: none; }
         .resume-btn.pressed { transform: translate(6px, 6px) translateZ(0); box-shadow: 0px 0px 0 #fee5d4; transition: none; }
         
         .share-report-btn { position: absolute; right: 15px; z-index: 2; background: #FB9052; border: none; padding: 5px 10px; display: flex; flex-direction: row; align-items: center; justify-content: center; cursor: pointer; box-shadow: 5px 5px 0 #E3754D; transition: transform 0.05s, box-shadow 0.05s, opacity 0.3s ease; transform: translate(0px, 0px) translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden; opacity: 0; pointer-events: none; }
@@ -1920,6 +1920,13 @@
                 shareBtn.style.opacity = '0';
                 shareBtn.style.pointerEvents = 'none';
             }
+
+            let resumeBtn = document.querySelector('.resume-btn');
+            if (resumeBtn) {
+                resumeBtn.style.transition = 'none';
+                resumeBtn.style.opacity = '0';
+                resumeBtn.style.pointerEvents = 'none';
+            }
             
             musicPausedForReport = false;
             if (audioCtx && audioCtx.state === 'running' && musicStarted && !isTabHidden) {
@@ -2265,9 +2272,9 @@
             }
 
             if (resumeBtn) {
+                resumeBtn.style.transition = 'none'; // Prevent fade out transition on reset
                 resumeBtn.style.opacity = '0';
                 resumeBtn.style.pointerEvents = 'none';
-                resumeBtn.style.transition = 'opacity 0.3s ease, transform 0.05s, box-shadow 0.05s';
             }
         }
 
@@ -2392,6 +2399,7 @@
             setTimeout(() => {
                 if (myRenderId !== currentRenderId) return;
                 if (resumeBtn) {
+                    resumeBtn.style.transition = 'opacity 0.3s ease, transform 0.05s, box-shadow 0.05s';
                     resumeBtn.style.opacity = '1';
                     resumeBtn.style.pointerEvents = 'auto';
                 }
