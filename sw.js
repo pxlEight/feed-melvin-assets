@@ -1,9 +1,9 @@
-const CACHE_NAME = 'feed-melvin-v1';
+const CACHE_NAME = 'feed-melvin-v2';
 const ASSETS = [
     '/',
     '/index.html',
     '/manifest.json',
-    'https://www.feedmelvin.com/melvin_icon_web_app.png',
+    'https://www.feedmelvin.com/melvin_icon_web_app.png?v=2',
     'https://www.feedmelvin.com/Nursery_background_rev002.png'
 ];
 
