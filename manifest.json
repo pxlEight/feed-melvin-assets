@@ -1,8 +1,3 @@
-
-Jacob Hilton <jcob.hilton@gmail.com>
-11:33 PM (3 minutes ago)
-to me
-
 {
   "name": "Feed Melvin",
   "short_name": "Feed Melvin",
@@ -14,22 +9,10 @@ to me
   "orientation": "portrait",
   "icons": [
     {
-      "src": "https://www.feedmelvin.com/melvin_icon_web_app.png",
+      "src": "https://www.feedmelvin.com/melvin_icon_web_app.png?v=2",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "Feed Melvin",
-      "url": "/",
-      "icons": [
-        {
-          "src": "https://www.feedmelvin.com/melvin_icon_web_app.png",
-          "sizes": "512x512"
-        }
-      ]
     }
   ]
 }
