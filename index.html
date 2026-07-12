@@ -377,6 +377,27 @@
 
         <button id="play-btn" class="play-btn" style="position: absolute; bottom: 142.8px; margin: 0; display: none; transform: scale(0); z-index: 20; pointer-events: auto;">PLAY!</button>
 
+        <div id="landing-social" onpointerdown="event.stopPropagation()" onmousedown="event.stopPropagation()" ontouchend="event.stopPropagation()" style="position: absolute; bottom: 74px; left: 50%; transform: translateX(-50%); display: none; flex-direction: row; align-items: center; justify-content: center; gap: 15px; z-index: 20; color: white; pointer-events: auto; font-size: 1.6rem;">
+            <div style="display: flex; gap: 15px;">
+                <a href="https://instagram.com/feedmelvin" target="_blank" rel="noopener noreferrer" style="display: flex; transition: transform 0.05s;" onmousedown="this.style.transform='translateY(2px)'" onmouseup="this.style.transform='none'" onmouseleave="this.style.transform='none'" ontouchstart="this.style.transform='translateY(2px)'" ontouchend="this.style.transform='none'">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                    </svg>
+                </a>
+                <a href="https://www.facebook.com/feedmelvin/" target="_blank" rel="noopener noreferrer" style="display: flex; transition: transform 0.05s;" onmousedown="this.style.transform='translateY(2px)'" onmouseup="this.style.transform='none'" onmouseleave="this.style.transform='none'" ontouchstart="this.style.transform='translateY(2px)'" ontouchend="this.style.transform='none'">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="white">
+                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                    </svg>
+                </a>
+            </div>
+            <div style="display: flex; flex-direction: column; text-align: left; line-height: 1.1;">
+                <div>Tag us!</div>
+                <div>@feedmelvin</div>
+            </div>
+        </div>
+
         <div id="landing-bmc-left" style="position: absolute; bottom: 26px; left: 0; pointer-events: auto; transform: translateX(-200%); opacity: 0; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease;">
             <a id="left-story-btn" href="https://www.pixel-mover.com/blog" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; justify-content: center; background-color: #FB9052; color: white; text-decoration: none; font-size: 2.2rem; padding: 0 15px 0 33px; height: 50px; box-sizing: border-box; box-shadow: 0 4px 0 #E3754D; text-shadow: 2px 2px 0 #E3754D; transition: transform 0.05s, box-shadow 0.05s;">
                 <svg viewBox="0 0 48 48" style="width: 28px; height: 28px; margin-right: 8px;">
@@ -437,6 +458,27 @@
         
         <div id="instructions-box-left" onclick="startGame('easy', this)">EASY</div>
         <div id="instructions-box-right" onclick="startGame('normal', this)">NORMAL</div>
+
+        <div id="instructions-social" onpointerdown="event.stopPropagation()" onmousedown="event.stopPropagation()" ontouchend="event.stopPropagation()" style="position: absolute; top: 700px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 15px; z-index: 20; color: white; pointer-events: auto; font-size: 1.6rem;">
+            <div style="display: flex; gap: 15px;">
+                <a href="https://instagram.com/feedmelvin" target="_blank" rel="noopener noreferrer" style="display: flex; transition: transform 0.05s;" onmousedown="this.style.transform='translateY(2px)'" onmouseup="this.style.transform='none'" onmouseleave="this.style.transform='none'" ontouchstart="this.style.transform='translateY(2px)'" ontouchend="this.style.transform='none'">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                    </svg>
+                </a>
+                <a href="https://www.facebook.com/feedmelvin/" target="_blank" rel="noopener noreferrer" style="display: flex; transition: transform 0.05s;" onmousedown="this.style.transform='translateY(2px)'" onmouseup="this.style.transform='none'" onmouseleave="this.style.transform='none'" ontouchstart="this.style.transform='translateY(2px)'" ontouchend="this.style.transform='none'">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="white">
+                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                    </svg>
+                </a>
+            </div>
+            <div style="display: flex; flex-direction: column; text-align: left; line-height: 1.1;">
+                <div>Tag us!</div>
+                <div>@feedmelvin</div>
+            </div>
+        </div>
     </div>
 
     <div id="checkup-screen" style="display: none;">
@@ -961,7 +1003,6 @@
         "It's okay to sleep just 2 hours every night. It's only for 2 months!",
         "Sleep when the baby sleeps!"
     ];
-
     const assetUrls = [
         "https://www.feedmelvin.com/feed_melvin_logo_stacked_sprite_web.png",
         "https://www.feedmelvin.com/feed_melvin_logo_sprite_web.png",
@@ -1071,6 +1112,7 @@
                                 
                                 setTimeout(() => {
                                     let playBtn = document.getElementById('play-btn');
+                                    let landingSocial = document.getElementById('landing-social');
                                     let soundBtn = document.getElementById('sound-toggle-main');
                                     soundBtn.className = 'sound-btn-landing';
                                     soundBtn.style.display = 'flex';
@@ -1078,12 +1120,26 @@
                                     playBtn.style.display = 'block';
                                     playBtn.style.transform = 'scale(0)';
                                     playBtn.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                                    
+                                    if(landingSocial) {
+                                        landingSocial.style.display = 'flex';
+                                        landingSocial.style.transform = 'translateX(-50%) scale(0)';
+                                        landingSocial.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                                    }
+
                                     void playBtn.offsetWidth; 
                                     playBtn.style.transform = 'scale(1)';
+                                    if(landingSocial) {
+                                        landingSocial.style.transform = 'translateX(-50%) scale(1)';
+                                    }
                                     
                                     setTimeout(() => {
                                         playBtn.style.transition = 'transform 0.05s, box-shadow 0.05s';
                                         playBtn.style.transform = '';
+                                        if(landingSocial) {
+                                            landingSocial.style.transition = 'none';
+                                            landingSocial.style.transform = 'translateX(-50%)'; 
+                                        }
                                     }, 400);
 
                                     setTimeout(() => {
