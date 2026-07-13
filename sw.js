@@ -1,4 +1,4 @@
-const CACHE_NAME = 'feed-melvin-v3';
+const CACHE_NAME = 'feed-melvin-v4';
 const ASSETS = [
     '/',
     '/index.html',
