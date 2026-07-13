@@ -1,4 +1,4 @@
-const CACHE_NAME = 'feed-melvin-v4';
+const CACHE_NAME = 'feed-melvin-v5';
 const ASSETS = [
     '/',
     '/index.html',
@@ -9,6 +9,8 @@ const ASSETS = [
 
 // Install: Pre-cache the core assets
 self.addEventListener('install', (event) => {
+    self.skipWaiting(); // Forces the waiting service worker to become the active service worker
+    
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
             return cache.addAll(ASSETS);
@@ -24,7 +26,7 @@ self.addEventListener('activate', (event) => {
                 keys.filter((key) => key !== CACHE_NAME)
                     .map((key) => caches.delete(key))
             );
-        })
+        }).then(() => self.clients.claim()) // Takes control of all open pages immediately
     );
 });
 
